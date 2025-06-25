@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "./Form.tsx";
+import Form from "./RegisterForm.tsx";
 export default function FormSection() {
   return (
     <div className="h-screen bg-stone-900 bg-[url(./public/formbg.svg)] bg-no-repeat">

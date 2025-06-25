@@ -1,17 +1,10 @@
 import React from "react";
-export default function Form() {
+export default function LoginForm() {
   return (
-    <div className="mr-44 mt-44 w-92 text-start ">
+    <div className="w-[50%] max-h-[30%] flex justify-center">
       <fieldset className="fieldset border-1 p-4 rounded-box border-stone-600 bg-stone-800">
-        <legend className="fieldset-legend text-white ">Register</legend>
-        <div className="flex flex-col justify-center">
-          <label>Username</label>
-          <input
-            className="input bg-stone-700 w-full"
-            typeof="text"
-            placeholder="Name"
-            id="Username"
-          ></input>
+        <legend className="fieldset-legend text-white ">Login</legend>
+        <div className="">
           <label>Email</label>
           <input
             className="input bg-stone-700 w-full"
@@ -26,11 +19,10 @@ export default function Form() {
             placeholder="Password"
             id="password"
           ></input>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-center items-center">
             <button type="button" className="btn w-fit mt-2">
-              Submit
+              Login
             </button>
-            <a>Or Log in</a>
           </div>
         </div>
       </fieldset>
