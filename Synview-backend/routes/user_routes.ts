@@ -6,11 +6,11 @@ import {
   Router,
 } from "../deps.ts";
 import { hash, bycryptVerify } from "../deps.ts";
-
-import { create, getNumericDate, verify } from "../deps.ts";
+import { createToken, getPayload, getPayloadFromToken } from "../middleware/auth_middleware.ts";
 
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { z } from "zod";
+import getToken from "../middleware/jwt.ts";
 const app = new Application();
 const router = new Router();
 const unprotectedRouter = new Router();
@@ -26,77 +26,56 @@ export const EmailLoginRequestSchema = z.object({
   ["password"]: z.string(),
 });
 
-/// Token Auth
-async function getToken(payload: any): Promise<string> {
-  const secret = Deno.env.get("API_SECRET") as string;
-  const key = await crypto.subtle.generateKey(
-    { name: "HMAC", hash: "SHA-512" },
-    true,
-    ["sign", "verify"]
-  );
-
-  return create({ alg: "HS512", typ: "JWT" }, payload, key);
-}
-function getPayload(body: any) {
-  const parsedBody = EmailLoginRequestSchema.parse(body);
-  return { ...parsedBody };
-}
-
 ///
-unprotectedRouter.post("/register", async (context) => {
-  const body = await context.request.body.json();
-  const parsedBody = EmailRegisterRequestSchema.parse(body);
 
-  const { username, email, password } = parsedBody;
-  try {
-    if (!username || !email || !password) {
+unprotectedRouter
+  .post("/register", async (context) => {
+    const body = await context.request.body.json();
+    const parsedBody = EmailRegisterRequestSchema.parse(body);
+
+    const { username, email, password } = parsedBody;
+    try {
+      if (!username || !email || !password) {
+        context.response.status = 400;
+        context.response.body = {
+          error: "Recieved invalid request",
+        };
+        return;
+      }
+
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          username: String(username),
+        },
+      });
+
+      const existingEmail = await prisma.user.findFirst({
+        where: {
+          email: String(email),
+        },
+      });
+
+      if (existingUser || existingEmail) {
+        context.response.status = 400;
+        context.response.body = {
+          error: "Username or Email, already taken",
+        };
+        return;
+      }
+    } catch (error) {
       context.response.status = 400;
       context.response.body = {
-        error: "Recieved invalid request",
+        error: error,
       };
       return;
     }
 
-    const existingUser = await prisma.user.findFirst({
-      where: {
-        username: String(username),
-      },
+    const hashedPassword = await hash(password);
+
+    const newUser = await prisma.user.create({
+      data: { username: username, email: email, passwordHash: hashedPassword },
     });
-
-    const existingEmail = await prisma.user.findFirst({
-      where: {
-        email: String(email),
-      },
-    });
-
-    if (existingUser || existingEmail) {
-      context.response.status = 400;
-      context.response.body = {
-        error: "Username or Email, already taken",
-      };
-      return;
-    }
-  } catch (error) {
-    context.response.status = 400;
-    context.response.body = {
-      error: error,
-    };
-    return;
-  }
-
-  const hashedPassword = await hash(password);
-
-  const newUser = await prisma.user.create({
-    data: { username: username, email: email, passwordHash: hashedPassword },
-  });
-  context.response.body = newUser;
-});
-
-// router.use(AuthMiddleware);
-
-router
-  .get("/", (context) => {
-    context.response.body = "this is the user route!";
+    context.response.body = newUser;
   })
   .post("/login", async (context) => {
     const body = await context.request.body.json();
@@ -136,16 +115,35 @@ router
         return;
       }
 
+      const userPayload = {
+        username: user.username,
+        role: user.role,
+        id: user.UserId,
+      };
+
+      const access_token = await createToken(getPayload(userPayload));
+
       context.response.body = {
         message: "Login successfull!",
+        access_token,
       };
+      context.response.headers.set("Authorization", access_token);
     } catch (e) {
-      context.response.status = 400;
+      context.response.status = 500;
       context.response.body = {
-        error: "Incorrect email format",
+        error: "Login went wrong",
+        e,
       };
       return;
     }
   });
+
+router.use(AuthMiddleware);
+
+router.get("/testAuth", (context) => {
+  const payload = getPayloadFromToken(context)
+  console.log(payload)
+  context.response.body = {...payload};
+});
 
 export { router, unprotectedRouter };
