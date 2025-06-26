@@ -1,7 +1,7 @@
 import React from "react";
 export default function LoginForm() {
   return (
-    <div className="w-[50%] max-h-[30%] flex justify-center">
+    <div className="w-[70%] max-h-[50%] flex justify-center border-1 border-stone-600 bg-stone-950 rounded-box p-4">
       <fieldset className="fieldset border-1 p-4 rounded-box border-stone-600 bg-stone-800">
         <legend className="fieldset-legend text-white ">Login</legend>
         <div className="">

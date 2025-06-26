@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 export default function LoginForm() {
   return (
-    <div className="mr-44 mt-44 w-92 text-start ">
+    <div className="mr-44 mt-44 w-92 text-start bg-stone-900 border-stone-600 p-4 border-1 rounded-box">
       <fieldset className="fieldset border-1 p-4 rounded-box border-stone-600 bg-stone-800">
         <legend className="fieldset-legend text-white ">Register</legend>
         <div className="flex flex-col justify-center">
