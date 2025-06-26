@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@oak/oak": "jsr:@oak/oak@^17.1.4",
+    "@prisma/client": "npm:@prisma/client@^6.10.1",
+    "@std/assert": "jsr:@std/assert@1"
+  }
+}
