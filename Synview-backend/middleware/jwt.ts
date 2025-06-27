@@ -1,5 +1,5 @@
-export default function getToken(headers: Headers) {
-  const authorization = headers.get("Authorization");
+export default function getToken(auth: string) {
+  const authorization = auth
   if (!authorization) {
     return null;
   }

@@ -1,8 +1,12 @@
 import { create, verify, Context, decode } from "../deps.ts";
 import { z } from "zod";
 import getToken from "./jwt.ts";
+import { Session } from "../deps.ts"
 /// Token Auth
 let key: CryptoKey;
+type AppState = {
+    session: Session
+}
 
 export const UserPayload = z.object({
   ["username"]: z.string(),
@@ -29,11 +33,16 @@ export function getPayload(body: any) {
 }
 
 export default async function AuthMiddleware(
-  context: Context,
+  context: Context<AppState>,
   next: () => Promise<unknown>
 ) {
   try {
-    const token = getToken(context.request.headers);
+    const header = context.request.headers
+    const auth = context.state.session.get("Authorization")
+    if(!auth){
+      throw new Error("No auth header")
+    }
+    const token = getToken(String(auth));
     if (!token) {
       throw new Error("Couldn't obtain authorization token");
     }
@@ -50,7 +59,12 @@ export default async function AuthMiddleware(
 
 export function getPayloadFromToken(context: Context) {
   try {
-    const token = getToken(context.request.headers);
+    const headers = context.request.headers
+    const auth = headers.get("Authorization")
+    if(!auth){
+      return null;
+    }
+    const token = getToken(auth);
     if (!token) {
       return null;
     }

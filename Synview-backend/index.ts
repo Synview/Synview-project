@@ -7,16 +7,21 @@ import {
   Router,
 } from "./deps.ts";
 import { z } from "zod";
-import { router, unprotectedRouter} from "./routes/user_routes.ts";
+import { router, unprotectedRouter } from "./routes/user_routes.ts";
+import { Session } from "./deps.ts";
+type AppState = {
+    session: Session
+}
 // import { parse } from "node:path";
 
 const prisma = new PrismaClient().$extends(withAccelerate());
 const Mainrouter = new Router();
-const app = new Application();
+const app = new Application<AppState>();
 
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
 
+app.use(Session.initMiddleware());
 
 app.use(router.routes());
 app.use(router.allowedMethods());

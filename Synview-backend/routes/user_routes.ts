@@ -7,13 +7,17 @@ import {
 } from "../deps.ts";
 import { hash, bycryptVerify } from "../deps.ts";
 import { createToken, getPayload, getPayloadFromToken } from "../middleware/auth_middleware.ts";
+import token from "../middleware/token.ts"
+import { Session } from "../deps.ts";
+
 
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { z } from "zod";
-import getToken from "../middleware/jwt.ts";
-const app = new Application();
-const router = new Router();
-const unprotectedRouter = new Router();
+type AppState = {
+    session: Session
+}
+const router = new Router<AppState>();
+const unprotectedRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
 export const EmailRegisterRequestSchema = z.object({
@@ -127,7 +131,9 @@ unprotectedRouter
         message: "Login successfull!",
         access_token,
       };
-      context.response.headers.set("Authorization", access_token);
+
+      context.state.session.set("Authorization", `Bearer ${access_token}`)
+
     } catch (e) {
       context.response.status = 500;
       context.response.body = {
@@ -139,6 +145,7 @@ unprotectedRouter
   });
 
 router.use(AuthMiddleware);
+router.use(token)
 
 router.get("/testAuth", (context) => {
   const payload = getPayloadFromToken(context)
