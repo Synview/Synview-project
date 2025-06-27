@@ -1,8 +1,6 @@
 import {
-  serve,
   withAccelerate,
   PrismaClient,
-  Application,
   Router,
 } from "../deps.ts";
 import { hash, bycryptVerify } from "../deps.ts";

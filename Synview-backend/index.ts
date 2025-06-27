@@ -1,12 +1,7 @@
-import { userInfo } from "node:os";
 import {
-  serve,
-  withAccelerate,
-  PrismaClient,
   Application,
   Router,
 } from "./deps.ts";
-import { z } from "zod";
 import { router, unprotectedRouter } from "./routes/user_routes.ts";
 import { Session } from "./deps.ts";
 type AppState = {
@@ -14,7 +9,6 @@ type AppState = {
 }
 // import { parse } from "node:path";
 
-const prisma = new PrismaClient().$extends(withAccelerate());
 const Mainrouter = new Router();
 const app = new Application<AppState>();
 

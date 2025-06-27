@@ -28,7 +28,7 @@ export function getPayload(body: any) {
     const parsedBody = UserPayload.parse(body);
     return { ...parsedBody };
   } catch (error) {
-    throw new Error("Couldnt parse User Payload");
+    throw new Error("Couldnt parse User Payload" + error);
   }
 }
 
@@ -37,7 +37,6 @@ export default async function AuthMiddleware(
   next: () => Promise<unknown>
 ) {
   try {
-    const header = context.request.headers
     const auth = context.state.session.get("Authorization")
     if(!auth){
       throw new Error("No auth header")
