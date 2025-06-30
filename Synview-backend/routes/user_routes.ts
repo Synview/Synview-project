@@ -1,21 +1,19 @@
-import {
-  withAccelerate,
-  PrismaClient,
-  Router,
-} from "../deps.ts";
+import { withAccelerate, PrismaClient, Router, oakCors } from "../deps.ts";
 import { hash, bycryptVerify } from "../deps.ts";
-import { createToken, getPayload, getPayloadFromToken } from "../middleware/auth_middleware.ts";
-import token from "../middleware/token.ts"
+import {
+  createToken,
+  getPayload,
+  getPayloadFromToken,
+} from "../middleware/auth_middleware.ts";
+import token from "../middleware/token.ts";
 import { Session } from "../deps.ts";
-
 
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { z } from "zod";
 type AppState = {
-    session: Session
-}
+  session: Session;
+};
 const router = new Router<AppState>();
-const unprotectedRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
 export const EmailRegisterRequestSchema = z.object({
@@ -30,7 +28,22 @@ export const EmailLoginRequestSchema = z.object({
 
 ///
 
-unprotectedRouter
+// router.use(
+//   oakCors({
+//     origin: "*",
+//     methods: ["POST", "PUT", "DELETE", "GET"],
+//     allowedHeaders: ["Content-type", "Authorization"],
+//   })
+// );
+// unprotectedRouter.use(
+//   oakCors({
+//     origin: "*",
+//     methods: ["POST", "PUT", "DELETE", "GET"],
+//     allowedHeaders: ["Content-type", "Authorization"],
+//   })
+// );
+
+router
   .post("/register", async (context) => {
     const body = await context.request.body.json();
     const parsedBody = EmailRegisterRequestSchema.parse(body);
@@ -74,10 +87,10 @@ unprotectedRouter
 
     const hashedPassword = await hash(password);
 
-    const newUser = await prisma.user.create({
+    await prisma.user.create({
       data: { username: username, email: email, passwordHash: hashedPassword },
     });
-    context.response.body = newUser;
+    context.response.body = "New user created!";
   })
   .post("/login", async (context) => {
     const body = await context.request.body.json();
@@ -125,12 +138,16 @@ unprotectedRouter
 
       const access_token = await createToken(getPayload(userPayload));
 
+      context.response.status = 200;
       context.response.body = {
         message: "Login successfull!",
-        access_token,
       };
 
-      context.state.session.set("Authorization", `Bearer ${access_token}`)
+      context.state.session.set("Authorization", `Bearer ${access_token}`);
+      context.response.headers.set("Authorization", `Bearer ${access_token}`)
+      // context.response.headers.set('Access-Control-Expose-Headers', 'Authorization');
+      console.log("this is login")
+      console.log(context.state.session.get("Authorization"))
 
     } catch (e) {
       context.response.status = 500;
@@ -143,12 +160,11 @@ unprotectedRouter
   });
 
 router.use(AuthMiddleware);
-router.use(token)
+// router.use(token);
 
-router.get("/testAuth", (context) => {
-  const payload = getPayloadFromToken(context)
-  console.log(payload)
-  context.response.body = {...payload};
+router.get("/getPayload", (context) => {
+  const payload = getPayloadFromToken(context);
+  context.response.body = payload;
 });
 
-export { router, unprotectedRouter };
+export { router };

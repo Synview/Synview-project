@@ -38,6 +38,9 @@ export default async function AuthMiddleware(
 ) {
   try {
     const auth = context.state.session.get("Authorization")
+    console.log("this is authmiddleware")
+    console.log(auth)
+
     if(!auth){
       throw new Error("No auth header")
     }
@@ -48,22 +51,24 @@ export default async function AuthMiddleware(
 
     const payload = await verify(token, key);
     if (!payload) {
-      throw new Error("No payload found");
+      throw new Error("No payload found - invalid token");
     }
+    context.response.headers.set("Authorization", `${auth}`)
     await next();
   } catch (err) {
     context.throw(401, "Unauthorized" + err);
   }
 }
 
-export function getPayloadFromToken(context: Context) {
+export function getPayloadFromToken(context: Context<AppState>) {
   try {
-    const headers = context.request.headers
-    const auth = headers.get("Authorization")
+    // const headers = context.request.headers
+    // const auth = headers.get("Authorization")
+    const auth = context.state.session.get("Authorization")
     if(!auth){
       return null;
     }
-    const token = getToken(auth);
+    const token = getToken(String(auth));
     if (!token) {
       return null;
     }
