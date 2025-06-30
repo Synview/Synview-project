@@ -13,7 +13,7 @@ import { z } from "zod";
 type AppState = {
   session: Session;
 };
-const router = new Router<AppState>();
+const UserRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
 export const EmailRegisterRequestSchema = z.object({
@@ -43,7 +43,7 @@ export const EmailLoginRequestSchema = z.object({
 //   })
 // );
 
-router
+UserRouter
   .post("/register", async (context) => {
     const body = await context.request.body.json();
     const parsedBody = EmailRegisterRequestSchema.parse(body);
@@ -159,12 +159,12 @@ router
     }
   });
 
-router.use(AuthMiddleware);
+UserRouter.use(AuthMiddleware);
 // router.use(token);
 
-router.get("/getPayload", (context) => {
+UserRouter.get("/getPayload", (context) => {
   const payload = getPayloadFromToken(context);
   context.response.body = payload;
 });
 
-export { router };
+export { UserRouter };

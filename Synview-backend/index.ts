@@ -1,5 +1,6 @@
 import { Application, Router, oakCors } from "./deps.ts";
-import { router } from "./routes/user_routes.ts";
+import { UserRouter } from "./routes/user_routes.ts";
+import { ProjectRouter} from './routes/project_routes.ts'
 import { Session } from "./deps.ts";
 type AppState = {
   session: Session;
@@ -25,8 +26,10 @@ app.use(
 );
 app.use(Session.initMiddleware());
 
-app.use(router.routes());
-app.use(router.allowedMethods());
+app.use(UserRouter.routes());
+app.use(UserRouter.allowedMethods());
+app.use(ProjectRouter.routes());
+app.use(ProjectRouter.allowedMethods());
 
 app.use(Mainrouter.routes());
 app.use(Mainrouter.allowedMethods());

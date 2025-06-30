@@ -1,4 +1,8 @@
 const url = import.meta.env.VITE_URL;
+const headers = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+};
 type RegisterData = {
   username: string;
   email: string;
@@ -45,10 +49,7 @@ const getPayload = async () => {
   const response = await fetch(`${url}/getPayload`, {
     method: "GET",
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
+    headers: headers,
   }).then((response) => {
     return response;
   });
@@ -57,4 +58,16 @@ const getPayload = async () => {
   return body;
 };
 
-export { Register, Login, getPayload };
+const getMyProjects = async (id: number) => {
+  const MyProjects = await fetch(`${url}/getMyProjects/${id}`, {
+    method: "GET",
+    credentials: "include",
+    headers: headers
+  }).then((response) => {
+    console.log(response)
+    return response.json();
+  });
+  return MyProjects
+};
+
+export { Register, Login, getPayload, getMyProjects };
