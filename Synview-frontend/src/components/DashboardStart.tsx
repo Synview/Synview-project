@@ -4,14 +4,11 @@ import { getPayload } from "../apiHandler.ts";
 import { z } from "zod";
 import { useAppSelector, useAppDispatch } from "../hooks.ts";
 import { addUser } from "../slices/userSlice.ts";
-export default function DashboardStart() {
-  type UserInfo = z.infer<typeof UserInfoSchema>;
-  const UserInfoSchema = z.object({
-    username: z.string(),
-    role: z.string(),
-    id: z.number(),
-  });
+import { UserInfoSchema } from "../../../common/schemas.ts";
 
+
+export default function DashboardStart() {
+  
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
 

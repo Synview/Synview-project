@@ -1,17 +1,12 @@
 import React, { ChangeEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Login } from "../apiHandler.ts";
-import { z } from "zod";
 import { useState } from "react";
-
+import { EmailLoginRequestSchema } from "../../../common/schemas.ts";
 export default function LoginForm() {
   const navigate = useNavigate();
 
-  const EmailLoginRequestSchema = z.object({
-    ["email"]: z.string().email(),
-    ["password"]: z.string(),
-  });
-
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [tryAgain, setTryAgain] = useState(false);

@@ -2,24 +2,19 @@ import { create, verify, Context, decode } from "../deps.ts";
 import { z } from "zod";
 import { generateKey, getToken } from "../utils/JWTHelpers.ts";
 import { Session } from "../deps.ts";
+import { UserPayloadSchema } from "../../common/schemas.ts";
 let key: CryptoKey;
 type AppState = {
   session: Session;
 };
 
-export const UserPayload = z.object({
-  username: z.string(),
-  role: z.string(),
-  id: z.number(),
-});
-
 export async function createToken(payload: any): Promise<string> {
-  key = await generateKey()
+  key = await generateKey();
   return create({ alg: "HS512", typ: "JWT" }, payload, key);
 }
 export function getPayload(body: any) {
   try {
-    return UserPayload.parse(body);
+    return UserPayloadSchema.parse(body);
   } catch (error) {
     throw new Error("Couldnt parse User Payload" + error);
   }
@@ -59,7 +54,7 @@ export function getPayloadFromToken(context: Context<AppState>) {
       return null;
     }
 
-    const [ payload] = decode(token);
+    const [payload] = decode(token);
     if (!payload) {
       throw new Error("Couldn't get payload");
     }

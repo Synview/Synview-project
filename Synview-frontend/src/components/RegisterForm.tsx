@@ -1,17 +1,11 @@
 import React, { ChangeEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Register } from "../apiHandler.ts";
-import { z } from "zod";
 import { useState } from "react";
+import { EmailRegisterRequestSchema } from "../../../common/schemas.ts";
 
 export default function LoginForm() {
   const navigate = useNavigate();
-
-  const EmailRegisterRequestSchema = z.object({
-    ["username"]: z.string(),
-    ["email"]: z.string().email(),
-    ["password"]: z.string(),
-  });
 
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,8 +23,7 @@ export default function LoginForm() {
     const TypeSafeData = EmailRegisterRequestSchema.parse(formData);
     await Register(TypeSafeData);
 
-    navigate('/login')
-
+    navigate("/login");
   };
 
   return (
