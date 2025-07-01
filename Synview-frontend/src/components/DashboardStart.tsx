@@ -5,6 +5,8 @@ import { z } from "zod";
 import { useAppSelector, useAppDispatch } from "../hooks.ts";
 import { addUser } from "../slices/userSlice.ts";
 import { addProject } from "../slices/projectSlice.ts";
+import NewProject from "./NewProject.tsx";
+
 import NoProjects from "./NotFound/NoProjects.tsx";
 import Project from "./Project.tsx";
 export default function DashboardStart() {
@@ -65,6 +67,8 @@ export default function DashboardStart() {
   return (
     <div className=" justify-center items-center w-full p-10">
       <div className="grid justify-center grid-cols-[repeat(auto-fill,_300px)] gap-10 ">
+        <NewProject />
+
         {projects ? (
           projects.projects.map((project) => {
             return (

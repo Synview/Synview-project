@@ -5,7 +5,7 @@ export default function Navbar() {
   const user = useAppSelector((state) => state.user);
 
   return (
-    <div className="navbar bg-stone-800 p-4">
+    <div className="navbar bg-neutral-800 p-4">
       <div className="navbar-start">
         <button type="button" className="btn btn-square p-2 bg-black">
           {/*Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.*/}

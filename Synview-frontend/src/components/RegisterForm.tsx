@@ -34,14 +34,14 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="mr-44 mt-44 w-92 text-start bg-stone-900 border-stone-600 p-4 border-1 rounded-box">
-      <fieldset className="fieldset border-1 p-4 rounded-box border-stone-600 bg-stone-800">
+    <div className="mr-44 mt-44 w-92 text-start bg-neutral-900 border-neutral-600 p-4 border-1 rounded-box">
+      <fieldset className="fieldset border-1 p-4 rounded-box border-neutral-600 bg-neutral-800">
         <legend className="fieldset-legend text-white ">Register</legend>
         <div className="flex flex-col justify-center">
           <form onSubmit={handleRegister}>
             <label>Username</label>
             <input
-              className="input bg-stone-700 w-full"
+              className="input bg-neutral-700 w-full"
               typeof="text"
               placeholder="Name"
               id="Username"
@@ -52,7 +52,7 @@ export default function LoginForm() {
             ></input>
             <label>Email</label>
             <input
-              className="input bg-stone-700 w-full"
+              className="input bg-neutral-700 w-full"
               typeof="text"
               placeholder="Email"
               id="email"
@@ -63,7 +63,7 @@ export default function LoginForm() {
             ></input>
             <label>Password</label>
             <input
-              className="input bg-stone-700 w-full"
+              className="input bg-neutral-700 w-full"
               typeof="text"
               placeholder="Password"
               id="password"

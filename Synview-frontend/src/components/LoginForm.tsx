@@ -37,14 +37,14 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-[70%] max-h-[50%] flex justify-center border-1 border-stone-600 bg-stone-950 rounded-box p-4">
-      <fieldset className="fieldset border-1 p-4 rounded-box border-stone-600 bg-stone-800">
+    <div className="w-[70%] max-h-[50%] flex justify-center border-1 border-neutral-600 bg-neutral-950 rounded-box p-4">
+      <fieldset className="fieldset border-1 p-4 rounded-box border-neutral-600 bg-neutral-800">
         <legend className="fieldset-legend text-white ">Login</legend>
         <div className="">
           <form onSubmit={handleSubmit}>
             <label>Email</label>
             <input
-              className="input bg-stone-700 w-full"
+              className="input bg-neutral-700 w-full"
               typeof="text"
               placeholder="Email"
               id="email"
@@ -55,7 +55,7 @@ export default function LoginForm() {
             ></input>
             <label>Password</label>
             <input
-              className="input bg-stone-700 w-full"
+              className="input bg-neutral-700 w-full"
               typeof="text"
               placeholder="Password"
               id="password"
