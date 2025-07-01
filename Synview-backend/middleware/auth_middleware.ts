@@ -1,5 +1,4 @@
 import { create, verify, Context, decode } from "../deps.ts";
-import { z } from "zod";
 import { generateKey, getToken } from "../utils/JWTHelpers.ts";
 import { Session } from "../deps.ts";
 import { UserPayloadSchema } from "../../common/schemas.ts";

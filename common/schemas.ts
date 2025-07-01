@@ -1,4 +1,4 @@
-import { z } from "../Synview-backend/deps.ts";
+import { z } from "npm:zod";
 
 export const UserPayloadSchema = z.object({
   username: z.string(),

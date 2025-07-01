@@ -1,4 +1,5 @@
-import {z} from 'zod'
+import { UserInfoSchema } from '../../common/schemas.ts';
+
 const url = import.meta.env.VITE_URL;
 const headers = {
   "Content-Type": "application/json",
@@ -13,13 +14,6 @@ type LoginData = {
   password: string;
   email: string;
 };
-
-type UserInfo = z.infer<typeof UserInfoSchema>;
-  const UserInfoSchema = z.object({
-    username: z.string(),
-    role: z.string(),
-    id: z.number(),
-  });
 
 const Register = async (data: RegisterData) => {
   await fetch(`${url}/register`, {

@@ -1,11 +1,10 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getPayload, getMyProjects } from "../apiHandler.ts";
-import { z } from "zod";
 import { useAppSelector, useAppDispatch } from "../hooks.ts";
 import { addUser } from "../slices/userSlice.ts";
 import { UserInfoSchema } from "../../../common/schemas.ts";
-
+import type {UserInfo} from "../../../common/types.ts"
 
 import { addProject } from "../slices/projectSlice.ts";
 import NewProject from "./NewProject.tsx";

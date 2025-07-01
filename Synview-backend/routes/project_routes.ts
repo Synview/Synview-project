@@ -1,7 +1,6 @@
-import { withAccelerate, PrismaClient, Router, oakCors } from "../deps.ts";
+import { withAccelerate, PrismaClient, Router } from "../deps.ts";
 import { Session } from "../deps.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
-import { z } from "zod";
 type AppState = {
   session: Session;
 };

@@ -4,7 +4,7 @@ import {
   EmailLoginRequestSchema,
   EmailRegisterRequestSchema,
 } from "./schemas.ts";
-import { z } from "../Synview-backend/deps.ts";
+import { z } from "npm:zod";
 
 export type UserPayload = z.infer<typeof UserPayloadSchema>;
 export type UserInfo = z.infer<typeof UserInfoSchema>;
