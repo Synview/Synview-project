@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Register } from "../Api_handler.ts";
+import { Register } from "../apiHandler.ts";
 import { z } from "zod";
 import { useState } from "react";
 

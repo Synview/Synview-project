@@ -1,3 +1,4 @@
+import {z} from 'zod'
 const url = import.meta.env.VITE_URL;
 type RegisterData = {
   username: string;
@@ -8,6 +9,13 @@ type LoginData = {
   password: string;
   email: string;
 };
+
+type UserInfo = z.infer<typeof UserInfoSchema>;
+  const UserInfoSchema = z.object({
+    username: z.string(),
+    role: z.string(),
+    id: z.number(),
+  });
 
 const Register = async (data: RegisterData) => {
   await fetch(`${url}/register`, {
@@ -34,10 +42,7 @@ const Login = async (data: LoginData) => {
       email: data.email,
       password: data.password,
     }),
-  }).then((response) => {
-    const data = [response.ok, response.headers.get("Authorization")];
-    return data;
-  });
+  }).then((response) => [response.ok, response.headers.get("Authorization")]);
   return responseData;
 };
 
@@ -53,8 +58,8 @@ const getPayload = async () => {
     return response;
   });
 
-  const body = response.json();
-  return body;
+  const body = await response.json();
+  return UserInfoSchema.parse(body);
 };
 
 export { Register, Login, getPayload };

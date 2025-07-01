@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Login } from "../Api_handler.ts";
+import { Login } from "../apiHandler.ts";
 import { z } from "zod";
 import { useState } from "react";
 
@@ -52,7 +52,7 @@ export default function LoginForm() {
               onChange={(e: ChangeEvent<any>) => {
                 setEmail(e.target.value);
               }}
-            ></input>
+            />
             <label>Password</label>
             <input
               className="input bg-stone-700 w-full"
