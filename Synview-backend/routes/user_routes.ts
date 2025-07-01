@@ -1,11 +1,10 @@
-import { withAccelerate, PrismaClient, Router, oakCors } from "../deps.ts";
+import { withAccelerate, PrismaClient, Router } from "../deps.ts";
 import { hash, bycryptVerify } from "../deps.ts";
 import {
   createToken,
   getPayload,
   getPayloadFromToken,
 } from "../middleware/auth_middleware.ts";
-import token from "../middleware/token.ts";
 import { Session } from "../deps.ts";
 
 import AuthMiddleware from "../middleware/auth_middleware.ts";
@@ -17,38 +16,21 @@ const UserRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
 export const EmailRegisterRequestSchema = z.object({
-  ["username"]: z.string(),
-  ["email"]: z.string().email(),
-  ["password"]: z.string(),
+  username: z.string(),
+  email: z.string().email(),
+  password: z.string(),
 });
 export const EmailLoginRequestSchema = z.object({
-  ["email"]: z.string().email(),
-  ["password"]: z.string(),
+  email: z.string().email(),
+  password: z.string(),
 });
 
-///
 
-// router.use(
-//   oakCors({
-//     origin: "*",
-//     methods: ["POST", "PUT", "DELETE", "GET"],
-//     allowedHeaders: ["Content-type", "Authorization"],
-//   })
-// );
-// unprotectedRouter.use(
-//   oakCors({
-//     origin: "*",
-//     methods: ["POST", "PUT", "DELETE", "GET"],
-//     allowedHeaders: ["Content-type", "Authorization"],
-//   })
-// );
 
 UserRouter
   .post("/register", async (context) => {
     const body = await context.request.body.json();
-    const parsedBody = EmailRegisterRequestSchema.parse(body);
-
-    const { username, email, password } = parsedBody;
+    const { username, email, password } = EmailRegisterRequestSchema.parse(body);
     try {
       if (!username || !email || !password) {
         context.response.status = 400;
@@ -60,13 +42,13 @@ UserRouter
 
       const existingUser = await prisma.user.findFirst({
         where: {
-          username: String(username),
+          username: username,
         },
       });
 
       const existingEmail = await prisma.user.findFirst({
         where: {
-          email: String(email),
+          email: email,
         },
       });
 
@@ -137,18 +119,12 @@ UserRouter
       };
 
       const access_token = await createToken(getPayload(userPayload));
-
-      context.response.status = 200;
       context.response.body = {
         message: "Login successfull!",
       };
 
       context.state.session.set("Authorization", `Bearer ${access_token}`);
-      context.response.headers.set("Authorization", `Bearer ${access_token}`)
-      // context.response.headers.set('Access-Control-Expose-Headers', 'Authorization');
-      console.log("this is login")
-      console.log(context.state.session.get("Authorization"))
-
+      context.response.headers.set("Authorization", `Bearer ${access_token}`);
     } catch (e) {
       context.response.status = 500;
       context.response.body = {

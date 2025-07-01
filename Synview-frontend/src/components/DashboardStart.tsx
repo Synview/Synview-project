@@ -1,9 +1,12 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import { getPayload, getMyProjects } from "../Api_handler.ts";
+import { useEffect } from "react";
+import { getPayload, getMyProjects } from "../apiHandler.ts";
 import { z } from "zod";
 import { useAppSelector, useAppDispatch } from "../hooks.ts";
 import { addUser } from "../slices/userSlice.ts";
+import { UserInfoSchema } from "../../../common/schemas.ts";
+
+
 import { addProject } from "../slices/projectSlice.ts";
 import NewProject from "./NewProject.tsx";
 
@@ -21,13 +24,7 @@ export default function DashboardStart() {
     doc_url: string;
     created_at: Date;
   }
-  type UserInfo = z.infer<typeof UserInfoSchema>;
-  const UserInfoSchema = z.object({
-    username: z.string(),
-    role: z.string(),
-    id: z.number(),
-  });
-
+  
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
   const projects = useAppSelector((state) => state.project);

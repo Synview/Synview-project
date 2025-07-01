@@ -5,9 +5,8 @@ import { Session } from "./deps.ts";
 type AppState = {
   session: Session;
 };
-// import { parse } from "node:path";
 
-const Mainrouter = new Router();
+const mainRouter = new Router();
 const app = new Application<AppState>();
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
@@ -31,8 +30,8 @@ app.use(UserRouter.allowedMethods());
 app.use(ProjectRouter.routes());
 app.use(ProjectRouter.allowedMethods());
 
-app.use(Mainrouter.routes());
-app.use(Mainrouter.allowedMethods());
+app.use(mainRouter.routes());
+app.use(mainRouter.allowedMethods());
 
 console.log(`Listening on port ${PORT}`);
 
