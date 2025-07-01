@@ -4,7 +4,7 @@ import { getPayload, getMyProjects } from "../apiHandler.ts";
 import { useAppSelector, useAppDispatch } from "../hooks.ts";
 import { addUser } from "../slices/userSlice.ts";
 import { UserInfoSchema } from "../../../common/schemas.ts";
-import type {UserInfo} from "../../../common/types.ts"
+import type { UserInfo } from "../../../common/types.ts";
 
 import { addProject } from "../slices/projectSlice.ts";
 import NewProject from "./NewProject.tsx";
@@ -23,21 +23,22 @@ export default function DashboardStart() {
     doc_url: string;
     created_at: Date;
   }
-  
+
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
   const projects = useAppSelector((state) => state.project);
   const getUserInfo = async () => {
-    const a: UserInfo = await getPayload();
     try {
+      const a: UserInfo = await getPayload();
+
       if (!a) {
         throw new Error("no payload");
       }
       dispatch(addUser(a));
+      return a;
     } catch (error) {
       throw new Error("error" + error);
     }
-    return a;
   };
   const getProjects = async (id: number) => {
     const MyProjects = await getMyProjects(id);
@@ -57,8 +58,6 @@ export default function DashboardStart() {
       getDashboardData();
     }
   }, []);
-
-  console.log(projects.projects);
 
   return (
     <div className=" justify-center items-center w-full p-10">

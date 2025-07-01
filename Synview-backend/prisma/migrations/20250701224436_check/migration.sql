@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Project" ALTER COLUMN "repo_url" DROP NOT NULL,
+ALTER COLUMN "doc_url" DROP NOT NULL;

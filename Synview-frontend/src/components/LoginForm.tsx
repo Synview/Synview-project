@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Login } from "../apiHandler.ts";
 import { useState } from "react";
 import { EmailLoginRequestSchema } from "../../../common/schemas.ts";
@@ -21,7 +21,6 @@ export default function LoginForm() {
       const TypeSafeData = EmailLoginRequestSchema.parse(formData);
       const data = await Login(TypeSafeData);
     
-      console.log(data)
       if (data[0]) {
         navigate("/dashboard");
       }

@@ -3,7 +3,7 @@
 
   "tasks": {
     "dev": "dotenv -- deno run -A ./index.ts",
-    "migrate": "deno run -A npm:prisma migrate dev --name init",
+    "migrate": "deno run -A npm:prisma migrate dev --name check",
     "studio": "deno run -A npm:prisma studio"
   },
   "imports": {

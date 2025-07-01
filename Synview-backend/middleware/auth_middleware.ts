@@ -2,6 +2,7 @@ import { create, verify, Context, decode } from "../deps.ts";
 import { generateKey, getToken } from "../utils/JWTHelpers.ts";
 import { Session } from "../deps.ts";
 import { UserPayloadSchema } from "../../common/schemas.ts";
+import {UserPayload} from "../../common/types.ts"
 let key: CryptoKey;
 type AppState = {
   session: Session;
@@ -11,7 +12,7 @@ export async function createToken(payload: any): Promise<string> {
   key = await generateKey();
   return create({ alg: "HS512", typ: "JWT" }, payload, key);
 }
-export function getPayload(body: any) {
+export function getPayload(body: UserPayload) {
   try {
     return UserPayloadSchema.parse(body);
   } catch (error) {
@@ -53,7 +54,7 @@ export function getPayloadFromToken(context: Context<AppState>) {
       return null;
     }
 
-    const [payload] = decode(token);
+    const [a, payload, b] = decode(token); // need to import all three because if not i dont get payload correctly
     if (!payload) {
       throw new Error("Couldn't get payload");
     }

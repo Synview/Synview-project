@@ -12,7 +12,7 @@ const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
 app.use(
   oakCors({
-    origin: "http://localhost:5174",
+    origin: "http://localhost:5173",
     credentials: true,
     methods: ["POST", "PUT", "DELETE", "GET"],
     allowedHeaders: [

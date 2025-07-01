@@ -45,6 +45,7 @@ const Login = async (data: LoginData) => {
 };
 
 const getPayload = async () => {
+  try{
   const response = await fetch(`${url}/getPayload`, {
     method: "GET",
     credentials: "include",
@@ -54,7 +55,10 @@ const getPayload = async () => {
   });
 
   const body = await response.json();
-  return UserInfoSchema.parse(body);
+  return  UserInfoSchema.parse(body);
+}catch(error){
+  throw new Error("Error: " + error)
+}
 };
 
 const getMyProjects = async (id: number) => {
@@ -63,7 +67,6 @@ const getMyProjects = async (id: number) => {
     credentials: "include",
     headers: headers
   }).then((response) => {
-    console.log(response)
     return response.json();
   });
   return MyProjects
