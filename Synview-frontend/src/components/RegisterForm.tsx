@@ -1,10 +1,12 @@
 import React, { ChangeEvent } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Register } from "../apiHandler.ts";
+import { Link, useNavigate } from "react-router-dom";
+import { Register } from "../services/apiHandler.ts";
 import { useState } from "react";
-import { EmailRegisterRequestSchema } from "../../../common/schemas.ts";
+import { useRegisterMutation } from "../services/apiSlice.ts";
 
 export default function LoginForm() {
+  const [register, { data, error, isLoading }] = useRegisterMutation();
+
   const navigate = useNavigate();
 
   const [username, setUserName] = useState("");
@@ -13,17 +15,16 @@ export default function LoginForm() {
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const formData = {
-      username: username,
-      email: email,
-      password: password,
-    };
-
-    const TypeSafeData = EmailRegisterRequestSchema.parse(formData);
-    await Register(TypeSafeData);
-
-    navigate("/login");
+    try {
+       await register({
+        username: username,
+        email: email,
+        password: password,
+      }).unwrap();
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

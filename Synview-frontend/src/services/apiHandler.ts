@@ -1,4 +1,4 @@
-import { UserInfoSchema } from '../../common/schemas.ts';
+import { UserInfoSchema } from '../../../common/schemas.ts';
 
 const url = import.meta.env.VITE_URL;
 const headers = {

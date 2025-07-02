@@ -1,35 +1,40 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Login } from "../apiHandler.ts";
 import { useState } from "react";
 import { EmailLoginRequestSchema } from "../../../common/schemas.ts";
+import { useGetPayloadQuery } from "../services/apiSlice.ts";
+import { addUser } from "../slices/userSlice.ts";
+import { useAppDispatch , useAppSelector} from "../hooks.ts";
+import { useLoginMutation } from "../services/apiSlice.ts";
 export default function LoginForm() {
+
+  const [login] = useLoginMutation();
+  const { data, error, isLoading } = useGetPayloadQuery();
+
   const navigate = useNavigate();
 
-  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [tryAgain, setTryAgain] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     try {
-      e.preventDefault();
-      const formData = {
+      const res = await login({
         email: email,
         password: password,
-      };
-      const TypeSafeData = EmailLoginRequestSchema.parse(formData);
-      const data = await Login(TypeSafeData);
-    
-      if (data[0]) {
+      }).unwrap();
+      if (res.token) {
         navigate("/dashboard");
       }
     } catch (error) {
       setTryAgain(true);
-      console.log(error);
+      console.error(error);
     }
   };
 
+ 
   return (
     <div className="w-[70%] max-h-[50%] flex justify-center border-1 border-neutral-600 bg-neutral-950 rounded-box p-4">
       <fieldset className="fieldset border-1 p-4 rounded-box border-neutral-600 bg-neutral-800">
@@ -59,7 +64,13 @@ export default function LoginForm() {
               }}
             ></input>
             <div className="flex justify-center items-center flex-col">
-              <button type="submit" className={`btn  ${tryAgain ? " tooltip tooltip-open tooltip-bottom" : ""} w-fit mt-2`} data-tip="Try again">
+              <button
+                type="submit"
+                className={`btn  ${
+                  tryAgain ? " tooltip tooltip-open tooltip-bottom" : ""
+                } w-fit mt-2`}
+                data-tip="Try again"
+              >
                 Login
               </button>
             </div>

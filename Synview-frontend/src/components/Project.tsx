@@ -1,14 +1,5 @@
 import React from "react";
-interface Project {
-  ProjectId: number;
-  title: string;
-  description: string;
-  owner_id: number;
-  repo_url: string;
-  doc_url: string;
-  created_at: Date;
-}
-
+import type { Project } from "../../../common/types.ts";
 
 export default function Project({ title, description }: Project) {
   return (

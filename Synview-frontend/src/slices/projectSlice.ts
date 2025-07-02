@@ -1,18 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type {PayloadAction} from "@reduxjs/toolkit";
+import type {Project, Projects} from '../../../common/types.ts'
 
-interface Project {
-  ProjectId: number;
-  title: string;
-  description: string;
-  owner_id: number;
-  repo_url: string;
-  doc_url: string;
-  created_at: Date;
-}
-interface Projects {
-  projects: Project[];
-}
 const initialState: Projects = {
   projects: [],
 };

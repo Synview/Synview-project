@@ -72,7 +72,7 @@ UserRouter
     await prisma.user.create({
       data: { username: username, email: email, passwordHash: hashedPassword },
     });
-    context.response.body = "New user created!";
+    context.response.body = {message : "New user created!"};
   })
   .post("/login", async (context) => {
     const body = await context.request.body.json();
@@ -120,7 +120,7 @@ UserRouter
 
       const access_token = await createToken(getPayload(userPayload));
       context.response.body = {
-        message: "Login successfull!",
+        token : access_token
       };
 
       context.state.session.set("Authorization", `Bearer ${access_token}`);

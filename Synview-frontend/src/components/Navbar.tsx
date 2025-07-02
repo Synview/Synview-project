@@ -1,8 +1,9 @@
 import React from "react";
 import { useAppSelector } from "../hooks.ts";
+import { useGetPayloadQuery } from "../services/apiSlice.ts";
 
 export default function Navbar() {
-  const user = useAppSelector((state) => state.user);
+  const { data, error, isLoading } = useGetPayloadQuery();
 
   return (
     <div className="navbar bg-neutral-800 p-4">
@@ -15,7 +16,7 @@ export default function Navbar() {
         </button>
       </div>
       <div className="navbar-end">
-        <p>{user.username}</p>
+        <p>{data?.username}</p>
         <p></p>
       </div>
     </div>
