@@ -1,15 +1,23 @@
-import { z } from "npm:zod";
+import { number, z } from "npm:zod";
 
- interface Project {
-    ProjectId: number;
-    title: string;
-    description: string;
-    owner_id: number;
-    repo_url?: string;
-    doc_url?: string;
-    created_at: Date;
-  }
-  
+export const ProjectSchema = z.object({
+  ProjectId: z.number(),
+  title: z.string(),
+  description: z.string(),
+  owner_id: z.number(),
+  repo_url: z.string().optional(),
+  doc_url: z.string().optional(),
+  created_at: z.date(),
+});
+
+export const PostProjectSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  owner_id: z.number(),
+  repo_url: z.string().optional(),
+  doc_url: z.string().optional(),
+});
+
 export const UserPayloadSchema = z.object({
   username: z.string(),
   role: z.string(),

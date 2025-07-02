@@ -4,6 +4,7 @@ import AuthMiddleware from "../middleware/auth_middleware.ts";
 type AppState = {
   session: Session;
 };
+import { PostProjectSchema } from "../../common/schemas.ts";
 const ProjectRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
@@ -25,7 +26,26 @@ ProjectRouter.get("/getMyProjects/:id", async (context) => {
     context.response.body = MyProjects;
   } catch (e) {
     context.response.body = {
-      error: "Error fetching projects"+ e,
+      error: "Error fetching projects" + e,
+    };
+  }
+}).post("/postProject", async (context) => {
+  try {
+    const Project = PostProjectSchema.parse(await context.request.body.json());
+    const newProject = await prisma.project.create({
+      data: Project,
+    });
+
+    await prisma.user_Project.create({
+      data: {
+        ProjectId: newProject.ProjectId,
+        UserId: newProject.owner_id,
+        role: "CREATOR",
+      },
+    });
+  } catch (error) {
+    context.response.body = {
+      error: "Error creating project: " + error,
     };
   }
 });

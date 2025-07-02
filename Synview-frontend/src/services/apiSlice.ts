@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type {
-  EmailRegisterRequestSchema,
-  EmailLoginRequestSchema,
-  LoginResponse,
-  UserInfo,
-  Projects
+import {
+  type EmailRegisterRequestSchema,
+  type EmailLoginRequestSchema,
+  type LoginResponse,
+  type UserInfo,
+  type Projects,
+  type PostProject,
 } from "../../../common/types.ts";
 const url = import.meta.env.VITE_URL;
 export const apiSlice = createApi({
@@ -13,6 +14,7 @@ export const apiSlice = createApi({
     baseUrl: url,
     credentials: "include",
   }),
+  tagTypes: ['Projects', 'User'],
   endpoints: (builder) => ({
     register: builder.mutation<void, EmailRegisterRequestSchema>({
       query: (newUser: EmailRegisterRequestSchema) => ({
@@ -30,6 +32,16 @@ export const apiSlice = createApi({
     }),
     getMyProjects: builder.query<Projects, number>({
       query: (id) => `getMyProjects/${id}`,
+      providesTags: ['Projects']
+    }),
+    postProject: builder.mutation<void, PostProject>({
+      query: (Project : PostProject) => ({
+        url : "postProject",
+        method: "POST",
+        body: Project,
+        
+      }),
+      invalidatesTags: ['Projects']
     }),
     getPayload: builder.query<UserInfo, void>({
       query: () => "getPayload",
@@ -42,4 +54,5 @@ export const {
   useLoginMutation,
   useGetMyProjectsQuery,
   useGetPayloadQuery,
+  usePostProjectMutation,
 } = apiSlice;

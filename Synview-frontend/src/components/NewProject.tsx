@@ -1,17 +1,33 @@
 import React, { ChangeEvent, useState } from "react";
+import {
+  useGetPayloadQuery,
+  usePostProjectMutation,
+} from "../services/apiSlice.ts";
 export default function NewProject() {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-
+  const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
+    undefined,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+  const [postProject, { data, error, isLoading }] = usePostProjectMutation();
   const handleNewProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    
-
-
-
-    setProjectDescription("")
-    setProjectName("")
+    try {
+      if (UserData?.id) {
+        await postProject({
+          description: projectDescription,
+          title: projectName,
+          owner_id: UserData?.id,
+        });
+        setProjectDescription("");
+        setProjectName("");
+      }
+    } catch (error) {
+      throw new Error("Couldn't create a project" + error);
+    }
   };
   return (
     <div>
@@ -33,7 +49,9 @@ export default function NewProject() {
       <div className="modal  text-black" role="dialog">
         <div className="modal-box bg-neutral-700 ">
           <form className=" flex flex-col gap-5" onSubmit={handleNewProject}>
-            <label className="text-whiteleucliduugrfjggrrubncbdfihthieih">Create your project!</label>
+            <label className="text-whiteleucliduugrfjggrrubncbdfihthieih">
+              Create your project!
+            </label>
             <input
               className="input w-full"
               typeof="text"
@@ -69,7 +87,7 @@ export default function NewProject() {
                 Create
               </button>
             </div>
-          </form>{" "}
+          </form>
         </div>
         <label className="modal-backdrop" htmlFor="my_modal_7"></label>
       </div>

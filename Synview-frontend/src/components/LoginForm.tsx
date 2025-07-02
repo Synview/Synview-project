@@ -1,15 +1,10 @@
 import React, { ChangeEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { EmailLoginRequestSchema } from "../../../common/schemas.ts";
-import { useGetPayloadQuery } from "../services/apiSlice.ts";
-import { addUser } from "../slices/userSlice.ts";
-import { useAppDispatch , useAppSelector} from "../hooks.ts";
 import { useLoginMutation } from "../services/apiSlice.ts";
 export default function LoginForm() {
 
   const [login] = useLoginMutation();
-  const { data, error, isLoading } = useGetPayloadQuery();
 
   const navigate = useNavigate();
 
