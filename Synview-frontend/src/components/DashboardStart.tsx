@@ -14,7 +14,9 @@ import {
 import NoProjects from "./NotFound/NoProjects.tsx";
 import Project from "./Project.tsx";
 export default function DashboardStart() {
-  const { data: UserData , isLoading: isUserLoading} = useGetPayloadQuery()
+  const { data: UserData , isLoading: isUserLoading} = useGetPayloadQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  })
 
   const { data, error, isLoading } = useGetMyProjectsQuery(UserData?.id ?? 0, {
     skip: !UserData?.id,
