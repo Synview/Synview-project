@@ -1,45 +1,32 @@
 import { create, verify, Context, decode } from "../deps.ts";
 import { z } from "zod";
-import getToken from "./jwt.ts";
-import { Session } from "../deps.ts"
-/// Token Auth
+import { generateKey, getToken } from "../utils/JWTHelpers.ts";
+import { Session } from "../deps.ts";
+import { UserPayloadSchema } from "../../common/schemas.ts";
 let key: CryptoKey;
 type AppState = {
-    session: Session
-}
-
-export const UserPayload = z.object({
-  ["username"]: z.string(),
-  ["role"]: z.string(),
-  ["id"]: z.number(),
-});
+  session: Session;
+};
 
 export async function createToken(payload: any): Promise<string> {
-  key = await crypto.subtle.generateKey(
-    { name: "HMAC", hash: "SHA-512" },
-    true,
-    ["sign", "verify"]
-  );
-
+  key = await generateKey();
   return create({ alg: "HS512", typ: "JWT" }, payload, key);
 }
 export function getPayload(body: any) {
   try {
-    const parsedBody = UserPayload.parse(body);
-    return { ...parsedBody };
+    return UserPayloadSchema.parse(body);
   } catch (error) {
     throw new Error("Couldnt parse User Payload" + error);
   }
 }
-
 export default async function AuthMiddleware(
   context: Context<AppState>,
   next: () => Promise<unknown>
 ) {
   try {
-    const auth = context.state.session.get("Authorization")
-    if(!auth){
-      throw new Error("No auth header")
+    const auth = context.state.session.get("Authorization");
+    if (!auth) {
+      throw new Error("No auth header");
     }
     const token = getToken(String(auth));
     if (!token) {
@@ -48,33 +35,32 @@ export default async function AuthMiddleware(
 
     const payload = await verify(token, key);
     if (!payload) {
-      throw new Error("No payload found");
+      throw new Error("No payload found - invalid token");
     }
+    context.response.headers.set("Authorization", `${auth}`);
     await next();
   } catch (err) {
     context.throw(401, "Unauthorized" + err);
   }
 }
-
-export function getPayloadFromToken(context: Context) {
+export function getPayloadFromToken(context: Context<AppState>) {
   try {
-    const headers = context.request.headers
-    const auth = headers.get("Authorization")
-    if(!auth){
+    const auth = context.state.session.get("Authorization");
+    if (!auth) {
       return null;
     }
-    const token = getToken(auth);
+    const token = getToken(String(auth));
     if (!token) {
       return null;
     }
 
-    const [header, payload, signature] = decode(token);
+    const [payload] = decode(token);
     if (!payload) {
       throw new Error("Couldn't get payload");
     }
     return payload;
   } catch (error) {
     context.throw(400, "Error in token" + error);
-    return null
+    return null;
   }
 }

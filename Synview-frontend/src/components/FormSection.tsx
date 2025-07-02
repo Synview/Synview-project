@@ -6,7 +6,7 @@ export default function FormSection() {
       <div className="flex justify-evenly  ">
         <p className="m-44 text-7xl w-96 text-start">This is the form section</p>
         <Form />
-        <img src=""></img>
+        <img></img>
       </div>
     </div>
   );
