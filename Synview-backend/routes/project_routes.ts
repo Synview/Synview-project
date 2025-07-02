@@ -5,49 +5,67 @@ type AppState = {
   session: Session;
 };
 import { PostProjectSchema } from "../../common/schemas.ts";
-const ProjectRouter = new Router<AppState>();
+const projectRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
-ProjectRouter.use(AuthMiddleware);
+projectRouter.use(AuthMiddleware);
 
-ProjectRouter.get("/getMyProjects/:id", async (context) => {
+projectRouter.get("/getProject/:id", async (context) => {
   const id = context.params.id;
   try {
-    const MyProjects = await prisma.project.findMany({
+    const Project = await prisma.project.findUnique({
       where: {
-        userProjects: {
-          some: {
-            UserId: parseInt(id),
-            role: "CREATOR",
-          },
-        },
+        ProjectId: parseInt(id),
       },
     });
-    context.response.body = MyProjects;
+    context.response.body = Project;
   } catch (e) {
     context.response.body = {
-      error: "Error fetching projects" + e,
+      error: `Error fetching project with id ${id}` + e,
     };
   }
-}).post("/postProject", async (context) => {
-  try {
-    const Project = PostProjectSchema.parse(await context.request.body.json());
-    const newProject = await prisma.project.create({
-      data: Project,
-    });
+})
+  .get("/getMyProjects/:id", async (context) => {
+    const id = context.params.id;
+    try {
+      const MyProjects = await prisma.project.findMany({
+        where: {
+          userProjects: {
+            some: {
+              UserId: parseInt(id),
+              role: "CREATOR",
+            },
+          },
+        },
+      });
+      context.response.body = MyProjects;
+    } catch (e) {
+      context.response.body = {
+        error: "Error fetching projects" + e,
+      };
+    }
+  })
+  .post("/postProject", async (context) => {
+    try {
+      const Project = PostProjectSchema.parse(
+        await context.request.body.json()
+      );
+      const newProject = await prisma.project.create({
+        data: Project,
+      });
 
-    await prisma.user_Project.create({
-      data: {
-        ProjectId: newProject.ProjectId,
-        UserId: newProject.owner_id,
-        role: "CREATOR",
-      },
-    });
-  } catch (error) {
-    context.response.body = {
-      error: "Error creating project: " + error,
-    };
-  }
-});
+      await prisma.user_Project.create({
+        data: {
+          ProjectId: newProject.ProjectId,
+          UserId: newProject.owner_id,
+          role: "CREATOR",
+        },
+      });
+    } catch (error) {
+      context.response.body = {
+        error: "Error creating project: " + error,
+      };
+    }
+  });
 
-export { ProjectRouter };
+export { projectRouter };
