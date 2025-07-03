@@ -48,7 +48,7 @@ UserRouter.post("/register", async (context) => {
       return;
     }
   } catch (error) {
-    context.response.status = 400;
+    context.response.status = 500;
     context.response.body = {
       error: error,
     };
@@ -103,7 +103,7 @@ UserRouter.post("/register", async (context) => {
     const userPayload = {
       username: user.username,
       role: user.role,
-      id: user.UserId,
+      id: user.user_id,
     };
 
     const access_token = await createToken(getPayload(userPayload));
@@ -116,8 +116,7 @@ UserRouter.post("/register", async (context) => {
   } catch (e) {
     context.response.status = 500;
     context.response.body = {
-      error: "Login went wrong",
-      e,
+      error: "Login went wrong" + e,
     };
     return;
   }

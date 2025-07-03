@@ -1,5 +1,17 @@
 import { z } from "npm:zod";
 
+export const QuestionSchema = z.object({
+  question_id: z.number(),
+  content: z.string(),
+  created_at: z.date(),
+  update_id: z.number(),
+  user_id: z.number(),
+});
+export const PostQuestionSchema = z.object({
+  content: z.string(),
+  update_id: z.number(),
+  user_id: z.number(),
+});
 export const ProjectSchema = z.object({
   ProjectId: z.number(),
   title: z.string(),
