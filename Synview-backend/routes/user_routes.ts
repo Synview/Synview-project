@@ -6,6 +6,7 @@ import {
   getPayloadFromToken,
 } from "../middleware/auth_middleware.ts";
 import { Session } from "../deps.ts";
+import { EmailLoginRequestSchema, EmailRegisterRequestSchema } from "../../common/schemas.ts";
 
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { z } from "zod";
@@ -14,18 +15,6 @@ type AppState = {
 };
 const UserRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
-
-export const EmailRegisterRequestSchema = z.object({
-  username: z.string(),
-  email: z.string().email(),
-  password: z.string(),
-});
-export const EmailLoginRequestSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-});
-
-
 
 UserRouter
   .post("/register", async (context) => {

@@ -1,5 +1,3 @@
-import { Context } from "../deps.ts";
-
 export async function generateKey() {
   return await crypto.subtle.generateKey(
     { name: "HMAC", hash: "SHA-512" },
