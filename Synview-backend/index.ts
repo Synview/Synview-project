@@ -3,8 +3,7 @@ import { oakCors } from "https://deno.land/x/cors/mod.ts";
 import { UserRouter } from "./routes/user_routes.ts";
 import { updateRouter } from "./routes/update_routes.ts";
 import { projectRouter } from "./routes/project_routes.ts";
-
-import { Session } from "./deps.ts";
+import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 type AppState = {
   session: Session;
 };
