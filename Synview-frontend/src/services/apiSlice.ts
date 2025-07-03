@@ -6,6 +6,9 @@ import {
   type UserInfo,
   type Projects,
   type PostProject,
+  type Project,
+  type Updates,
+  type PostUpdate,
 } from "../../../common/types.ts";
 const url = import.meta.env.VITE_URL;
 export const apiSlice = createApi({
@@ -14,7 +17,7 @@ export const apiSlice = createApi({
     baseUrl: url,
     credentials: "include",
   }),
-  tagTypes: ['Projects', 'User'],
+  tagTypes: ["Projects", "User", "Updates"],
   endpoints: (builder) => ({
     register: builder.mutation<void, EmailRegisterRequestSchema>({
       query: (newUser: EmailRegisterRequestSchema) => ({
@@ -32,16 +35,30 @@ export const apiSlice = createApi({
     }),
     getMyProjects: builder.query<Projects, number>({
       query: (id) => `getMyProjects/${id}`,
-      providesTags: ['Projects']
+      providesTags: ["Projects"],
+    }),
+    getProjectById: builder.query<Project, string>({
+      query: (id) => `getProject/${id}`,
     }),
     postProject: builder.mutation<void, PostProject>({
-      query: (Project : PostProject) => ({
-        url : "postProject",
+      query: (Project: PostProject) => ({
+        url: "postProject",
         method: "POST",
         body: Project,
-        
       }),
-      invalidatesTags: ['Projects']
+      invalidatesTags: ["Projects"],
+    }),
+    getMyUpdates: builder.query<Updates, string>({
+      query: (id) => `getMyUpdates/${id}`,
+      providesTags: ["Updates"],
+    }),
+    postUpdate: builder.mutation<void, PostUpdate>({
+      query: (Update: PostUpdate) => ({
+        url: "postUpdate",
+        method: "POST",
+        body: Update,
+      }),
+      invalidatesTags: ["Updates"],
     }),
     getPayload: builder.query<UserInfo, void>({
       query: () => "getPayload",
@@ -55,4 +72,7 @@ export const {
   useGetMyProjectsQuery,
   useGetPayloadQuery,
   usePostProjectMutation,
+  useGetProjectByIdQuery,
+  useGetMyUpdatesQuery,
+  usePostUpdateMutation,
 } = apiSlice;

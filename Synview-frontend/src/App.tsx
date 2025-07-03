@@ -6,6 +6,7 @@ import React from "react";
 import "./App.css";
 import Dashboard from "./components/Dashboard.tsx";
 import DashboardStart from "./components/DashboardStart.tsx";
+import ProjectView from "./components/ProjectView.tsx";
 
 function App() {
   return (
@@ -14,9 +15,12 @@ function App() {
         <Route path="/" element={<Landing />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/dashboard" element={<Dashboard />}>
-          <Route path="/dashboard/" element={<DashboardStart />}></Route>
+          <Route path="/dashboard/" element={<DashboardStart />} />
+          <Route path="/dashboard/project/:id" element={<ProjectView />} />
         </Route>
-        <Route path="*" element={<NotFound/>}> </Route>
+        <Route path="*" element={<NotFound />}>
+          {" "}
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -1,7 +1,8 @@
 import React from "react";
 import type { Project } from "../../../common/types.ts";
+import { Link } from "react-router-dom";
 
-export default function Project({ title, description }: Project) {
+export default function Project({ title, description, ProjectId }: Project) {
   return (
     <div className="card bg-neutral-800 shadow-sm h-[310px]">
       <figure>
@@ -13,7 +14,7 @@ export default function Project({ title, description }: Project) {
         <p>{}</p>
         <div className="card-actions justify-end">
           <button type="button" className="btn">
-            Enter
+            <Link to={`/dashboard/project/${ProjectId}`}>View project</Link>
           </button>
         </div>
       </div>

@@ -1,19 +1,24 @@
 import React from "react";
 import { useAppSelector } from "../hooks.ts";
-import { useGetPayloadQuery } from "../services/apiSlice.ts";
-
+import {
+  useGetPayloadQuery,
+  useGetProjectByIdQuery,
+} from "../services/apiSlice.ts";
+import Drawer from "./Drawer.tsx";
+import { useParams } from "react-router-dom";
 export default function Navbar() {
   const { data, error, isLoading } = useGetPayloadQuery();
+  const { id } = useParams();
+
+  const { data: ProjectData } = useGetProjectByIdQuery(id ?? "", {
+    skip: !id,
+  });
 
   return (
     <div className="navbar bg-neutral-800 p-4">
       <div className="navbar-start">
-        <button type="button" className="btn btn-square p-2 bg-black">
-          {/*Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.*/}
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z" />
-          </svg>
-        </button>
+        <Drawer />
+        <h4 className="pl-20">{id && ProjectData?.title}</h4>
       </div>
       <div className="navbar-end">
         <p>{data?.username}</p>
