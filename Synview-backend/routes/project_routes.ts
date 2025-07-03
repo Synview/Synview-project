@@ -13,21 +13,22 @@ const prisma = new PrismaClient().$extends(withAccelerate());
 
 projectRouter.use(AuthMiddleware);
 
-projectRouter.get("/getProject/:id", async (context) => {
-  const id = context.params.id;
-  try {
-    const Project = await prisma.project.findUnique({
-      where: {
-        ProjectId: parseInt(id),
-      },
-    });
-    context.response.body = Project;
-  } catch (e) {
-    context.response.body = {
-      error: `Error fetching project with id ${id}` + e,
-    };
-  }
-})
+projectRouter
+  .get("/getProject/:id", async (context) => {
+    const id = context.params.id;
+    try {
+      const Project = await prisma.project.findUnique({
+        where: {
+          ProjectId: parseInt(id),
+        },
+      });
+      context.response.body = Project;
+    } catch (e) {
+      context.response.body = {
+        error: `Error fetching project with id ${id}` + e,
+      };
+    }
+  })
   .get("/getMyProjects/:id", async (context) => {
     const id = context.params.id;
     try {
@@ -43,6 +44,7 @@ projectRouter.get("/getProject/:id", async (context) => {
       });
       context.response.body = MyProjects;
     } catch (e) {
+      context.response.status = 500
       context.response.body = {
         error: "Error fetching projects" + e,
       };
@@ -64,7 +66,12 @@ projectRouter.get("/getProject/:id", async (context) => {
           role: "CREATOR",
         },
       });
+      context.response.status = 201;
+      context.response.body = {
+        message: "New project created!"
+      };
     } catch (error) {
+      context.response.status = 500;
       context.response.body = {
         error: "Error creating project: " + error,
       };
