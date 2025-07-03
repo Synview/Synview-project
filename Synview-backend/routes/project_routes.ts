@@ -1,6 +1,9 @@
-import { withAccelerate, PrismaClient, Router } from "../deps.ts";
-import { Session } from "../deps.ts";
+import { PrismaClient } from "../generated/prisma/client.ts";
+import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
+import { withAccelerate } from "@prisma/extension-accelerate";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
+import { Router } from "@oak/oak";
+
 type AppState = {
   session: Session;
 };
