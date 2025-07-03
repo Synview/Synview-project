@@ -17,7 +17,6 @@ export default function Navbar() {
       </div>
       <div className="navbar-end">
         <p>{data?.username}</p>
-        <p></p>
       </div>
     </div>
   );
