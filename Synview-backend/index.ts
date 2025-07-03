@@ -2,6 +2,7 @@ import { Application, Router, oakCors } from "./deps.ts";
 import { UserRouter } from "./routes/user_routes.ts";
 import { updateRouter } from './routes/update_routes.ts'
 import { projectRouter} from './routes/project_routes.ts'
+
 import { Session } from "./deps.ts";
 type AppState = {
   session: Session;
@@ -13,7 +14,7 @@ const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
 app.use(
   oakCors({
-    origin: "http://localhost:5173",
+    origin: env.DEVURL,
     credentials: true,
     methods: ["POST", "PUT", "DELETE", "GET"],
     allowedHeaders: [
