@@ -24,7 +24,7 @@ export default function NewUpdate() {
         setTextUpdate("");
       }
     } catch (error) {
-      throw new Error("Couldn't create a project" + error);
+      throw new Error("Couldn't create an Update" + error);
     }
   };
 
