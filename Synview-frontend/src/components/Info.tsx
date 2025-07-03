@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Info() {
   return (
-    <div className="h-screen bg-stone-950 flex flex-col p-32 ">
+    <div className="h-screen bg-neutral-950 flex flex-col p-32 ">
       <div className="items-start mb-10">
         <p className="text-start text-8xl ">This is the Info section</p>
       </div>

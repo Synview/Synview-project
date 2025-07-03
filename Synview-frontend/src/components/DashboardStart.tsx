@@ -1,43 +1,45 @@
-import React from "react";
-import { useEffect } from "react";
-import { getPayload } from "../apiHandler.ts";
-import { z } from "zod";
-import { useAppSelector, useAppDispatch } from "../hooks.ts";
-import { addUser } from "../slices/userSlice.ts";
-import { UserInfoSchema } from "../../../common/schemas.ts";
+import React, { useEffect } from "react";
 
+import NewProject from "./NewProject.tsx";
+import {
+  useGetMyProjectsQuery,
+  useGetPayloadQuery,
+} from "../services/apiSlice.ts";
 
+import NoProjects from "./HelperComponents/NoProjects.tsx";
+import Project from "./Project.tsx";
 export default function DashboardStart() {
-  
-  const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user);
-
-  const getUserInfo = async () => {
-    let a = await getPayload();
-    try {
-      if (!a) {
-        throw new Error("no payload");
-      }
-      a = UserInfoSchema.parse(a); // <--- For some reason this line isn't necessary but im afraid to remove it
-
-      dispatch(addUser(a));
-    } catch (error) {
-      throw new Error("error" + error);
+  const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
+    undefined,
+    {
+      refetchOnMountOrArgChange: true,
     }
-  };
+  );
 
-  useEffect(() => {
-    getUserInfo();
-  }, []);
+  const { data, error, isLoading } = useGetMyProjectsQuery(UserData?.id ?? 0, {
+    skip: !UserData?.id,
+  });
 
+  if (isLoading) {
+    return <div>perate</div>;
+  }
   return (
-    <div className="flex flex-col justify-center items-center flex-1">
-      <p className="text-5xl mb-20">
-        Get started on your first proyect {user.username}
-      </p>
-      <button type="button" className="btn">
-        Create new project
-      </button>
+    <div className=" justify-center items-center w-full p-10">
+      <div className="grid justify-center grid-cols-[repeat(auto-fill,_300px)] gap-10 ">
+        <NewProject />
+
+        {data ? (
+          data.map((project) => {
+            return (
+              <div key={project.ProjectId}>
+                <Project {...project} />
+              </div>
+            );
+          })
+        ) : (
+          <NoProjects />
+        )}
+      </div>
     </div>
   );
 }
