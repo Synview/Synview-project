@@ -13,10 +13,10 @@ import AuthMiddleware from "../middleware/auth_middleware.ts";
 type AppState = {
   session: Session;
 };
-const UserRouter = new Router<AppState>();
+const userRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
-UserRouter.post("/register", async (context) => {
+userRouter.post("/register", async (context) => {
   const body = await context.request.body.json();
   const { username, email, password } = EmailRegisterRequestSchema.parse(body);
   try {
@@ -122,12 +122,11 @@ UserRouter.post("/register", async (context) => {
   }
 });
 
-UserRouter.use(AuthMiddleware);
-// router.use(token);
+userRouter.use(AuthMiddleware);
 
-UserRouter.get("/getPayload", (context) => {
+userRouter.get("/getPayload", (context) => {
   const payload = getPayloadFromToken(context);
   context.response.body = payload;
 });
 
-export { UserRouter };
+export { userRouter };

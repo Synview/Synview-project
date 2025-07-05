@@ -15,21 +15,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  user_id           Int                 @id @default(autoincrement())
-  username          String
-  email             String
-  passwordHash      String
-  created_at        DateTime            @default(now())
-  role              Role                @default(USER)
-  projects          user_project[]      @relation()
-  update            update[]
-  comment           comment[]
-  question          question[]
-  question_response question_response[]
+model users {
+  user_id            Int                  @id @default(autoincrement())
+  username           String
+  email              String
+  passwordHash       String
+  created_at         DateTime             @default(now())
+  role               Roles                @default(USER)
+  projects           user_projects[]      
 }
 
-model project {
+model projects {
   project_id  Int      @id @default(autoincrement())
   title       String
   description String
@@ -38,39 +34,38 @@ model project {
   doc_url     String?
   created_at  DateTime @default(now())
 
-  user_projects user_project[] @relation() // Think on how would i give access to add changes only on the owner_id
-  update        update[]       @relation()
-  goal          goal[]
+  user_projects user_projects[] 
+  updates       updates[]      
+  goals         goals[]
 }
 
-model user_project {
+model user_projects {
   user_project Int          @id @default(autoincrement())
   project_id   Int
   user_id      Int
   role         ProjectRoles
-  user         user         @relation(fields: [user_id], references: [user_id])
-  project      project      @relation(fields: [project_id], references: [project_id])
+  users        users        @relation(fields: [user_id], references: [user_id])
+  projects     projects     @relation(fields: [project_id], references: [project_id])
   created_at   DateTime     @default(now())
 
   @@unique([user_id, project_id])
 }
 
-model update {
+model updates {
   update_id    Int      @id @default(autoincrement())
-  comments     String
+  description  String
   summary      String?
   code_changes String?
   created_at   DateTime @default(now())
   user_id      Int
   project_id   Int
 
-  user     user       @relation(fields: [user_id], references: [user_id])
-  project  project    @relation(fields: [project_id], references: [project_id])
-  comment  comment[]
-  question question[] @relation()
+  project   projects    @relation(fields: [project_id], references: [project_id])
+  comments  comments[]
+  questions questions[]
 }
 
-model comment {
+model comments {
   comment_id Int @id @default(autoincrement())
 
   content    String
@@ -78,42 +73,39 @@ model comment {
   update_id  Int
   user_id    Int
 
-  user   user   @relation(fields: [user_id], references: [user_id])
-  update update @relation(fields: [update_id], references: [update_id])
+  updates updates @relation(fields: [update_id], references: [update_id])
 }
 
-model question {
+model questions {
   question_id Int      @id @default(autoincrement())
   content     String
   created_at  DateTime @default(now())
   update_id   Int
   user_id     Int
 
-  user              user                @relation(fields: [user_id], references: [user_id])
-  update            update              @relation(fields: [update_id], references: [update_id])
-  question_response question_response[]
+  updates            updates              @relation(fields: [update_id], references: [update_id])
+  question_responses question_responses[]
 }
 
-model question_response {
-  question_response_id Int      @id @default(autoincrement())
+model question_responses {
+  question_response_id Int       @id @default(autoincrement())
   content              String
-  created_at           DateTime @default(now())
+  created_at           DateTime  @default(now())
   question_id          Int
   user_id              Int
-  user                 user     @relation(fields: [user_id], references: [user_id])
-  question             question @relation(fields: [question_id], references: [question_id])
+  questions            questions @relation(fields: [question_id], references: [question_id])
 }
 
-model goal {
+model goals {
   goal_id    Int      @id @default(autoincrement())
   title      String
   due_date   DateTime
   status     Status   @default(PENDING)
   project_id Int
-  project    project  @relation(fields: [project_id], references: [project_id])
+  projects   projects @relation(fields: [project_id], references: [project_id])
 }
 
-enum Role {
+enum Roles {
   USER
   MENTOR
 }
