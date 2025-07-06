@@ -16,13 +16,15 @@ datasource db {
 }
 
 model users {
-  user_id            Int                  @id @default(autoincrement())
-  username           String
-  email              String
-  passwordHash       String
-  created_at         DateTime             @default(now())
-  role               Roles                @default(USER)
-  projects           user_projects[]      
+  user_id              Int                  @id @default(autoincrement())
+  username             String
+  email                String
+  passwordHash         String
+  created_at           DateTime             @default(now())
+  role                 Roles                @default(USER)
+  projects             user_projects[]
+  sent_invitations     project_invitation[] @relation("InvitingUser")
+  recieved_invitations project_invitation[] @relation("InvitedUser")
 }
 
 model projects {
@@ -34,9 +36,10 @@ model projects {
   doc_url     String?
   created_at  DateTime @default(now())
 
-  user_projects user_projects[] 
-  updates       updates[]      
-  goals         goals[]
+  user_projects      user_projects[]
+  updates            updates[]
+  goals              goals[]
+  project_invitation project_invitation[]
 }
 
 model user_projects {
@@ -105,6 +108,21 @@ model goals {
   projects   projects @relation(fields: [project_id], references: [project_id])
 }
 
+model project_invitation {
+  project_invitation_id Int               @id @default(autoincrement())
+  invited_project_id    Int
+  invited_user_id       Int
+  inviting_user_id      Int
+  invited_at            DateTime          @default(now())
+  accepted_at           DateTime
+  role                  ProjectRoles
+  status                invitation_status
+
+  project       projects @relation(fields: [invited_project_id], references: [project_id])
+  inviting_user users    @relation("InvitingUser", fields: [inviting_user_id], references: [user_id])
+  invited_user  users    @relation("InvitedUser", fields: [invited_user_id], references: [user_id])
+}
+
 enum Roles {
   USER
   MENTOR
@@ -114,6 +132,11 @@ enum ProjectRoles {
   CREATOR
   VIEWER
   REVIEWER
+}
+
+enum invitation_status {
+  PENDING
+  COMPLETE
 }
 
 enum Status {

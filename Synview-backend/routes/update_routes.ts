@@ -17,9 +17,9 @@ updateRouter
   .get("/getMyUpdates/:id", async (context) => {
     const id = context.params.id;
     try {
-      const MyUpdates = await prisma.update.findMany({
+      const MyUpdates = await prisma.updates.findMany({
         where: {
-          ProjectId: parseInt(id),
+          project_id: parseInt(id),
         },
       });
       context.response.body = MyUpdates;
@@ -34,7 +34,7 @@ updateRouter
       const newUpdate = PostUpdateSchema.parse(
         await context.request.body.json()
       );
-      await prisma.update.create({
+      await prisma.updates.create({
         data: newUpdate,
       });
       context.response.status = 201;
@@ -47,6 +47,9 @@ updateRouter
         error: "Error creating update: " + error,
       };
     }
+  })
+  .post("", async (context) => {
+    
   });
 
 export { updateRouter };

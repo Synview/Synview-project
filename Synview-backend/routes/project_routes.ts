@@ -17,9 +17,9 @@ projectRouter
   .get("/getProject/:id", async (context) => {
     const id = context.params.id;
     try {
-      const Project = await prisma.project.findUnique({
+      const Project = await prisma.projects.findUnique({
         where: {
-          ProjectId: parseInt(id),
+          project_id: parseInt(id),
         },
       });
       context.response.body = Project;
@@ -32,11 +32,11 @@ projectRouter
   .get("/getMyProjects/:id", async (context) => {
     const id = context.params.id;
     try {
-      const MyProjects = await prisma.project.findMany({
+      const MyProjects = await prisma.projects.findMany({
         where: {
-          userProjects: {
+          user_projects: {
             some: {
-              UserId: parseInt(id),
+              user_id: parseInt(id),
               role: "CREATOR",
             },
           },
@@ -44,7 +44,7 @@ projectRouter
       });
       context.response.body = MyProjects;
     } catch (e) {
-      context.response.status = 500
+      context.response.status = 500;
       context.response.body = {
         error: "Error fetching projects" + e,
       };
@@ -55,20 +55,20 @@ projectRouter
       const Project = PostProjectSchema.parse(
         await context.request.body.json()
       );
-      const newProject = await prisma.project.create({
+      const newProject = await prisma.projects.create({
         data: Project,
       });
 
-      await prisma.user_Project.create({
+      await prisma.user_projects.create({
         data: {
-          ProjectId: newProject.ProjectId,
-          UserId: newProject.owner_id,
+          project_id: newProject.project_id,
+          user_id: newProject.owner_id,
           role: "CREATOR",
         },
       });
       context.response.status = 201;
       context.response.body = {
-        message: "New project created!"
+        message: "New project created!",
       };
     } catch (error) {
       context.response.status = 500;
@@ -76,6 +76,14 @@ projectRouter
         error: "Error creating project: " + error,
       };
     }
+  })
+  .post("/inviteUser/:id", async (context) => {
+    try {
+    } catch (error) {}
+  })
+  .post("/acceptInvitation/:id", async (context) => {
+    try {
+    } catch (error) {}
   });
 
 export { projectRouter };

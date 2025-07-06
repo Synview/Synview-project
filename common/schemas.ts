@@ -23,9 +23,9 @@ export const ProjectSchema = z.object({
 });
 
 export const PostUpdateSchema = z.object({
-  Comments: z.string(),
-  UserId: z.number(),
-  ProjectId: z.number(),
+  description: z.string(),
+  user_id: z.number(),
+  project_id: z.number(),
 });
 
 export const UpdateSchema = z.object({
