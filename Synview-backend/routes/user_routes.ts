@@ -13,10 +13,10 @@ import AuthMiddleware from "../middleware/auth_middleware.ts";
 type AppState = {
   session: Session;
 };
-const UserRouter = new Router<AppState>();
+const userRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
-UserRouter.post("/register", async (context) => {
+userRouter.post("/register", async (context) => {
   const body = await context.request.body.json();
   const { username, email, password } = EmailRegisterRequestSchema.parse(body);
   try {
@@ -48,7 +48,7 @@ UserRouter.post("/register", async (context) => {
       return;
     }
   } catch (error) {
-    context.response.status = 400;
+    context.response.status = 500;
     context.response.body = {
       error: error,
     };
@@ -103,7 +103,7 @@ UserRouter.post("/register", async (context) => {
     const userPayload = {
       username: user.username,
       role: user.role,
-      id: user.UserId,
+      id: user.user_id,
     };
 
     const access_token = await createToken(getPayload(userPayload));
@@ -116,19 +116,17 @@ UserRouter.post("/register", async (context) => {
   } catch (e) {
     context.response.status = 500;
     context.response.body = {
-      error: "Login went wrong",
-      e,
+      error: "Login went wrong" + e,
     };
     return;
   }
 });
 
-UserRouter.use(AuthMiddleware);
-// router.use(token);
+userRouter.use(AuthMiddleware);
 
-UserRouter.get("/getPayload", (context) => {
+userRouter.get("/getPayload", (context) => {
   const payload = getPayloadFromToken(context);
   context.response.body = payload;
 });
 
-export { UserRouter };
+export { userRouter };
