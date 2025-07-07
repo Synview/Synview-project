@@ -6,20 +6,21 @@ import { Router } from "@oak/oak";
 import { GithubInfoSchema } from "../../common/schemas.ts";
 import { Octokit } from "npm:@octokit/rest";
 import { Page } from "https://deno.land/x/mongo@v0.31.2/src/utils/saslprep/memory_pager.ts";
-
+const env = Deno.env.toObject();
 type AppState = {
   session: Session;
 };
-const octokit = new Octokit();
+const GitHubToken = env.GITHUB_TOKEN;
+const octokit = new Octokit({
+  auth: GitHubToken,
+});
 const githubRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
 githubRouter.use(AuthMiddleware);
 
 githubRouter
-  .post("/suncCommitsHook" , async(context)=> {
-
-  })
+  .post("/suncCommitsHook", async (context) => {})
   .post("/syncCommits", async (context) => {
     try {
       const GithubInfo = GithubInfoSchema.parse(
@@ -46,6 +47,11 @@ githubRouter
           project_id: GithubInfo.project_id,
           user_id: GithubInfo.user_id,
         };
+      });
+
+      await prisma.projects.update({
+        where: { project_id: GithubInfo.project_id },
+        data: { repo_url: GithubInfo.repo_name },
       });
 
       await prisma.updates.createMany({
