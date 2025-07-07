@@ -48,7 +48,7 @@ export const PostQuestionSchema = z.object({
   user_id: z.number(),
 });
 export const ProjectSchema = z.object({
-  ProjectId: z.number(),
+  project_id: z.number(),
   title: z.string(),
   description: z.string(),
   owner_id: z.number(),
@@ -65,7 +65,7 @@ export const PostUpdateSchema = z.object({
 
 export const UpdateSchema = z.object({
   UpdateId: z.number(),
-  Comments: z.string(),
+  description: z.string(),
   summary: z.string().optional(),
   code_changes: z.string().optional(),
   created_at: z.date(),

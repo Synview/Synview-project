@@ -31,7 +31,7 @@ export default function DashboardStart() {
         {data ? (
           data.map((project) => {
             return (
-              <div key={project.ProjectId}>
+              <div key={project.project_id}>
                 <Project {...project} />
               </div>
             );
