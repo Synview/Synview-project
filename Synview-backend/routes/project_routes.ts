@@ -46,7 +46,28 @@ projectRouter
     } catch (e) {
       context.response.status = 500;
       context.response.body = {
-        error: "Error fetching projects" + e,
+        error: "Error fetching created projects" + e,
+      };
+    }
+  })
+  .get("/reviewingProjects/:id", async (context) => {
+    const id = context.params.id;
+    try {
+      const MyReviewingProjects = await prisma.projects.findMany({
+        where: {
+          user_projects: {
+            some: {
+              user_id: parseInt(id),
+              role: "REVIEWER",
+            },
+          },
+        },
+      });
+      context.response.body = MyReviewingProjects;
+    } catch (e) {
+      context.response.status = 500;
+      context.response.body = {
+        error: "Error fetching ReviewingProjects" + e,
       };
     }
   })
@@ -76,14 +97,6 @@ projectRouter
         error: "Error creating project: " + error,
       };
     }
-  })
-  .post("/inviteUser/:id", async (context) => {
-    try {
-    } catch (error) {}
-  })
-  .post("/acceptInvitation/:id", async (context) => {
-    try {
-    } catch (error) {}
   });
 
 export { projectRouter };

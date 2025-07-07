@@ -114,9 +114,9 @@ model project_invitation {
   invited_user_id       Int
   inviting_user_id      Int
   invited_at            DateTime          @default(now())
-  accepted_at           DateTime
+  accepted_at           DateTime?
   role                  ProjectRoles
-  status                invitation_status
+  status                invitation_status @default(PENDING)
 
   project       projects @relation(fields: [invited_project_id], references: [project_id])
   inviting_user users    @relation("InvitingUser", fields: [inviting_user_id], references: [user_id])

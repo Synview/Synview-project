@@ -10,6 +10,8 @@ import {
   PostUpdateSchema,
   PostQuestionSchema,
   QuestionSchema,
+  PostInvitationSchema,
+  InvitationSchema,
 } from "./schemas.ts";
 import { z } from "npm:zod";
 
@@ -17,6 +19,8 @@ export type AppState = { session: Session };
 export type Projects = Project[];
 export type Updates = Update[];
 
+export type Invitation = z.infer<typeof InvitationSchema> 
+export type PostInvitaion = z.infer<typeof PostInvitationSchema>;
 export type PostQuestion = z.infer<typeof PostQuestionSchema>;
 export type Question = z.infer<typeof QuestionSchema>;
 export type PostUpdate = z.infer<typeof PostUpdateSchema>;
