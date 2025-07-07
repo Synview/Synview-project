@@ -7,7 +7,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
-  runtime = "deno"
+  runtime  = "deno"
 }
 
 datasource db {
@@ -34,23 +34,26 @@ model Project {
   title       String
   description String
   owner_id    Int
-  repo_url    String
-  doc_url     String
+  repo_url    String?
+  doc_url     String?
   created_at  DateTime @default(now())
 
-  User     User_Project[] @relation() // Think on how would i give access to add changes only on the owner_id
+  userProjects     User_Project[] @relation() // Think on how would i give access to add changes only on the owner_id
   Update   Update[]       @relation()
   Question Question[]     @relation()
   Goal     Goal[]
 }
 
 model User_Project {
-  ProjectId Int
-  UserId    Int
-  User      User    @relation(fields: [UserId], references: [UserId])
-  Project   Project @relation(fields: [ProjectId], references: [ProjectId])
+  User_Project Int          @id @default(autoincrement())
+  ProjectId    Int
+  UserId       Int
+  role         ProjectRoles
+  User         User         @relation(fields: [UserId], references: [UserId])
+  Project      Project      @relation(fields: [ProjectId], references: [ProjectId])
+  created_at   DateTime     @default(now())
 
-  @@id([UserId, ProjectId])
+  @@unique([UserId, ProjectId])
 }
 
 model Update {
@@ -107,7 +110,7 @@ model Goal {
   due_date  DateTime
   status    Status   @default(PENDING)
   ProjectId Int
-  Project Project @relation(fields: [ProjectId], references: [ProjectId])
+  Project   Project  @relation(fields: [ProjectId], references: [ProjectId])
 }
 
 model Notification {
@@ -117,6 +120,12 @@ model Notification {
 enum Role {
   USER
   MENTOR
+}
+
+enum ProjectRoles {
+  CREATOR
+  VIEWER
+  REVIEWER
 }
 
 enum Status {

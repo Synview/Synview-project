@@ -1,5 +1,10 @@
-import {z} from 'zod'
+import { UserInfoSchema } from '../../../common/schemas.ts';
+
 const url = import.meta.env.VITE_URL;
+const headers = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+};
 type RegisterData = {
   username: string;
   email: string;
@@ -9,13 +14,6 @@ type LoginData = {
   password: string;
   email: string;
 };
-
-type UserInfo = z.infer<typeof UserInfoSchema>;
-  const UserInfoSchema = z.object({
-    username: z.string(),
-    role: z.string(),
-    id: z.number(),
-  });
 
 const Register = async (data: RegisterData) => {
   await fetch(`${url}/register`, {
@@ -47,19 +45,31 @@ const Login = async (data: LoginData) => {
 };
 
 const getPayload = async () => {
+  try{
   const response = await fetch(`${url}/getPayload`, {
     method: "GET",
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
+    headers: headers,
   }).then((response) => {
     return response;
   });
 
   const body = await response.json();
-  return UserInfoSchema.parse(body);
+  return  UserInfoSchema.parse(body);
+}catch(error){
+  throw new Error("Error: " + error)
+}
 };
 
-export { Register, Login, getPayload };
+const getMyProjects = async (id: number) => {
+  const MyProjects = await fetch(`${url}/getMyProjects/${id}`, {
+    method: "GET",
+    credentials: "include",
+    headers: headers
+  }).then((response) => {
+    return response.json();
+  });
+  return MyProjects
+};
+
+export { Register, Login, getPayload, getMyProjects };

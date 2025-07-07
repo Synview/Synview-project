@@ -1,11 +1,12 @@
 import React from "react";
 import { useAppSelector } from "../hooks.ts";
+import { useGetPayloadQuery } from "../services/apiSlice.ts";
 
 export default function Navbar() {
-  const user = useAppSelector((state) => state.user);
+  const { data, error, isLoading } = useGetPayloadQuery();
 
   return (
-    <div className="navbar bg-stone-800 p-4">
+    <div className="navbar bg-neutral-800 p-4">
       <div className="navbar-start">
         <button type="button" className="btn btn-square p-2 bg-black">
           {/*Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.*/}
@@ -15,8 +16,7 @@ export default function Navbar() {
         </button>
       </div>
       <div className="navbar-end">
-        <p>{user.username}</p>
-        <p></p>
+        <p>{data?.username}</p>
       </div>
     </div>
   );

@@ -1,18 +1,21 @@
-import {createSlice} from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
+import type {PayloadAction} from "@reduxjs/toolkit";
+import type {Project, Projects} from '../../../common/types.ts'
 
-interface ProjectSlice{
- 
-}
-const initialState : ProjectSlice = {
-    projects : []
-}
+const initialState: Projects = {
+  projects: [],
+};
 
 export const projectSlice = createSlice({
   name: "project",
   initialState,
-  reducers : {
-    
-  }
-})
+  reducers: {
+    addProject: (state, action: PayloadAction<Project>) => {
+      state.projects.push(action.payload);
+    },
+  },
+});
 
-export const {} = projectSlice.actions
+export const { addProject } = projectSlice.actions;
+
+export default projectSlice.reducer

@@ -1,18 +1,17 @@
-import { create, verify, Context, decode } from "../deps.ts";
-import { z } from "zod";
+import {create, verify} from "@zaubrik/djwt";
 import { generateKey, getToken } from "../utils/JWTHelpers.ts";
-import { Session } from "../deps.ts";
 import { UserPayloadSchema } from "../../common/schemas.ts";
+import {UserPayload} from "../../common/types.ts"
+import { AppState } from "../../common/types.ts";
+import {Context} from "@oak/oak"
 let key: CryptoKey;
-type AppState = {
-  session: Session;
-};
+
 
 export async function createToken(payload: any): Promise<string> {
   key = await generateKey();
   return create({ alg: "HS512", typ: "JWT" }, payload, key);
 }
-export function getPayload(body: any) {
+export function getPayload(body: UserPayload) {
   try {
     return UserPayloadSchema.parse(body);
   } catch (error) {
@@ -43,24 +42,4 @@ export default async function AuthMiddleware(
     context.throw(401, "Unauthorized" + err);
   }
 }
-export function getPayloadFromToken(context: Context<AppState>) {
-  try {
-    const auth = context.state.session.get("Authorization");
-    if (!auth) {
-      return null;
-    }
-    const token = getToken(String(auth));
-    if (!token) {
-      return null;
-    }
 
-    const [payload] = decode(token);
-    if (!payload) {
-      throw new Error("Couldn't get payload");
-    }
-    return payload;
-  } catch (error) {
-    context.throw(400, "Error in token" + error);
-    return null;
-  }
-}
