@@ -1,4 +1,4 @@
-import { number, z } from "npm:zod";
+import { z } from "npm:zod";
 
 export const ProjectSchema = z.object({
   ProjectId: z.number(),
@@ -8,6 +8,22 @@ export const ProjectSchema = z.object({
   repo_url: z.string().optional(),
   doc_url: z.string().optional(),
   created_at: z.date(),
+});
+
+export const PostUpdateSchema = z.object({
+  Comments: z.string(),
+  UserId: z.number(),
+  ProjectId: z.number(),
+});
+
+export const UpdateSchema = z.object({
+  UpdateId: z.number(),
+  Comments: z.string(),
+  summary: z.string().optional(),
+  code_changes: z.string().optional(),
+  created_at: z.date(),
+  UserId: z.number(),
+  ProjectId: z.number(),
 });
 
 export const PostProjectSchema = z.object({
