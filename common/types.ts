@@ -12,12 +12,15 @@ import {
   QuestionSchema,
   PostInvitationSchema,
   InvitationSchema,
+  GithubInfoSchema
 } from "./schemas.ts";
 import { z } from "npm:zod";
 
 export type AppState = { session: Session };
 export type Projects = Project[];
 export type Updates = Update[];
+
+export type GithubInfo = z.infer<typeof GithubInfoSchema>
 
 export type Invitation = z.infer<typeof InvitationSchema> 
 export type PostInvitaion = z.infer<typeof PostInvitationSchema>;
