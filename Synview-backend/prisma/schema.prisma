@@ -58,7 +58,7 @@ model updates {
   update_id    Int      @id @default(autoincrement())
   description  String
   summary      String?
-  code_changes String?
+  sha String?
   created_at   DateTime @default(now())
   user_id      Int
   project_id   Int
