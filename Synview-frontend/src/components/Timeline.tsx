@@ -3,7 +3,6 @@ import Update from "./Update.tsx";
 import NotFound from "./NotFound.tsx";
 import { useParams } from "react-router-dom";
 import { useGetMyUpdatesQuery } from "../services/apiSlice.ts";
-import QuestionChat from "./QuestionChat.tsx";
 export default function Timeline() {
   const { id } = useParams();
 

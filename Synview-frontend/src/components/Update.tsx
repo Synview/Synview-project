@@ -1,7 +1,6 @@
 import React from "react";
 
 import type { Update as UpdateInfo } from "../../../common/types.ts";
-import QuestionChat from "./QuestionChat.tsx";
 import { useAppDispatch } from "../hooks.ts";
 import { open } from "../slices/questionModalSlice.tsx";
 export default function Update({ created_at, description, update_id }: UpdateInfo) {

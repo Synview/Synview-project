@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "../hooks.ts";
 import {
@@ -9,7 +9,7 @@ import {
 import Loading from "./HelperComponents/Loading.tsx";
 export default function UpdateModalContent() {
   const [textUpdate, setTextUpdate] = useState("");
-  const [postQuestion, { data }] = usePostQuestionMutation();
+  const [postQuestion] = usePostQuestionMutation();
   const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
     undefined,
     {
@@ -21,7 +21,8 @@ export default function UpdateModalContent() {
     useGetUpdateQuestionsQuery(id ?? 0, {
       skip: !id,
     });
-  if (QuestionsLoading) {
+
+  if (QuestionsLoading || isUserLoading) {
     return <Loading />;
   }
 
@@ -50,23 +51,7 @@ export default function UpdateModalContent() {
         <div className="h-[50%]">
           <h1>Code review</h1>
           <div className="border h-96 p-1">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sed
-              lacus ullamcorper erat faucibus imperdiet non sit amet felis.
-              Aliquam quis mauris lacinia, lacinia quam quis, pulvinar eros.
-              Fusce vulputate interdum libero id consequat. Interdum et
-              malesuada fames ac ante ipsum primis in faucibus. Integer blandit
-              elit nisi, at condimentum nunc consectetur posuere. In id euismod
-              purus. Morbi id ipsum ac urna aliquam rhoncus. In hac habitasse
-              platea dictumst. Proin quis justo nec felis gravida tincidunt in
-              nec libero. Suspendisse sem sapien, rhoncus eget commodo id,
-              placerat at velit. Proin eleifend nec ante sed euismod. Donec
-              bibendum congue ligula, id egestas nulla. Nunc sapien est, cursus
-              a imperdiet sit amet, tincidunt ut turpis. Nullam pellentesque
-              finibus massa, id tincidunt ipsum placerat eget. Maecenas at mi
-              sit amet ex vestibulum finibus vulputate et ex. Nunc in viverra
-              sem, egestas dapibus odio.
-            </p>
+            <p>Get a summry with AI!</p>
           </div>
         </div>
         <div className="flex flex-col mt-8 h-[50%]">
@@ -80,7 +65,7 @@ export default function UpdateModalContent() {
                     <textarea
                       id="description"
                       value={textUpdate}
-                      onChange={(e: ChangeEvent<any>) => {
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                         setTextUpdate(e.target.value);
                       }}
                       className="textarea h-full w-full"

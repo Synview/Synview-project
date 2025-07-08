@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import {
   useGetPayloadQuery,
   usePostProjectMutation,
@@ -12,7 +12,7 @@ export default function NewProject() {
       refetchOnMountOrArgChange: true,
     }
   );
-  const [postProject, { data, error, isLoading }] = usePostProjectMutation();
+  const [postProject] = usePostProjectMutation();
   const handleNewProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -58,24 +58,15 @@ export default function NewProject() {
               placeholder="Project Name"
               id="projectName"
               value={projectName}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setProjectName(e.target.value);
               }}
             ></input>
-            {/* <input
-              className="input bg-neutral-700 w-full"
-              typeof="text"
-              placeholder="Email"
-              id="email"
-              value={email}
-              onChange={(e: ChangeEvent<any>) => {
-                setEmail(e.target.value);
-              }}
-            /> */}
+
             <textarea
               id="description"
               value={projectDescription}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                 setProjectDescription(e.target.value);
               }}
               className="textarea h-24 w-full"

@@ -1,10 +1,10 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRegisterMutation } from "../services/apiSlice.ts";
 
 export default function LoginForm() {
-  const [register, { data, error, isLoading }] = useRegisterMutation();
+  const [register] = useRegisterMutation();
 
   const navigate = useNavigate();
 
@@ -39,7 +39,7 @@ export default function LoginForm() {
               placeholder="Name"
               id="Username"
               value={username}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setUserName(e.target.value);
               }}
             ></input>
@@ -50,7 +50,7 @@ export default function LoginForm() {
               placeholder="Email"
               id="email"
               value={email}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setEmail(e.target.value);
               }}
             ></input>
@@ -61,7 +61,7 @@ export default function LoginForm() {
               placeholder="Password"
               id="password"
               value={password}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setPassword(e.target.value);
               }}
             ></input>

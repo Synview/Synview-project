@@ -1,9 +1,9 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { useGetPayloadQuery, usePostUpdateMutation } from "../services/apiSlice.ts";
 import { useParams } from "react-router-dom";
 export default function NewUpdate() {
   const [textUpdate, setTextUpdate] = useState("");
-  const [postUpdate, { data, error, isLoading }] = usePostUpdateMutation();
+  const [postUpdate] = usePostUpdateMutation();
   const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
     undefined,
     {
@@ -38,7 +38,7 @@ export default function NewUpdate() {
               <textarea
                 id="description"
                 value={textUpdate}
-                onChange={(e: ChangeEvent<any>) => {
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                   setTextUpdate(e.target.value);
                 }}
                 className="textarea h-full w-full"
