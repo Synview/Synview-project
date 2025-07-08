@@ -1,6 +1,5 @@
 import React, { ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Register } from "../services/apiHandler.ts";
 import { useState } from "react";
 import { useRegisterMutation } from "../services/apiSlice.ts";
 

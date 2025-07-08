@@ -17,9 +17,9 @@ export default function NewUpdate() {
     try {
       if (ProjectId && UserData) {
         await postUpdate({
-          Comments: textUpdate,
-          UserId: UserData?.id,
-          ProjectId: parseInt(ProjectId),
+          description: textUpdate,
+          user_id: UserData?.id,
+          project_id: parseInt(ProjectId),
         });
         setTextUpdate("");
       }
