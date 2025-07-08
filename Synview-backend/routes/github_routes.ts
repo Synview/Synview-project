@@ -20,18 +20,17 @@ const prisma = new PrismaClient().$extends(withAccelerate());
 githubRouter.use(AuthMiddleware);
 
 githubRouter
-  .post("/suncCommitsHook", async (context) => {})
   .post("/syncCommits", async (context) => {
     try {
-      const GithubInfo = GithubInfoSchema.parse(
+      const githubInfo = GithubInfoSchema.parse(
         await context.request.body.json()
       );
       let page = 1;
       const allCommits = [];
       while (true) {
         const response = await octokit.rest.repos.listCommits({
-          owner: GithubInfo.github_user,
-          repo: GithubInfo.repo_name,
+          owner: githubInfo.github_user,
+          repo: githubInfo.repo_name,
           per_page: 100,
           page: page,
         });
@@ -44,14 +43,14 @@ githubRouter
           description: response.commit.message,
           sha: response.sha,
           created_at: response.commit.committer?.date,
-          project_id: GithubInfo.project_id,
-          user_id: GithubInfo.user_id,
+          project_id: githubInfo.project_id,
+          user_id: githubInfo.user_id,
         };
       });
 
       await prisma.projects.update({
-        where: { project_id: GithubInfo.project_id },
-        data: { repo_url: GithubInfo.repo_name },
+        where: { project_id: githubInfo.project_id },
+        data: { repo_url: githubInfo.repo_name },
       });
 
       await prisma.updates.createMany({
