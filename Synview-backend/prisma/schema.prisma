@@ -21,7 +21,7 @@ model users {
   email                String
   passwordHash         String
   created_at           DateTime             @default(now())
-  role                 Roles                @default(USER)
+  role                 roles                @default(USER)
   projects             user_projects[]
   sent_invitations     project_invitation[] @relation("InvitingUser")
   recieved_invitations project_invitation[] @relation("InvitedUser")
@@ -43,13 +43,13 @@ model projects {
 }
 
 model user_projects {
-  user_project Int          @id @default(autoincrement())
+  user_project Int           @id @default(autoincrement())
   project_id   Int
   user_id      Int
-  role         ProjectRoles
-  users        users        @relation(fields: [user_id], references: [user_id])
-  projects     projects     @relation(fields: [project_id], references: [project_id])
-  created_at   DateTime     @default(now())
+  role         project_roles
+  users        users         @relation(fields: [user_id], references: [user_id])
+  projects     projects      @relation(fields: [project_id], references: [project_id])
+  created_at   DateTime      @default(now())
 
   @@unique([user_id, project_id])
 }
@@ -103,7 +103,7 @@ model goals {
   goal_id    Int      @id @default(autoincrement())
   title      String
   due_date   DateTime
-  status     Status   @default(PENDING)
+  status     status   @default(PENDING)
   project_id Int
   projects   projects @relation(fields: [project_id], references: [project_id])
 }
@@ -115,7 +115,7 @@ model project_invitation {
   inviting_user_id      Int
   invited_at            DateTime          @default(now())
   accepted_at           DateTime?
-  role                  ProjectRoles
+  role                  project_roles
   status                invitation_status @default(PENDING)
 
   project       projects @relation(fields: [invited_project_id], references: [project_id])
@@ -123,12 +123,12 @@ model project_invitation {
   invited_user  users    @relation("InvitedUser", fields: [invited_user_id], references: [user_id])
 }
 
-enum Roles {
+enum roles {
   USER
   MENTOR
 }
 
-enum ProjectRoles {
+enum project_roles {
   CREATOR
   VIEWER
   REVIEWER
@@ -139,7 +139,7 @@ enum invitation_status {
   COMPLETE
 }
 
-enum Status {
+enum status {
   PENDING
   PROGRESS
   DONE
