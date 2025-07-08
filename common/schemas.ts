@@ -1,11 +1,11 @@
 import { z } from "npm:zod";
-enum ProjectRoles {
+export enum ProjectRoles {
   CREATOR = "CREATOR",
   VIEWER = "VIEWER",
   REVIEWER = "REVIEWER",
 }
 
-enum invitation_status {
+export enum invitation_status {
   PENDING = "PENDING",
   COMPLETE = "COMPLETE",
 }

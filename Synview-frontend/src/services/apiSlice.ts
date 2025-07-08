@@ -12,6 +12,7 @@ import {
   type Question,
   type PostQuestion,
   type GithubInfo,
+  type PostInvitaion,
 } from "../../../common/types.ts";
 const url = import.meta.env.VITE_URL;
 export const apiSlice = createApi({
@@ -85,6 +86,13 @@ export const apiSlice = createApi({
         body: GitInfo,
       }),
     }),
+    inviteMentor: builder.mutation<void, PostInvitaion>({
+      query: (InvitationInfo: PostInvitaion) => ({
+        url: "inviteUser",
+        method: "POST",
+        body: InvitationInfo,
+      }),
+    }),
   }),
 });
 
@@ -99,5 +107,6 @@ export const {
   usePostUpdateMutation,
   useGetUpdateQuestionsQuery,
   usePostQuestionMutation,
-  useGetMyCommitsMutation
+  useGetMyCommitsMutation,
+  useInviteMentorMutation
 } = apiSlice;
