@@ -10,6 +10,11 @@ export enum invitation_status {
   COMPLETE = "COMPLETE",
 }
 
+export const PostCommitDataSchema = z.object({
+  github_user: z.string(),
+  repo_name: z.string(),
+  commit_sha: z.string(),
+});
 
 export const GithubInfoSchema = z.object({
   github_user: z.string(),
