@@ -1,14 +1,13 @@
 import { z } from "npm:zod";
-
 enum ProjectRoles {
-  CREATOR,
-  VIEWER,
-  REVIEWER,
+  CREATOR = "CREATOR",
+  VIEWER = "VIEWER",
+  REVIEWER = "REVIEWER",
 }
 
 enum invitation_status {
-  PENDING,
-  COMPLETE,
+  PENDING = "PENDING",
+  COMPLETE = "COMPLETE",
 }
 
 export const GithubInfoSchema = z.object({
@@ -25,7 +24,7 @@ export const InvitationSchema = z.object({
   inviting_user_id: z.number(),
   invited_at: z.date().optional(),
   accepted_at: z.date().optional(),
-  role: z.nativeEnum(ProjectRoles).optional(),
+  role: z.nativeEnum(ProjectRoles),
   status: z.nativeEnum(invitation_status).optional(),
 });
 
@@ -64,7 +63,7 @@ export const PostUpdateSchema = z.object({
 });
 
 export const UpdateSchema = z.object({
-  UpdateId: z.number(),
+  update_id: z.number(),
   description: z.string(),
   summary: z.string().optional(),
   code_changes: z.string().optional(),

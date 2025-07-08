@@ -140,7 +140,7 @@ userRouter
         await context.request.body.json()
       );
       await prisma.project_invitation.create({
-        data: Invite,
+        data: Invite
       });
       context.response.status = 201;
       context.response.body = {
