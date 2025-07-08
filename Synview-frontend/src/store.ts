@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./services/apiSlice.ts";
-import questionModalReducer from "./slices/questionModalSlice.tsx";
+import questionModalReducer from "./slices/questionModalSlice.ts";
+import githubModalReducer from "./slices/syncGithubModalSlice.ts";
 import { setupListeners } from "@reduxjs/toolkit/query";
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
     questionModal: questionModalReducer,
+    githubModal: githubModalReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

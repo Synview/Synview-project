@@ -78,10 +78,10 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Questions"],
     }),
-    getMyCommits: builder.query<void, GithubInfo>({
+    getMyCommits: builder.mutation<void, GithubInfo>({
       query: (GitInfo: GithubInfo) => ({
-        url: "postUpdate",
-        method: "GET",
+        url: "syncCommits",
+        method: "POST",
         body: GitInfo,
       }),
     }),
@@ -99,4 +99,5 @@ export const {
   usePostUpdateMutation,
   useGetUpdateQuestionsQuery,
   usePostQuestionMutation,
+  useGetMyCommitsMutation
 } = apiSlice;
