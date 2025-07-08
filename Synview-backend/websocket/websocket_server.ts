@@ -1,3 +1,5 @@
+import { PostQuestion, Question } from "../../common/types.ts";
+
 const sockets = new Set<WebSocket>();
 
 export async function EntrySocket(socket: WebSocket): Promise<void> {
@@ -7,7 +9,7 @@ export async function EntrySocket(socket: WebSocket): Promise<void> {
   return;
 }
 
-export function sendQuestionToConnectedUsers(data: any) {
+export function sendQuestionToConnectedUsers(data: PostQuestion) {
   const question = JSON.stringify(data);
   for (const socket of sockets) {
     try {
