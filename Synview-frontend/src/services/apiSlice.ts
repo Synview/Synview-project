@@ -11,6 +11,7 @@ import {
   type PostUpdate,
   type Question,
   type PostQuestion,
+  type GithubInfo,
 } from "../../../common/types.ts";
 const url = import.meta.env.VITE_URL;
 export const apiSlice = createApi({
@@ -76,6 +77,13 @@ export const apiSlice = createApi({
         body: Question,
       }),
       invalidatesTags: ["Questions"],
+    }),
+    getMyCommits: builder.query<void, GithubInfo>({
+      query: (GitInfo: GithubInfo) => ({
+        url: "postUpdate",
+        method: "GET",
+        body: GitInfo,
+      }),
     }),
   }),
 });
