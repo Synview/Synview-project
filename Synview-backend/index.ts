@@ -4,8 +4,10 @@ import { userRouter } from "./routes/user_routes.ts";
 import { updateRouter } from "./routes/update_routes.ts";
 import { projectRouter } from "./routes/project_routes.ts";
 import { questionRouter } from "./routes/question_routes.ts";
-import { githubRouter } from "./routes/github_routes.ts"
+import { githubRouter } from "./routes/github_routes.ts";
+import { wsRouter } from "./websocket/websocket_route.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
+
 type AppState = {
   session: Session;
 };
@@ -43,6 +45,9 @@ app.use(questionRouter.allowedMethods());
 
 app.use(githubRouter.routes());
 app.use(githubRouter.allowedMethods());
+
+app.use(wsRouter.routes());
+app.use(wsRouter.allowedMethods());
 
 app.use(mainRouter.routes());
 app.use(mainRouter.allowedMethods());
