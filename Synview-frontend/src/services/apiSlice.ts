@@ -13,6 +13,7 @@ import {
   type PostQuestion,
   type GithubInfo,
   type PostInvitaion,
+  UserData,
 } from "../../../common/types.ts";
 const url = import.meta.env.VITE_URL;
 export const apiSlice = createApi({
@@ -21,7 +22,7 @@ export const apiSlice = createApi({
     baseUrl: url,
     credentials: "include",
   }),
-  tagTypes: ["Projects", "User", "Updates", "Questions"],
+  tagTypes: ["Projects", "User", "Updates", "Questions", "Mentors"],
   endpoints: (builder) => ({
     register: builder.mutation<void, EmailRegisterRequestSchema>({
       query: (newUser: EmailRegisterRequestSchema) => ({
@@ -93,6 +94,10 @@ export const apiSlice = createApi({
         body: InvitationInfo,
       }),
     }),
+    getMentors: builder.query<UserData, void>({
+      query: (id) => `getMentors/${id}`,
+      providesTags: ["Mentors"],
+    }),
   }),
 });
 
@@ -108,5 +113,6 @@ export const {
   useGetUpdateQuestionsQuery,
   usePostQuestionMutation,
   useGetMyCommitsMutation,
-  useInviteMentorMutation
+  useInviteMentorMutation,
+  useGetMentorsQuery,
 } = apiSlice;
