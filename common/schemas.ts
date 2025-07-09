@@ -1,5 +1,24 @@
 import { z } from "npm:zod";
+import { ProjectRoles } from "../Synview-backend/generated/prisma/client.ts";
+import { invitation_status } from "../Synview-backend/generated/prisma/client.ts";
 
+export const InvitationSchema = z.object({
+  project_invitation_id: z.number(),
+  invited_project_id: z.number(),
+  invited_user_id: z.number(),
+  inviting_user_id: z.number(),
+  invited_at: z.date().optional(),
+  accepted_at: z.date().optional(),
+  role: z.nativeEnum(ProjectRoles).optional(),
+  status: z.nativeEnum(invitation_status).optional(),
+});
+
+export const PostInvitationSchema = z.object({
+  invited_project_id: z.number(),
+  invited_user_id: z.number(),
+  inviting_user_id: z.number(),
+  role: z.nativeEnum(ProjectRoles),
+});
 export const QuestionSchema = z.object({
   question_id: z.number(),
   content: z.string(),
@@ -23,9 +42,9 @@ export const ProjectSchema = z.object({
 });
 
 export const PostUpdateSchema = z.object({
-  Comments: z.string(),
-  UserId: z.number(),
-  ProjectId: z.number(),
+  description: z.string(),
+  user_id: z.number(),
+  project_id: z.number(),
 });
 
 export const UpdateSchema = z.object({

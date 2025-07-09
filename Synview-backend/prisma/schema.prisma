@@ -16,13 +16,15 @@ datasource db {
 }
 
 model users {
-  user_id            Int                  @id @default(autoincrement())
-  username           String
-  email              String
-  passwordHash       String
-  created_at         DateTime             @default(now())
-  role               Roles                @default(USER)
-  projects           user_projects[]      
+  user_id              Int                  @id @default(autoincrement())
+  username             String
+  email                String
+  passwordHash         String
+  created_at           DateTime             @default(now())
+  role                 roles                @default(USER)
+  projects             user_projects[]
+  sent_invitations     project_invitation[] @relation("InvitingUser")
+  recieved_invitations project_invitation[] @relation("InvitedUser")
 }
 
 model projects {
@@ -34,19 +36,20 @@ model projects {
   doc_url     String?
   created_at  DateTime @default(now())
 
-  user_projects user_projects[] 
-  updates       updates[]      
-  goals         goals[]
+  user_projects      user_projects[]
+  updates            updates[]
+  goals              goals[]
+  project_invitation project_invitation[]
 }
 
 model user_projects {
-  user_project Int          @id @default(autoincrement())
+  user_project Int           @id @default(autoincrement())
   project_id   Int
   user_id      Int
-  role         ProjectRoles
-  users        users        @relation(fields: [user_id], references: [user_id])
-  projects     projects     @relation(fields: [project_id], references: [project_id])
-  created_at   DateTime     @default(now())
+  role         project_roles
+  users        users         @relation(fields: [user_id], references: [user_id])
+  projects     projects      @relation(fields: [project_id], references: [project_id])
+  created_at   DateTime      @default(now())
 
   @@unique([user_id, project_id])
 }
@@ -100,23 +103,43 @@ model goals {
   goal_id    Int      @id @default(autoincrement())
   title      String
   due_date   DateTime
-  status     Status   @default(PENDING)
+  status     status   @default(PENDING)
   project_id Int
   projects   projects @relation(fields: [project_id], references: [project_id])
 }
 
-enum Roles {
+model project_invitation {
+  project_invitation_id Int               @id @default(autoincrement())
+  invited_project_id    Int
+  invited_user_id       Int
+  inviting_user_id      Int
+  invited_at            DateTime          @default(now())
+  accepted_at           DateTime?
+  role                  project_roles
+  status                invitation_status @default(PENDING)
+
+  project       projects @relation(fields: [invited_project_id], references: [project_id])
+  inviting_user users    @relation("InvitingUser", fields: [inviting_user_id], references: [user_id])
+  invited_user  users    @relation("InvitedUser", fields: [invited_user_id], references: [user_id])
+}
+
+enum roles {
   USER
   MENTOR
 }
 
-enum ProjectRoles {
+enum project_roles {
   CREATOR
   VIEWER
   REVIEWER
 }
 
-enum Status {
+enum invitation_status {
+  PENDING
+  COMPLETE
+}
+
+enum status {
   PENDING
   PROGRESS
   DONE

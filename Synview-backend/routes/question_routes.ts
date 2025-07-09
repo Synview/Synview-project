@@ -16,7 +16,7 @@ questionRouter
   .get("/getUpdateQuestions/:id", async (context) => {
     const id = context.params.id;
     try {
-      const myQuestions = await prisma.question.findMany({
+      const myQuestions = await prisma.questions.findMany({
         where: {
           update_id: parseInt(id),
         },
@@ -33,7 +33,7 @@ questionRouter
       const newUpdate = PostQuestionSchema.parse(
         await context.request.body.json()
       );
-      await prisma.question.create({
+      await prisma.questions.create({
         data: newUpdate,
       });
       context.response.status = 201;
