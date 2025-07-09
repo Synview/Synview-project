@@ -3,16 +3,20 @@ import Update from "./Update.tsx";
 import NotFound from "./NotFound.tsx";
 import { useParams } from "react-router-dom";
 import { useGetMyUpdatesQuery } from "../services/apiSlice.ts";
+import Loading from "../components/HelperComponents/Loading.tsx";
 export default function Timeline() {
   const { id } = useParams();
 
-  const {
-    data: updates,
-    error,
-    isLoading,
-  } = useGetMyUpdatesQuery(id ?? "", {
-    skip: !id,
-  });
+  if (!id) {
+    return <Loading />;
+  }
+
+  const { data: updates, error, isLoading } = useGetMyUpdatesQuery(id);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <div>
       <ul className="timeline timeline-vertical">
