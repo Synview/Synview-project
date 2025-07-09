@@ -13,7 +13,7 @@ import {
   type PostQuestion,
   type GithubInfo,
   type PostInvitaion,
-  UserData,
+  type UserData,
 } from "../../../common/types.ts";
 const url = import.meta.env.VITE_URL;
 export const apiSlice = createApi({
@@ -94,7 +94,7 @@ export const apiSlice = createApi({
         body: InvitationInfo,
       }),
     }),
-    getMentors: builder.query<UserData, void>({
+    getMentors: builder.query<UserData[], number>({
       query: (id) => `getMentors/${id}`,
       providesTags: ["Mentors"],
     }),

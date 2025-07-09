@@ -14,6 +14,7 @@ export const UserDataSchema = z.object({
   user_id: z.number(),
   username: z.string(),
   email: z.string(),
+  role: z.nativeEnum(ProjectRoles).optional(),
 });
 
 export const PostCommitDataSchema = z.object({
