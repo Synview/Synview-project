@@ -5,20 +5,20 @@ import { ProjectRoles } from "../../../common/schemas.ts";
 export default function MentorInviteForm() {
   const [invitedMentorId, setInvitedMentorId] = useState("");
 
-  const project_id = useAppSelector(
+  const projectId = useAppSelector(
     (state) => state.inviteMentorModal.project_id
   );
-  const user_id = useAppSelector((state) => state.inviteMentorModal.user_id);
+  const userId = useAppSelector((state) => state.inviteMentorModal.user_id);
   const [inviteMentor] = useInviteMentorMutation();
   const handleInviteForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (project_id && user_id) {
+      if (projectId && userId) {
         await inviteMentor({
           role: ProjectRoles.REVIEWER,
           invited_user_id: parseInt(invitedMentorId),
-          inviting_user_id: user_id,
-          invited_project_id: project_id,
+          inviting_user_id: userId,
+          invited_project_id: projectId,
         });
         setInvitedMentorId("");
       }
@@ -42,7 +42,7 @@ export default function MentorInviteForm() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setInvitedMentorId(e.target.value);
               }}
-            ></input>
+            />
             <div className="flex justify-between items-center">
               <button type="submit" className="btn w-fit mt-2">
                 Submit

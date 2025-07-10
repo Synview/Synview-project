@@ -5,7 +5,7 @@ import {
   useGetPayloadQuery,
 } from "../services/apiSlice.ts";
 import {
-  closGithubModal,
+  closeGithubModal,
   openGithubModal,
 } from "../slices/syncGithubModalSlice.ts";
 import {
@@ -28,12 +28,9 @@ export default function ProjectViewInfo() {
     return <NotFound />;
   }
 
-  const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
-    undefined,
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  const { data: UserData } = useGetPayloadQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   if (isUserLoading) {
     return <Loading />;
@@ -47,15 +44,16 @@ export default function ProjectViewInfo() {
           <button
             type="button"
             className="btn"
-            onClick={() =>
+            onClick={() => {
+              if (!UserData?.id) return;
               dispatch(
                 openGithubModal({
                   project_id: parseInt(id),
-                  user_id: UserData?.id,
+                  user_id: UserData.id,
                   isOpen: true,
                 })
-              )
-            }
+              );
+            }}
           >
             Sync commits
           </button>
