@@ -15,16 +15,16 @@ export const questionModalSlice = createSlice({
   name: "questionModal",
   initialState,
   reducers: {
-    open: (state, action: PayloadAction<number>) => {
+    openQuestionModal: (state, action: PayloadAction<number>) => {
       state.commit_id = action.payload
       state.isOpen = true;
     },
-    close: (state) => {
+    closeQuestionModal: (state) => {
       state.isOpen = false;
     },
   },
 });
 
-export const { open, close } = questionModalSlice.actions;
+export const { openQuestionModal, closeQuestionModal } = questionModalSlice.actions;
 
 export default questionModalSlice.reducer;

@@ -2,10 +2,13 @@ import React from "react";
 
 import type { Update as UpdateInfo } from "../../../common/types.ts";
 import { useAppDispatch } from "../hooks.ts";
-import { open } from "../slices/questionModalSlice.tsx";
-export default function Update({ created_at, description, update_id }: UpdateInfo) {
-
-  const dispatch = useAppDispatch()
+import { openQuestionModal } from "../slices/questionModalSlice.ts";
+export default function Update({
+  created_at,
+  description,
+  update_id,
+}: UpdateInfo) {
+  const dispatch = useAppDispatch();
   return (
     <>
       <hr />
@@ -28,7 +31,11 @@ export default function Update({ created_at, description, update_id }: UpdateInf
       <div className="timeline-end timeline-box flex w-[90%] items-center justify-between">
         <p className="mr-4 text-black"> {description}</p>
         <div className="flex gap-4">
-          <button type="button" className="btn" onClick={() => dispatch(open(update_id))}>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => dispatch(openQuestionModal(update_id))}
+          >
             View
           </button>
         </div>

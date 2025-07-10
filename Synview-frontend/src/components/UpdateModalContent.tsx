@@ -1,6 +1,6 @@
 import React, { useState, type ChangeEvent } from "react";
 
-import { useAppSelector, useAppDispatch } from "../hooks.ts";
+import { useAppSelector } from "../hooks.ts";
 import {
   useGetPayloadQuery,
   useGetUpdateQuestionsQuery,

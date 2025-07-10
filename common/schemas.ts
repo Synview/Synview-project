@@ -10,6 +10,7 @@ enum invitation_status {
   COMPLETE = "COMPLETE",
 }
 
+
 export const GithubInfoSchema = z.object({
   github_user: z.string(),
   repo_name: z.string(),

@@ -11,6 +11,7 @@ import {
   type PostUpdate,
   type Question,
   type PostQuestion,
+  type GithubInfo,
 } from "../../../common/types.ts";
 const url = import.meta.env.VITE_URL;
 export const apiSlice = createApi({
@@ -77,6 +78,13 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Questions"],
     }),
+    getMyCommits: builder.mutation<void, GithubInfo>({
+      query: (GitInfo: GithubInfo) => ({
+        url: "syncCommits",
+        method: "POST",
+        body: GitInfo,
+      }),
+    }),
   }),
 });
 
@@ -91,4 +99,5 @@ export const {
   usePostUpdateMutation,
   useGetUpdateQuestionsQuery,
   usePostQuestionMutation,
+  useGetMyCommitsMutation
 } = apiSlice;

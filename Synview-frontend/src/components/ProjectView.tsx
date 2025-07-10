@@ -7,7 +7,7 @@ import ProjectViewInfo from "./ProjectViewInfo.tsx";
 import ProjectViewUpdates from "./ProjectViewUpdates.tsx";
 import { Modal } from "@mantine/core";
 import { useAppSelector, useAppDispatch } from "../hooks.ts";
-import { close } from "../slices/questionModalSlice.tsx";
+import { closeQuestionModal } from "../slices/questionModalSlice.ts";
 import UpdateModalContent from "./UpdateModalContent.tsx";
 
 export default function ProjectView() {
@@ -34,7 +34,7 @@ export default function ProjectView() {
       </div>
       <Modal
         opened={open}
-        onClose={() => dispatch(close())}
+        onClose={() => dispatch(closeQuestionModal())}
         title=""
         centered
         fullScreen
