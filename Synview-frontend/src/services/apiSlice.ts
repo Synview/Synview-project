@@ -14,6 +14,7 @@ import {
   type GithubInfo,
   type PostInvitaion,
   type UserData,
+  type Update
 } from "../../../common/types.ts";
 const url = import.meta.env.VITE_URL;
 export const apiSlice = createApi({
@@ -57,6 +58,10 @@ export const apiSlice = createApi({
       query: (id) => `getMyUpdates/${id}`,
       providesTags: ["Updates"],
     }),
+    getUpdateById: builder.query<Update, number>({
+      query: (id) => `getUpdateById/${id}`,
+      providesTags: ["Updates"]
+    }),
     postUpdate: builder.mutation<void, PostUpdate>({
       query: (Update: PostUpdate) => ({
         url: "postUpdate",
@@ -87,6 +92,15 @@ export const apiSlice = createApi({
         body: GitInfo,
       }),
     }),
+    getFiles: builder.query<{name:string, content:string }[], { user: string; repo: string; sha: string }>({
+      query: (arg) => {
+        const { user, repo, sha } = arg;
+        return {
+          url: "getCommitFiles",
+          params: { user, repo, sha },
+        };
+      },
+    }),
     inviteMentor: builder.mutation<void, PostInvitaion>({
       query: (InvitationInfo: PostInvitaion) => ({
         url: "inviteUser",
@@ -115,4 +129,6 @@ export const {
   useGetMyCommitsMutation,
   useInviteMentorMutation,
   useGetMentorsQuery,
+  useGetFilesQuery,
+  useGetUpdateByIdQuery
 } = apiSlice;

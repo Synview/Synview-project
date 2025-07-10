@@ -79,7 +79,7 @@ export const UpdateSchema = z.object({
   update_id: z.number(),
   description: z.string(),
   summary: z.string().optional(),
-  code_changes: z.string().optional(),
+  sha: z.string().optional(),
   created_at: z.date(),
   UserId: z.number(),
   ProjectId: z.number(),
