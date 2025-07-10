@@ -2,8 +2,9 @@ import { Router } from "@oak/oak";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { PrismaClient } from "../generated/prisma/client.ts";
 import { hash, verify as bycryptVerify } from "@felix/bcrypt";
-import { createToken, getPayload } from "../middleware/auth_middleware.ts";
+import { getPayloadFromBody } from "../middleware/auth_middleware.ts";
 import { getPayloadFromToken } from "../utils/JWTHelpers.ts";
+import { createToken } from "../utils/JWTHelpers.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 
 import {
@@ -112,7 +113,7 @@ userRouter
         id: user.user_id,
       };
 
-      const access_token = await createToken(getPayload(userPayload));
+      const access_token = await createToken(getPayloadFromBody(userPayload));
       context.response.body = {
         token: access_token,
       };
