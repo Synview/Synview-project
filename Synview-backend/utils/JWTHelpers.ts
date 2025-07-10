@@ -3,14 +3,14 @@ import { AppState } from "../../common/types.ts";
 import { decode } from "@zaubrik/djwt";
 
 const key = Deno.env.get("AUTH_KEY");
-const keyBytes = new TextEncoder().encode(key)
+const keyBytes = new TextEncoder().encode(key);
 export async function generateKey() {
   return await crypto.subtle.importKey(
     "raw",
     keyBytes,
     { name: "HMAC", hash: "SHA-512" },
     true,
-    ["sign", "verify"],
+    ["sign", "verify"]
   );
 }
 
@@ -32,9 +32,9 @@ export function getToken(auth: string) {
   return token;
 }
 
-export function getPayloadFromToken(context: Context<AppState>) {
+export async function getPayloadFromToken(context: Context<AppState>) {
   try {
-    const auth = context.state.session.get("Authorization");
+    const auth = await context.cookies.get("Authorization");
     if (!auth) {
       return null;
     }

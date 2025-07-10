@@ -12,7 +12,8 @@ import {
   QuestionSchema,
   PostInvitationSchema,
   InvitationSchema,
-  GithubInfoSchema
+  GithubInfoSchema,
+  UserDataSchema,
 } from "./schemas.ts";
 import { z } from "npm:zod";
 
@@ -20,9 +21,9 @@ export type AppState = { session: Session };
 export type Projects = Project[];
 export type Updates = Update[];
 
-export type GithubInfo = z.infer<typeof GithubInfoSchema>
+export type GithubInfo = z.infer<typeof GithubInfoSchema>;
 
-export type Invitation = z.infer<typeof InvitationSchema> 
+export type Invitation = z.infer<typeof InvitationSchema>;
 export type PostInvitaion = z.infer<typeof PostInvitationSchema>;
 export type PostQuestion = z.infer<typeof PostQuestionSchema>;
 export type Question = z.infer<typeof QuestionSchema>;
@@ -36,6 +37,7 @@ export type UserPayload = z.infer<typeof UserPayloadSchema>;
 
 export type LoginResponse = { token?: string };
 export type UserInfo = z.infer<typeof UserInfoSchema>;
+export type UserData = z.infer<typeof UserDataSchema>;
 export type EmailLoginRequestSchema = z.infer<typeof EmailLoginRequestSchema>;
 export type EmailRegisterRequestSchema = z.infer<
   typeof EmailRegisterRequestSchema

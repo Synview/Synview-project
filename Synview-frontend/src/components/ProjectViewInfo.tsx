@@ -1,18 +1,32 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useGetPayloadQuery } from "../services/apiSlice.ts";
 import {
-  closeGithubModal,
+  useGetMentorsQuery,
+  useGetPayloadQuery,
+} from "../services/apiSlice.ts";
+import {
+  closGithubModal,
   openGithubModal,
 } from "../slices/syncGithubModalSlice.ts";
+import {
+  closeInviteMentorModal,
+  openInviteMentorModal,
+} from "../slices/inviteMentorModalSlice.ts";
 import { useAppDispatch, useAppSelector } from "../hooks.ts";
 import { Modal } from "@mantine/core";
 import NotFound from "./NotFound.tsx";
 import SyncForm from "./SyncForm.tsx";
+import MentorInviteForm from "./MentorInviteForm.tsx";
+import Loading from "./HelperComponents/Loading.tsx";
+import ProjectUsersTable from "./ProjectUsersTable.tsx";
 export default function ProjectViewInfo() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const open = useAppSelector((state) => state.githubModal.isOpen);
+  const githubOpen = useAppSelector((state) => state.githubModal.isOpen);
+  const inviteOpen = useAppSelector((state) => state.inviteMentorModal.isOpen);
+  if (!id) {
+    return <NotFound />;
+  }
 
   const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
     undefined,
@@ -21,8 +35,8 @@ export default function ProjectViewInfo() {
     }
   );
 
-  if (!id) {
-    return <NotFound />;
+  if (isUserLoading) {
+    return <Loading />;
   }
 
   return (
@@ -47,17 +61,49 @@ export default function ProjectViewInfo() {
           </button>
         </div>
       </div>
-      <div className="flex flex-row justify-between items-center gap-10">
-        <h1> Mentors </h1>
-        <button className="btn">Invite a mentor</button>
+      <div className="flex flex-col justify-between items-center gap-10">
+        <div className="flex flex-row w-full justify-between items-center gap-10">
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              dispatch(
+                openInviteMentorModal({
+                  project_id: parseInt(id),
+                  user_id: UserData?.id,
+                  isOpen: true,
+                })
+              );
+            }}
+          >
+            Invite a mentor
+          </button>
+          <ProjectUsersTable />
+        </div>
       </div>
       <Modal
-        opened={open}
-        onClose={() => dispatch(closeGithubModal())}
+        opened={githubOpen}
+        onClose={() => dispatch(closGithubModal())}
         title="Enter your info"
         centered
+        classNames={{
+          header: "text-black",
+          content: "bg-stone-900 text-white",
+        }}
       >
-        <SyncForm/>
+        <SyncForm />
+      </Modal>
+      <Modal
+        opened={inviteOpen}
+        onClose={() => dispatch(closeInviteMentorModal())}
+        title="Search for a mentor!"
+        centered
+        classNames={{
+          header: "text-black bg-stone-900",
+          content: "bg-stone-900 text-white",
+        }}
+      >
+        <MentorInviteForm />
       </Modal>
     </div>
   );

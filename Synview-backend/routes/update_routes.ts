@@ -29,6 +29,22 @@ updateRouter
       };
     }
   })
+  .get("/getUpdateById/:id", async (context) => {
+    const id = context.params.id;
+    try {
+      const update = await prisma.updates.findUnique({
+        where: {
+          update_id: parseInt(id),
+        },
+      });
+      context.response.body = update;
+    } catch (e) {
+      context.response.status = 402
+      context.response.body = {
+        error: "Error fetching update" + e,
+      };
+    }
+  })
   .post("/postUpdate", async (context) => {
     try {
       const newUpdate = PostUpdateSchema.parse(
@@ -47,7 +63,6 @@ updateRouter
         error: "Error creating update: " + error,
       };
     }
-  })
-
+  });
 
 export { updateRouter };

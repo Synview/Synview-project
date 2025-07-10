@@ -5,6 +5,7 @@ import { hash, verify as bycryptVerify } from "@felix/bcrypt";
 import { createToken, getPayload } from "../middleware/auth_middleware.ts";
 import { getPayloadFromToken } from "../utils/JWTHelpers.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
+
 import {
   EmailLoginRequestSchema,
   EmailRegisterRequestSchema,
@@ -115,9 +116,9 @@ userRouter
       context.response.body = {
         token: access_token,
       };
-
-      context.state.session.set("Authorization", `Bearer ${access_token}`);
-      context.response.headers.set("Authorization", `Bearer ${access_token}`);
+      context.cookies.set("Authorization", `Bearer ${access_token}`, {
+        expires: new Date(Date.now() + 60 * 60 * 1000),
+      });
     } catch (e) {
       context.response.status = 500;
       context.response.body = {
@@ -130,9 +131,69 @@ userRouter
 userRouter.use(AuthMiddleware);
 
 userRouter
-  .get("/getPayload", (context) => {
-    const payload = getPayloadFromToken(context);
+  .get("/getPayload", async (context) => {
+    const payload = await getPayloadFromToken(context);
     context.response.body = payload;
   })
+  .post("/inviteUser", async (context) => {
+    try {
+      const Invite = PostInvitationSchema.parse(
+        await context.request.body.json()
+      );
+      await prisma.project_invitation.create({
+        data: Invite,
+      });
+      context.response.status = 201;
+      context.response.body = {
+        messae: "Invited user succesfully!",
+      };
+    } catch (error) {
+      context.response.status = 500;
+      context.response.body = {
+        error: "inviteUser error : " + error,
+      };
+    }
+  })
+  .put("/acceptInvitations", async (context) => {
+    try {
+      const Invite = InvitationSchema.parse(await context.request.body.json());
+      await prisma.project_invitation.update({
+        where: {
+          project_invitation_id: Invite.project_invitation_id,
+        },
+        data: { status: "COMPLETE" },
+      });
+      await prisma.user_projects.create({
+        data: {
+          project_id: Invite.invited_project_id,
+          user_id: Invite.invited_user_id,
+          role: "REVIEWER",
+        },
+      });
+      context.response.status = 201;
+      context.response.body = {
+        message: "accepted invitation successfully!",
+      };
+    } catch (error) {
+      context.response.status = 500;
+      context.response.body = {
+        error: "accepted invitations error : " + error,
+      };
+    }
+  })
+  .get("/getInvitations/:id", async (context) => {
+    const id = context.params.id;
+    try {
+      const Invitations = await prisma.project_invitation.findMany({
+        where: { invited_user_id: parseInt(id) },
+      });
+      context.response.body = Invitations;
+    } catch (error) {
+      context.response.status = 500;
+      context.response.body = {
+        error: "Error getting invitations: " + error,
+      };
+    }
+  });
 
 export { userRouter };

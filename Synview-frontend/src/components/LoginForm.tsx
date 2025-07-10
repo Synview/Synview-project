@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useLoginMutation } from "../services/apiSlice.ts";
@@ -43,7 +43,7 @@ export default function LoginForm() {
               placeholder="Email"
               id="email"
               value={email}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setEmail(e.target.value);
               }}
             />
@@ -54,7 +54,7 @@ export default function LoginForm() {
               placeholder="Password"
               id="password"
               value={password}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setPassword(e.target.value);
               }}
             ></input>

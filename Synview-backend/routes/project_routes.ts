@@ -97,6 +97,33 @@ projectRouter
         error: "Error creating project: " + error,
       };
     }
+  })
+  .get("/getMentors/:id", async (context) => {
+    const id = context.params.id;
+    try {
+      const mentors = await prisma.users.findMany({
+        select : {
+          user_id: true,
+          username : true,
+          email: true,
+        },
+        where: {
+          projects: {
+            some: {
+              project_id: parseInt(id),
+              role: "REVIEWER",
+            },
+          },
+
+        },
+      });
+      context.response.body = mentors;
+    } catch (e) {
+      context.response.status = 500;
+      context.response.body = {
+        error: "Error fetching mentors" + e,
+      };
+    }
   });
 
 export { projectRouter };

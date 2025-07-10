@@ -1,15 +1,27 @@
 import { z } from "npm:zod";
-
-enum ProjectRoles {
-  CREATOR,
-  VIEWER,
-  REVIEWER,
+export enum ProjectRoles {
+  CREATOR = "CREATOR",
+  VIEWER = "VIEWER",
+  REVIEWER = "REVIEWER",
 }
 
-enum invitation_status {
-  PENDING,
-  COMPLETE,
+export enum invitation_status {
+  PENDING = "PENDING",
+  COMPLETE = "COMPLETE",
 }
+
+export const UserDataSchema = z.object({
+  user_id: z.number(),
+  username: z.string(),
+  email: z.string(),
+  role: z.nativeEnum(ProjectRoles).optional(),
+});
+
+export const PostCommitDataSchema = z.object({
+  github_user: z.string(),
+  repo_name: z.string(),
+  commit_sha: z.string(),
+});
 
 export const GithubInfoSchema = z.object({
   github_user: z.string(),
@@ -25,7 +37,7 @@ export const InvitationSchema = z.object({
   inviting_user_id: z.number(),
   invited_at: z.date().optional(),
   accepted_at: z.date().optional(),
-  role: z.nativeEnum(ProjectRoles).optional(),
+  role: z.nativeEnum(ProjectRoles),
   status: z.nativeEnum(invitation_status).optional(),
 });
 
@@ -48,7 +60,7 @@ export const PostQuestionSchema = z.object({
   user_id: z.number(),
 });
 export const ProjectSchema = z.object({
-  ProjectId: z.number(),
+  project_id: z.number(),
   title: z.string(),
   description: z.string(),
   owner_id: z.number(),
@@ -64,10 +76,10 @@ export const PostUpdateSchema = z.object({
 });
 
 export const UpdateSchema = z.object({
-  UpdateId: z.number(),
-  Comments: z.string(),
+  update_id: z.number(),
+  description: z.string(),
   summary: z.string().optional(),
-  code_changes: z.string().optional(),
+  sha: z.string().optional(),
   created_at: z.date(),
   UserId: z.number(),
   ProjectId: z.number(),
