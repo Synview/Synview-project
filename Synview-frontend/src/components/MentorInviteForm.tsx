@@ -28,7 +28,7 @@ export default function MentorInviteForm() {
   };
 
   return (
-    <div>
+    <div className="">
       <fieldset className="fieldset border-1 p-4 rounded-box border-neutral-600 bg-neutral-800">
         <div className="flex flex-col justify-center">
           <form onSubmit={handleInviteForm}>

@@ -18,7 +18,6 @@ export default function Navbar() {
     <div className="navbar z-1000 bg-neutral-800 p-4">
       <div className="navbar-start">
         <Drawer />
-        <h4 className="pl-20">{id && ProjectData?.title}</h4>
       </div>
       <div className="navbar-end">
         <p>{data?.username}</p>

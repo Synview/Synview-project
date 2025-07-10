@@ -23,7 +23,7 @@ export default function ProjectView() {
     return <Loading />;
   }
   if (!data) {
-    return <h1>This is not your proyect!</h1>;
+    return <h1>Something wrong happened</h1>;
   }
 
   return (
@@ -39,6 +39,12 @@ export default function ProjectView() {
         centered
         fullScreen
         transitionProps={{ transition: "fade", duration: 200 }}
+        styles={{
+          body: {
+            padding: 0,
+            scrollbarWidth : 'none',
+          },
+        }}
       >
         <UpdateModalContent />
       </Modal>

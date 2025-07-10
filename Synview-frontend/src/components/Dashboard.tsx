@@ -5,7 +5,7 @@ import { Modal } from "@mantine/core";
 
 export default function Dashboard() {
   return (
-    <div className="flex flex-col w-full h-full bg-neutral-900">
+    <div className="flex flex-col w-full h-full bg-neutral-900 ">
       <Navbar />
       <Outlet />
     </div>

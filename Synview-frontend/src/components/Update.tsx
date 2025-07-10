@@ -3,6 +3,8 @@ import React from "react";
 import type { Update as UpdateInfo } from "../../../common/types.ts";
 import { useAppDispatch } from "../hooks.ts";
 import { openQuestionModal } from "../slices/questionModalSlice.ts";
+import { Text } from "@mantine/core";
+import { TimeValue } from "@mantine/dates";
 export default function Update({
   created_at,
   description,
@@ -12,8 +14,11 @@ export default function Update({
   return (
     <>
       <hr />
-
-      <div className="timeline-start "> {created_at.toString()}</div>
+      <div className="timeline-start ">
+        <Text>
+          <TimeValue format="12h" value={new Date(created_at)} />
+        </Text>
+      </div>
       <div className="timeline-middle">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +34,7 @@ export default function Update({
         </svg>
       </div>
       <div className="timeline-end timeline-box flex w-[90%] items-center justify-between">
-        <p className="mr-4 text-black"> {description}</p>
+        <p className=" text-black break-all text-left"> {description}</p>
         <div className="flex gap-4">
           <button
             type="button"

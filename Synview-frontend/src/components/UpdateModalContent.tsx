@@ -1,28 +1,57 @@
 import React, { useState } from "react";
-
+import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useAppSelector } from "../hooks.ts";
 import {
   useGetPayloadQuery,
   useGetUpdateQuestionsQuery,
   usePostQuestionMutation,
+  useGetFilesQuery,
+  useGetProjectByIdQuery,
+  useGetUpdateByIdQuery,
 } from "../services/apiSlice.ts";
 import Loading from "./HelperComponents/Loading.tsx";
+import { useParams } from "react-router-dom";
+import NotFound from "./NotFound.tsx";
 export default function UpdateModalContent() {
+  const { id: project_id } = useParams();
+  const id = useAppSelector((state) => state.questionModal.commit_id);
+
+  const { data: projectData, isLoading: isProjectByIdLoading } =
+    useGetProjectByIdQuery(project_id ?? skipToken);
   const [textUpdate, setTextUpdate] = useState("");
   const [postQuestion] = usePostQuestionMutation();
+
   const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
     undefined,
     {
       refetchOnMountOrArgChange: true,
     }
   );
-  const id = useAppSelector((state) => state.questionModal.commit_id);
-  const { data: questions, isLoading: QuestionsLoading } =
-    useGetUpdateQuestionsQuery(id ?? 0, {
-      skip: !id,
-    });
+  const { data: questions, isLoading: isQuestionsLoading } =
+    useGetUpdateQuestionsQuery(id ?? skipToken);
 
-  if (QuestionsLoading || isUserLoading) {
+  const { data: updateData, isLoading: isUpdateByIdLoading } =
+    useGetUpdateByIdQuery(id ?? skipToken);
+
+  const args =
+    UserData?.username && projectData?.repo_url && updateData?.sha
+      ? {
+          user: UserData?.username,
+          repo: projectData?.repo_url,
+          sha: updateData?.sha,
+        }
+      : skipToken;
+
+
+  const { data: fileData, isLoading: isFilesLoading } = useGetFilesQuery(args);
+
+  if (
+    isQuestionsLoading ||
+    isUserLoading ||
+    isProjectByIdLoading ||
+    isUpdateByIdLoading ||
+    isFilesLoading
+  ) {
     return <Loading />;
   }
 
@@ -43,12 +72,22 @@ export default function UpdateModalContent() {
   };
 
   return (
-    <div className="flex text-white flex-row justify-between mt-4 w-full min-h-screen bg-neutral-800">
+    <div className="flex text-white flex-row justify-between w-full min-h-screen bg-neutral-800 ">
       <div className="p-4 flex-1/2">
-        <h1>{id}</h1>
+        <div className="mockup-code h-full w-full">
+          <pre data-prefix="$">
+            {fileData ? (
+              fileData.map((data) => {
+                return <code className="break-all whitespace-break-spaces" key={data.content}>{data.content}</code>;
+              })
+            ) : (
+              <code>No code found</code>
+            )}
+          </pre>
+        </div>
       </div>
       <div className="flex flex-1/3 flex-col p-4">
-        <div className="h-[50%]">
+        <div className="">
           <h1>Code review</h1>
           <div className="border h-96 p-1">
             <p>Get a summry with AI!</p>

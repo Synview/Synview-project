@@ -86,6 +86,10 @@ export default function ProjectViewInfo() {
         onClose={() => dispatch(closGithubModal())}
         title="Enter your info"
         centered
+        classNames={{
+          header: "text-black",
+          content: "bg-stone-900 text-white",
+        }}
       >
         <SyncForm />
       </Modal>
@@ -94,6 +98,10 @@ export default function ProjectViewInfo() {
         onClose={() => dispatch(closeInviteMentorModal())}
         title="Search for a mentor!"
         centered
+        classNames={{
+          header: "text-black bg-stone-900",
+          content: "bg-stone-900 text-white",
+        }}
       >
         <MentorInviteForm />
       </Modal>
