@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, type ChangeEvent } from "react";
 
 import { useAppSelector, useAppDispatch } from "../hooks.ts";
 import {
@@ -65,7 +65,7 @@ export default function UpdateModalContent() {
                     <textarea
                       id="description"
                       value={textUpdate}
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                      onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                         setTextUpdate(e.target.value);
                       }}
                       className="textarea h-full w-full"
