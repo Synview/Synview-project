@@ -20,12 +20,9 @@ export default function ProjectViewInfo() {
   const githubOpen = useAppSelector((state) => state.githubModal.isOpen);
   const inviteOpen = useAppSelector((state) => state.inviteMentorModal.isOpen);
 
-  const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
-    undefined,
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  const { data: UserData } = useGetPayloadQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   if (!id) {
     return <NotFound />;
@@ -39,15 +36,16 @@ export default function ProjectViewInfo() {
           <button
             type="button"
             className="btn"
-            onClick={() =>
+            onClick={() => {
+              if (!UserData?.id) return;
               dispatch(
                 openGithubModal({
                   project_id: parseInt(id),
-                  user_id: UserData?.id,
+                  user_id: UserData.id,
                   isOpen: true,
                 })
-              )
-            }
+              );
+            }}
           >
             Sync commits
           </button>
