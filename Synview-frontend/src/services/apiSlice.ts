@@ -17,7 +17,6 @@ import {
   type Update
 } from "../../../common/types.ts";
 import {
-  PostProjectSchema,
   PostQuestionSchema,
   PostUpdateSchema,
 } from "../../../common/schemas.ts";

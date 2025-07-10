@@ -5,7 +5,6 @@ import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
 import {
   GithubInfoSchema,
-  PostCommitDataSchema,
 } from "../../common/schemas.ts";
 import { Octokit } from "npm:@octokit/rest";
 const env = Deno.env.toObject();

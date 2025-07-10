@@ -1,7 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import {
-  useGetMentorsQuery,
   useGetPayloadQuery,
 } from "../services/apiSlice.ts";
 import {
@@ -28,7 +27,7 @@ export default function ProjectViewInfo() {
     return <NotFound />;
   }
 
-  const { data: UserData } = useGetPayloadQuery(undefined, {
+  const { data: UserData, isLoading : isUserLoading } = useGetPayloadQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
 
@@ -65,10 +64,11 @@ export default function ProjectViewInfo() {
             type="button"
             className="btn"
             onClick={() => {
+              if(!UserData?.id) return
               dispatch(
                 openInviteMentorModal({
                   project_id: parseInt(id),
-                  user_id: UserData?.id,
+                  user_id: UserData.id,
                   isOpen: true,
                 })
               );
@@ -81,7 +81,7 @@ export default function ProjectViewInfo() {
       </div>
       <Modal
         opened={githubOpen}
-        onClose={() => dispatch(closGithubModal())}
+        onClose={() => dispatch(closeGithubModal())}
         title="Enter your info"
         centered
         classNames={{

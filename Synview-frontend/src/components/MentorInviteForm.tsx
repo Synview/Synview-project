@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useInviteMentorMutation } from "../services/apiSlice.ts";
 import { useAppSelector } from "../hooks.ts";
-import { ProjectRoles } from "../../../common/schemas.ts";
+import { ProjectRolesSchema } from "../../../common/schemas.ts";
 export default function MentorInviteForm() {
   const [invitedMentorId, setInvitedMentorId] = useState("");
 
@@ -15,7 +15,7 @@ export default function MentorInviteForm() {
     try {
       if (projectId && userId) {
         await inviteMentor({
-          role: ProjectRoles.REVIEWER,
+          role: ProjectRolesSchema.Enum.REVIEWER,
           invited_user_id: parseInt(invitedMentorId),
           inviting_user_id: userId,
           invited_project_id: projectId,
