@@ -6,7 +6,7 @@ import { openQuestionModal } from "../slices/questionModalSlice.ts";
 import { Text } from "@mantine/core";
 import { TimeValue } from "@mantine/dates";
 export default function Update({
-  created_at,
+  created_at: createdAt,
   description,
   update_id,
 }: UpdateInfo) {

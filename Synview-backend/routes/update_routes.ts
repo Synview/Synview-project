@@ -5,6 +5,7 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { PrismaClient } from "../generated/prisma/client.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
+import { sendDataToUsers } from "../websocket/websocket_server.ts";
 type AppState = {
   session: Session;
 };
@@ -53,6 +54,9 @@ updateRouter
       await prisma.updates.create({
         data: newUpdate,
       });
+
+      sendDataToUsers(newUpdate);
+
       context.response.status = 201;
       context.response.body = {
         message: "New update created!",
