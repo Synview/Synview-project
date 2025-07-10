@@ -6,8 +6,8 @@ export default function Landing() {
   return (
     <div>
       <LandingLayout />
-      <Form/>
-      <Info/>
+      <Form />
+      <Info />
     </div>
   );
 }

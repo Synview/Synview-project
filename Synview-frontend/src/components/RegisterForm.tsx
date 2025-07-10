@@ -1,11 +1,10 @@
-import React, { ChangeEvent } from "react";
+import React, { type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Register } from "../services/apiHandler.ts";
 import { useState } from "react";
 import { useRegisterMutation } from "../services/apiSlice.ts";
 
 export default function LoginForm() {
-  const [register, { data, error, isLoading }] = useRegisterMutation();
+  const [register] = useRegisterMutation();
 
   const navigate = useNavigate();
 
@@ -13,7 +12,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
        await register({
@@ -40,7 +39,7 @@ export default function LoginForm() {
               placeholder="Name"
               id="Username"
               value={username}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setUserName(e.target.value);
               }}
             ></input>
@@ -51,7 +50,7 @@ export default function LoginForm() {
               placeholder="Email"
               id="email"
               value={email}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setEmail(e.target.value);
               }}
             ></input>
@@ -62,7 +61,7 @@ export default function LoginForm() {
               placeholder="Password"
               id="password"
               value={password}
-              onChange={(e: ChangeEvent<any>) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setPassword(e.target.value);
               }}
             ></input>

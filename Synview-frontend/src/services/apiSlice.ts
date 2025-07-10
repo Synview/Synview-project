@@ -9,6 +9,8 @@ import {
   type Project,
   type Updates,
   type PostUpdate,
+  type Question,
+  type PostQuestion,
 } from "../../../common/types.ts";
 const url = import.meta.env.VITE_URL;
 export const apiSlice = createApi({
@@ -17,7 +19,7 @@ export const apiSlice = createApi({
     baseUrl: url,
     credentials: "include",
   }),
-  tagTypes: ["Projects", "User", "Updates"],
+  tagTypes: ["Projects", "User", "Updates", "Questions"],
   endpoints: (builder) => ({
     register: builder.mutation<void, EmailRegisterRequestSchema>({
       query: (newUser: EmailRegisterRequestSchema) => ({
@@ -63,6 +65,18 @@ export const apiSlice = createApi({
     getPayload: builder.query<UserInfo, void>({
       query: () => "getPayload",
     }),
+    getUpdateQuestions: builder.query<Question[], number>({
+      query: (id) => `getUpdateQuestions/${id}`,
+      providesTags: ["Questions"],
+    }),
+    postQuestion: builder.mutation<void, PostQuestion>({
+      query: (Question: PostQuestion) => ({
+        url: "postQuestion",
+        method: "POST",
+        body: Question,
+      }),
+      invalidatesTags: ["Questions"],
+    }),
   }),
 });
 
@@ -75,4 +89,6 @@ export const {
   useGetProjectByIdQuery,
   useGetMyUpdatesQuery,
   usePostUpdateMutation,
+  useGetUpdateQuestionsQuery,
+  usePostQuestionMutation,
 } = apiSlice;
