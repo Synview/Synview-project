@@ -14,7 +14,13 @@ import {
   type GithubInfo,
   type PostInvitaion,
 } from "../../../common/types.ts";
+import {
+  PostProjectSchema,
+  PostQuestionSchema,
+  PostUpdateSchema,
+} from "../../../common/schemas.ts";
 const url = import.meta.env.VITE_URL;
+const wsurl = import.meta.env.VITE_WS_URL;
 export const apiSlice = createApi({
   reducerPath: "apiSlice",
   baseQuery: fetchBaseQuery({
@@ -54,6 +60,29 @@ export const apiSlice = createApi({
     }),
     getMyUpdates: builder.query<Updates, string>({
       query: (id) => `getMyUpdates/${id}`,
+      async onCacheEntryAdded(
+        arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        const ws = new WebSocket(wsurl);
+        try {
+          await cacheDataLoaded;
+          const listener = (event: MessageEvent) => {
+            const data = JSON.parse(event.data);
+            if (!PostUpdateSchema.safeParse(data).success) {
+              throw new Error("Schema didnt validate correctly");
+            }
+            updateCachedData((draft) => {
+              draft.push(data);
+            });
+          };
+          ws.addEventListener("message", listener);
+        } catch {
+          throw new Error("Couldnt update updates trough websocket");
+        }
+        await cacheEntryRemoved;
+        ws.close();
+      },
       providesTags: ["Updates"],
     }),
     postUpdate: builder.mutation<void, PostUpdate>({
@@ -69,6 +98,29 @@ export const apiSlice = createApi({
     }),
     getUpdateQuestions: builder.query<Question[], number>({
       query: (id) => `getUpdateQuestions/${id}`,
+      async onCacheEntryAdded(
+        arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        const ws = new WebSocket(wsurl);
+        try {
+          await cacheDataLoaded;
+          const listener = (event: MessageEvent) => {
+            const data = JSON.parse(event.data);
+            if (!PostQuestionSchema.safeParse(data).success) {
+              throw new Error("Schema didnt validate correctly");
+            }
+            updateCachedData((draft) => {
+              draft.push(data);
+            });
+          };
+          ws.addEventListener("message", listener);
+        } catch {
+          throw new Error("Couldnt update questions trough websocket");
+        }
+        await cacheEntryRemoved;
+        ws.close();
+      },
       providesTags: ["Questions"],
     }),
     postQuestion: builder.mutation<void, PostQuestion>({
@@ -108,5 +160,5 @@ export const {
   useGetUpdateQuestionsQuery,
   usePostQuestionMutation,
   useGetMyCommitsMutation,
-  useInviteMentorMutation
+  useInviteMentorMutation,
 } = apiSlice;

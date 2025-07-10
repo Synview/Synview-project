@@ -17,10 +17,11 @@ export default function UpdateModalContent() {
     }
   );
   const id = useAppSelector((state) => state.questionModal.commit_id);
+  if (!id) {
+    return <Loading />;
+  }
   const { data: questions, isLoading: QuestionsLoading } =
-    useGetUpdateQuestionsQuery(id ?? 0, {
-      skip: !id,
-    });
+    useGetUpdateQuestionsQuery(id);
 
   if (QuestionsLoading || isUserLoading) {
     return <Loading />;

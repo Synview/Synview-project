@@ -4,7 +4,7 @@ import type { Update as UpdateInfo } from "../../../common/types.ts";
 import { useAppDispatch } from "../hooks.ts";
 import { openQuestionModal } from "../slices/questionModalSlice.ts";
 export default function Update({
-  created_at,
+  created_at: createdAt,
   description,
   update_id,
 }: UpdateInfo) {
@@ -13,7 +13,10 @@ export default function Update({
     <>
       <hr />
 
-      <div className="timeline-start "> {created_at.toString()}</div>
+      <div className="timeline-start ">
+        {" "}
+        {createdAt ? createdAt.toString() : "Just now"}
+      </div>
       <div className="timeline-middle">
         <svg
           xmlns="http://www.w3.org/2000/svg"
