@@ -3,9 +3,11 @@ import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
-import { GithubInfoSchema } from "../../common/schemas.ts";
+import {
+  GithubInfoSchema,
+  PostCommitDataSchema,
+} from "../../common/schemas.ts";
 import { Octokit } from "npm:@octokit/rest";
-import { Page } from "https://deno.land/x/mongo@v0.31.2/src/utils/saslprep/memory_pager.ts";
 const env = Deno.env.toObject();
 type AppState = {
   session: Session;
@@ -70,6 +72,48 @@ githubRouter
       };
     }
   })
-  .get("/getCommit", async (context) => {});
+  .get("/getCommitFiles", async (context) => {
+    try {
+      const url = context.request.url;
+      const github_user = url.searchParams.get("user");
+      const repo_name = url.searchParams.get("repo");
+      const commit_sha = url.searchParams.get("sha");
+      if (!github_user || !repo_name || !commit_sha) {
+        throw new Error("Didnt find url info");
+      }
+      const response = await octokit.rest.repos.getCommit({
+        owner: github_user,
+        repo: repo_name,
+        ref: commit_sha,
+      });
+      const commitFiles = response.data.files;
+      if (commitFiles) {
+        const files = await Promise.all(
+          commitFiles.map(async (commitFile) => {
+            return await octokit.repos.getContent({
+              owner: github_user,
+              repo: repo_name,
+              path: commitFile.filename,
+              sha: commitFile.sha,
+            });
+          })
+        );
+        const decodedFiles = files.map((file) => {
+          return { name: file.data.name, content: atob(file.data.content) };
+        });
+        context.response.body = decodedFiles;
+      } else {
+        context.response.status = 404;
+        context.response.body = {
+          error: "No files found on commit",
+        };
+      }
+    } catch (error) {
+      context.response.status = 500;
+      context.response.body = {
+        error: "Error geting commits data: " + error,
+      };
+    }
+  });
 
 export { githubRouter };
