@@ -6,16 +6,16 @@ export default function SyncForm() {
   const [githubUsername, setGithubUsername] = useState("");
   const [projectName, setProjectName] = useState("");
   const [getCommits] = useGetMyCommitsMutation();
-  const project_id = useAppSelector((state) => state.githubModal.project_id);
-  const user_id = useAppSelector((state) => state.githubModal.user_id);
+  const projectId = useAppSelector((state) => state.githubModal.project_id);
+  const userId = useAppSelector((state) => state.githubModal.user_id);
 
   const handleSyncForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (projectName && githubUsername && project_id && user_id) {
+      if (projectName && githubUsername && projectId && userId) {
         await getCommits({
-          project_id: project_id,
-          user_id: user_id,
+          project_id: projectId,
+          user_id: userId,
           repo_name: projectName,
           github_user: githubUsername,
         });
@@ -32,7 +32,7 @@ export default function SyncForm() {
       <fieldset className="fieldset border-1 p-4 rounded-box border-neutral-600 bg-neutral-800">
         <div className="flex flex-col justify-center">
           <form onSubmit={handleSyncForm}>
-            <label>Github username</label>
+            <label htmlFor="Username">Github username</label>
             <input
               className="input bg-neutral-700 w-full"
               typeof="text"
@@ -43,12 +43,12 @@ export default function SyncForm() {
                 setGithubUsername(e.target.value);
               }}
             ></input>
-            <label>Github proyect name</label>
+            <label htmlFor="projectname">Github proyect name</label>
             <input
               className="input bg-neutral-700 w-full"
               typeof="text"
-              placeholder="Password"
-              id="password"
+              placeholder="Project name "
+              id="projectname"
               value={projectName}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setProjectName(e.target.value);

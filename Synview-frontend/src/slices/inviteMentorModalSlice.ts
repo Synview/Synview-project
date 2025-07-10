@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-interface inviteMentorState {
-  project_id: number | undefined;
-  user_id: number | undefined;
+interface InviteMentorState {
+  project_id: number;
+  user_id: number;
   isOpen: boolean;
 }
 
-const initialState: inviteMentorState = {
+const initialState: InviteMentorState = {
   user_id: 0,
   project_id: 0,
   isOpen: false,
@@ -19,7 +19,7 @@ export const inviteMentorSlice = createSlice({
   reducers: {
     openInviteMentorModal: (
       state,
-      action: PayloadAction<inviteMentorState>
+      action: PayloadAction<InviteMentorState>
     ) => {
       state.project_id = action.payload.project_id;
       state.user_id = action.payload.user_id;
