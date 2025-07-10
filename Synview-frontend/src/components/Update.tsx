@@ -13,7 +13,10 @@ export default function Update({
     <>
       <hr />
 
-      <div className="timeline-start "> {created_at.toString()}</div>
+      <div className="timeline-start ">
+        {" "}
+        {created_at ? created_at.toString() : "Just now"}
+      </div>
       <div className="timeline-middle">
         <svg
           xmlns="http://www.w3.org/2000/svg"
