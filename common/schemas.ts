@@ -1,6 +1,22 @@
 import { z } from "npm:zod";
-import { ProjectRoles } from "../Synview-backend/generated/prisma/client.ts";
-import { invitation_status } from "../Synview-backend/generated/prisma/client.ts";
+
+enum ProjectRoles {
+  CREATOR,
+  VIEWER,
+  REVIEWER,
+}
+
+enum invitation_status {
+  PENDING,
+  COMPLETE,
+}
+
+export const GithubInfoSchema = z.object({
+  github_user: z.string(),
+  repo_name: z.string(),
+  user_id: z.number(),
+  project_id: z.number(),
+});
 
 export const InvitationSchema = z.object({
   project_invitation_id: z.number(),
