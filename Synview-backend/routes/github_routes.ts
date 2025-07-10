@@ -88,7 +88,7 @@ githubRouter
       });
       const commitFiles = response.data.files;
       if (commitFiles) {
-        const Files = await Promise.all(
+        const files = await Promise.all(
           commitFiles.map(async (commitFile) => {
             return await octokit.repos.getContent({
               owner: github_user,
@@ -98,7 +98,7 @@ githubRouter
             });
           })
         );
-        const decodedFiles = Files.map((file) => {
+        const decodedFiles = files.map((file) => {
           return { name: file.data.name, content: atob(file.data.content) };
         });
         context.response.body = decodedFiles;
