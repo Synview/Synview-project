@@ -7,11 +7,11 @@ export async function EntrySocket(socket: WebSocket): Promise<void> {
   return;
 }
 
-export function sendQuestionToConnectedUsers(data: any) {
-  const question = JSON.stringify(data);
+export function sendDataToUsers(data: any) {
+  const jsonData = JSON.stringify(data);
   for (const socket of sockets) {
     try {
-      socket.send(question);
+      socket.send(jsonData);
     } catch {
       sockets.delete(socket);
     }
