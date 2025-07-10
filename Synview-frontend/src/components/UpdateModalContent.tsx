@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, type ChangeEvent } from "react";
 import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useAppSelector } from "../hooks.ts";
 import {
@@ -104,7 +104,7 @@ export default function UpdateModalContent() {
                     <textarea
                       id="description"
                       value={textUpdate}
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                      onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                         setTextUpdate(e.target.value);
                       }}
                       className="textarea h-full w-full"

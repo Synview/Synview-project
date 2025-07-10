@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, type ChangeEvent, type FormEvent } from "react";
 import { useGetPayloadQuery, usePostUpdateMutation } from "../services/apiSlice.ts";
 import { useParams } from "react-router-dom";
 export default function NewUpdate() {
@@ -12,7 +12,7 @@ export default function NewUpdate() {
   );
   const { id: ProjectId } = useParams();
 
-  const handleNewUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleNewUpdate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       if (ProjectId && UserData) {
@@ -38,7 +38,7 @@ export default function NewUpdate() {
               <textarea
                 id="description"
                 value={textUpdate}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                   setTextUpdate(e.target.value);
                 }}
                 className="textarea h-full w-full"

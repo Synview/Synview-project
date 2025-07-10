@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useLoginMutation } from "../services/apiSlice.ts";
@@ -12,7 +12,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [tryAgain, setTryAgain] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -43,7 +43,7 @@ export default function LoginForm() {
               placeholder="Email"
               id="email"
               value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setEmail(e.target.value);
               }}
             />
@@ -54,7 +54,7 @@ export default function LoginForm() {
               placeholder="Password"
               id="password"
               value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setPassword(e.target.value);
               }}
             ></input>

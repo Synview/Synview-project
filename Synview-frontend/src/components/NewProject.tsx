@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, type ChangeEvent, type FormEvent } from "react";
 import {
   useGetPayloadQuery,
   usePostProjectMutation,
@@ -13,7 +13,7 @@ export default function NewProject() {
     }
   );
   const [postProject] = usePostProjectMutation();
-  const handleNewProject = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleNewProject = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       if (UserData?.id) {
@@ -58,7 +58,7 @@ export default function NewProject() {
               placeholder="Project Name"
               id="projectName"
               value={projectName}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setProjectName(e.target.value);
               }}
             ></input>
@@ -66,7 +66,7 @@ export default function NewProject() {
             <textarea
               id="description"
               value={projectDescription}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                 setProjectDescription(e.target.value);
               }}
               className="textarea h-24 w-full"
