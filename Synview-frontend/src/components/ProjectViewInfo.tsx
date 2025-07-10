@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useGetPayloadQuery } from "../services/apiSlice.ts";
 import {
-  closGithubModal,
+  closeGithubModal,
   openGithubModal,
 } from "../slices/syncGithubModalSlice.ts";
 import {
