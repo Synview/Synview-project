@@ -55,13 +55,13 @@ model user_projects {
 }
 
 model updates {
-  update_id    Int      @id @default(autoincrement())
-  description  String
-  summary      String?
-  code_changes String?
-  created_at   DateTime @default(now())
-  user_id      Int
-  project_id   Int
+  update_id   Int      @id @default(autoincrement())
+  description String
+  summary     String?
+  sha         String?  @unique
+  created_at  DateTime @default(now())
+  user_id     Int
+  project_id  Int
 
   project   projects    @relation(fields: [project_id], references: [project_id])
   comments  comments[]

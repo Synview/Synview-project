@@ -48,8 +48,6 @@ updateRouter
       };
     }
   })
-  .post("", async (context) => {
-    
-  });
+
 
 export { updateRouter };

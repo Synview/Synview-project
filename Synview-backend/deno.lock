@@ -20,6 +20,8 @@
     "jsr:@std/path@1": "1.1.0",
     "jsr:@std/path@^1.1.0": "1.1.0",
     "jsr:@zaubrik/djwt@^3.0.2": "3.0.2",
+    "npm:@octokit/rest@*": "22.0.0_@octokit+core@7.0.2",
+    "npm:@octokit/rest@22": "22.0.0_@octokit+core@7.0.2",
     "npm:@prisma/client@^6.10.1": "6.11.0",
     "npm:@prisma/extension-accelerate@*": "2.0.1_@prisma+client@6.11.0",
     "npm:@prisma/extension-accelerate@^2.0.1": "2.0.1_@prisma+client@6.11.0",
@@ -119,6 +121,90 @@
     }
   },
   "npm": {
+    "@octokit/auth-token@6.0.0": {
+      "integrity": "sha512-P4YJBPdPSpWTQ1NU4XYdvHvXJJDxM6YwpS0FZHRgP7YFkdVxsWcpWGy/NVqlAA7PcPCnMacXlRm1y2PFZRWL/w=="
+    },
+    "@octokit/core@7.0.2": {
+      "integrity": "sha512-ODsoD39Lq6vR6aBgvjTnA3nZGliknKboc9Gtxr7E4WDNqY24MxANKcuDQSF0jzapvGb3KWOEDrKfve4HoWGK+g==",
+      "dependencies": [
+        "@octokit/auth-token",
+        "@octokit/graphql",
+        "@octokit/request",
+        "@octokit/request-error",
+        "@octokit/types",
+        "before-after-hook",
+        "universal-user-agent"
+      ]
+    },
+    "@octokit/endpoint@11.0.0": {
+      "integrity": "sha512-hoYicJZaqISMAI3JfaDr1qMNi48OctWuOih1m80bkYow/ayPw6Jj52tqWJ6GEoFTk1gBqfanSoI1iY99Z5+ekQ==",
+      "dependencies": [
+        "@octokit/types",
+        "universal-user-agent"
+      ]
+    },
+    "@octokit/graphql@9.0.1": {
+      "integrity": "sha512-j1nQNU1ZxNFx2ZtKmL4sMrs4egy5h65OMDmSbVyuCzjOcwsHq6EaYjOTGXPQxgfiN8dJ4CriYHk6zF050WEULg==",
+      "dependencies": [
+        "@octokit/request",
+        "@octokit/types",
+        "universal-user-agent"
+      ]
+    },
+    "@octokit/openapi-types@25.1.0": {
+      "integrity": "sha512-idsIggNXUKkk0+BExUn1dQ92sfysJrje03Q0bv0e+KPLrvyqZF8MnBpFz8UNfYDwB3Ie7Z0TByjWfzxt7vseaA=="
+    },
+    "@octokit/plugin-paginate-rest@13.1.1_@octokit+core@7.0.2": {
+      "integrity": "sha512-q9iQGlZlxAVNRN2jDNskJW/Cafy7/XE52wjZ5TTvyhyOD904Cvx//DNyoO3J/MXJ0ve3rPoNWKEg5iZrisQSuw==",
+      "dependencies": [
+        "@octokit/core",
+        "@octokit/types"
+      ]
+    },
+    "@octokit/plugin-request-log@6.0.0_@octokit+core@7.0.2": {
+      "integrity": "sha512-UkOzeEN3W91/eBq9sPZNQ7sUBvYCqYbrrD8gTbBuGtHEuycE4/awMXcYvx6sVYo7LypPhmQwwpUe4Yyu4QZN5Q==",
+      "dependencies": [
+        "@octokit/core"
+      ]
+    },
+    "@octokit/plugin-rest-endpoint-methods@16.0.0_@octokit+core@7.0.2": {
+      "integrity": "sha512-kJVUQk6/dx/gRNLWUnAWKFs1kVPn5O5CYZyssyEoNYaFedqZxsfYs7DwI3d67hGz4qOwaJ1dpm07hOAD1BXx6g==",
+      "dependencies": [
+        "@octokit/core",
+        "@octokit/types"
+      ]
+    },
+    "@octokit/request-error@7.0.0": {
+      "integrity": "sha512-KRA7VTGdVyJlh0cP5Tf94hTiYVVqmt2f3I6mnimmaVz4UG3gQV/k4mDJlJv3X67iX6rmN7gSHCF8ssqeMnmhZg==",
+      "dependencies": [
+        "@octokit/types"
+      ]
+    },
+    "@octokit/request@10.0.3": {
+      "integrity": "sha512-V6jhKokg35vk098iBqp2FBKunk3kMTXlmq+PtbV9Gl3TfskWlebSofU9uunVKhUN7xl+0+i5vt0TGTG8/p/7HA==",
+      "dependencies": [
+        "@octokit/endpoint",
+        "@octokit/request-error",
+        "@octokit/types",
+        "fast-content-type-parse",
+        "universal-user-agent"
+      ]
+    },
+    "@octokit/rest@22.0.0_@octokit+core@7.0.2": {
+      "integrity": "sha512-z6tmTu9BTnw51jYGulxrlernpsQYXpui1RK21vmXn8yF5bp6iX16yfTtJYGK5Mh1qDkvDOmp2n8sRMcQmR8jiA==",
+      "dependencies": [
+        "@octokit/core",
+        "@octokit/plugin-paginate-rest",
+        "@octokit/plugin-request-log",
+        "@octokit/plugin-rest-endpoint-methods"
+      ]
+    },
+    "@octokit/types@14.1.0": {
+      "integrity": "sha512-1y6DgTy8Jomcpu33N+p5w58l6xyt55Ar2I91RPiIA0xCJBXyUAhXCcmZaDWSANiha7R9a6qJJ2CRomGPZ6f46g==",
+      "dependencies": [
+        "@octokit/openapi-types"
+      ]
+    },
     "@prisma/client@6.10.1": {
       "integrity": "sha512-Re4pMlcUsQsUTAYMK7EJ4Bw2kg3WfZAAlr8GjORJaK4VOP6LxRQUQ1TuLnxcF42XqGkWQ36q5CQF1yVadANQ6w==",
       "scripts": true
@@ -181,6 +267,9 @@
         "undici-types"
       ]
     },
+    "before-after-hook@4.0.0": {
+      "integrity": "sha512-q6tR3RPqIB1pMiTRMFcZwuG5T8vwp+vUvEG0vuI6B+Rikh5BfPp2fQ82c925FOs+b0lcFQ8CFrL+KbilfZFhOQ=="
+    },
     "cross-spawn@7.0.6": {
       "integrity": "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==",
       "dependencies": [
@@ -204,6 +293,9 @@
     },
     "dotenv@16.5.0": {
       "integrity": "sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg=="
+    },
+    "fast-content-type-parse@3.0.0": {
+      "integrity": "sha512-ZvLdcY8P+N8mGQJahJV5G4U88CSvT1rP8ApL6uETe88MBXrBHAkZlSEySdUlyztF7ccb+Znos3TFqaepHxdhBg=="
     },
     "isexe@2.0.0": {
       "integrity": "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw=="
@@ -242,6 +334,9 @@
     "undici-types@6.21.0": {
       "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="
     },
+    "universal-user-agent@7.0.3": {
+      "integrity": "sha512-TmnEAEAsBJVZM/AADELsK76llnwcf9vMKuPz8JflO1frO8Lchitr0fNaN9d+Ap0BjKtqWqd/J17qeDnXh8CL2A=="
+    },
     "which@2.0.2": {
       "integrity": "sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==",
       "dependencies": [
@@ -262,6 +357,20 @@
     "https://deno.land/x/oak_sessions/mod.ts": "https://deno.land/x/oak_sessions@v9.0.0/mod.ts"
   },
   "remote": {
+    "https://cdn.skypack.dev/-/@octokit/auth-token@v6.0.0-7hmkDuDb2i31VpcPMT9k/dist=es2019,mode=imports/optimized/@octokit/auth-token.js": "f021447a1b3f42c4c053d26b04ae5149740f60fa989731881eb504110491034b",
+    "https://cdn.skypack.dev/-/@octokit/core@v7.0.2-uLkJ2UNbLT1OzPYfGQlU/dist=es2019,mode=imports/optimized/@octokit/core.js": "14a714bda1b7f983782dee8d83ebbbb50a610cf48e4b6b735ae4be8013c22731",
+    "https://cdn.skypack.dev/-/@octokit/endpoint@v11.0.0-06ih9CtFKlA79LlAL8zy/dist=es2019,mode=imports/optimized/@octokit/endpoint.js": "0d5328fa53adfb26b4a633e207b1009f0ac92dd3ec88837368bb8a1ec9754531",
+    "https://cdn.skypack.dev/-/@octokit/graphql@v9.0.1-RuSStvqn2tTSv8mPNoMH/dist=es2019,mode=imports/optimized/@octokit/graphql.js": "353287165bc546e9d1ff1ea0eb43bcb72082093a95317db0972380b05d1d6fd5",
+    "https://cdn.skypack.dev/-/@octokit/plugin-paginate-rest@v13.0.1-vwdQhXr7Wa6AzTMakGlE/dist=es2019,mode=imports/optimized/@octokit/plugin-paginate-rest.js": "d5af3112af00e8e829a87b6ac3233a023d179809e2037ed2fb27cceeca1f5faf",
+    "https://cdn.skypack.dev/-/@octokit/plugin-request-log@v6.0.0-eGRGTNpWAEROGIxCWulF/dist=es2019,mode=imports/optimized/@octokit/plugin-request-log.js": "37cddf863e1ed70b29726bc2ac8daeba3b458e5bb68026e93e9990480b712755",
+    "https://cdn.skypack.dev/-/@octokit/plugin-rest-endpoint-methods@v16.0.0-qU9kWondTT1xV9uw50Xr/dist=es2019,mode=imports/optimized/@octokit/plugin-rest-endpoint-methods.js": "f202e7a5837f17533527fc2ab24fdff1dbafcfd0815a5cac933d731febb6b22f",
+    "https://cdn.skypack.dev/-/@octokit/request-error@v7.0.0-uCo5XPfHxUPmrKhrWyWL/dist=es2019,mode=imports/optimized/@octokit/request-error.js": "3148a9cd1c979c779319c4c4dfb10bc7789756e51da5068106094705b370287a",
+    "https://cdn.skypack.dev/-/@octokit/request@v10.0.2-vYptP1M4te0ibxkJbn5r/dist=es2019,mode=imports/optimized/@octokit/request.js": "789fa1044dbe4743a6921d0e1d7ef72c1217f0fa8d8ec0b51dfd9adcf6e1c0fc",
+    "https://cdn.skypack.dev/-/@octokit/rest@v22.0.0-apaAbpHxaSgEZC3HptH8/dist=es2019,mode=imports/optimized/@octokit/rest.js": "4abec5aa34cabe349f0e6175b0fa034a14a3dc333c8faa146b09cdfa620c8014",
+    "https://cdn.skypack.dev/-/before-after-hook@v4.0.0-Dcd98jfx59Qjj4aTRdxz/dist=es2019,mode=imports/optimized/before-after-hook.js": "fff481bfb6859e458604eb30bf96df68d19be017ae55ead306b67ebf7753ce2a",
+    "https://cdn.skypack.dev/-/fast-content-type-parse@v3.0.0-TRirJ1QFR7dU0jZGvePI/dist=es2019,mode=imports/optimized/fast-content-type-parse.js": "4d2da4b30887bc0ec2b94a376b868002b26e7bfc568a14152ca143eefea7b181",
+    "https://cdn.skypack.dev/-/universal-user-agent@v7.0.3-GXB0HeoWoob2mkmaQcnk/dist=es2019,mode=imports/optimized/universal-user-agent.js": "405c5b520428264fe2f6ea4a0e0120cf37fe611265dbb5bdde73f5e23d053725",
+    "https://cdn.skypack.dev/@octokit/rest": "3185c973ec12ebbc41f6177ecb84fb0623139997599f963246d635c3b6505ddf",
     "https://deno.land/std@0.132.0/_deno_unstable.ts": "23a1a36928f1b6d3b0170aaa67de09af12aa998525f608ff7331b9fb364cbde6",
     "https://deno.land/std@0.132.0/_util/assert.ts": "e94f2eb37cebd7f199952e242c77654e43333c1ac4c5c700e929ea3aa5489f74",
     "https://deno.land/std@0.132.0/_util/os.ts": "49b92edea1e82ba295ec946de8ffd956ed123e2948d9bd1d3e901b04e4307617",
@@ -873,6 +982,7 @@
       "jsr:@oak/oak@*",
       "jsr:@std/assert@1",
       "jsr:@zaubrik/djwt@^3.0.2",
+      "npm:@octokit/rest@22",
       "npm:@prisma/client@^6.10.1",
       "npm:@prisma/extension-accelerate@^2.0.1",
       "npm:dotenv-cli@8",
