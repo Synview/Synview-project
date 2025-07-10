@@ -1,3 +1,5 @@
+import { PostQuestion, Question } from "../../common/types.ts";
+
 const sockets = new Set<WebSocket>();
 
 export async function EntrySocket(socket: WebSocket): Promise<void> {
@@ -6,6 +8,7 @@ export async function EntrySocket(socket: WebSocket): Promise<void> {
   socket.onerror = () => sockets.delete(socket);
   return;
 }
+
 
 export function sendDataToUsers(data: any) {
   const jsonData = JSON.stringify(data);

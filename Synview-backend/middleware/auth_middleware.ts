@@ -1,18 +1,11 @@
-import {create, verify} from "@zaubrik/djwt";
-import { generateKey, getToken } from "../utils/JWTHelpers.ts";
+import { getToken, getKey, verifyGetPayload } from "../utils/JWTHelpers.ts";
 import { UserPayloadSchema } from "../../common/schemas.ts";
-import {UserPayload} from "../../common/types.ts"
+import { UserPayload } from "../../common/types.ts";
 import { AppState } from "../../common/types.ts";
-import {Context} from "@oak/oak"
-
+import { Context } from "@oak/oak";
 let key: CryptoKey;
 
-
-export async function createToken(payload: any): Promise<string> {
-  key = await generateKey();
-  return create({ alg: "HS512", typ: "JWT" }, payload, key);
-}
-export function getPayload(body: UserPayload) {
+export function getPayloadFromBody(body: UserPayload) {
   try {
     return UserPayloadSchema.parse(body);
   } catch (error) {
@@ -24,7 +17,7 @@ export default async function AuthMiddleware(
   next: () => Promise<unknown>
 ) {
   try {
-    const auth = context.state.session.get("Authorization");
+    const auth = await context.cookies.get("Authorization");
     if (!auth) {
       throw new Error("No auth header");
     }
@@ -32,8 +25,8 @@ export default async function AuthMiddleware(
     if (!token) {
       throw new Error("Couldn't obtain authorization token");
     }
-
-    const payload = await verify(token, key);
+    key = await getKey();
+    const payload = await verifyGetPayload(token, key);
     if (!payload) {
       throw new Error("No payload found - invalid token");
     }
@@ -43,4 +36,3 @@ export default async function AuthMiddleware(
     context.throw(401, "Unauthorized" + err);
   }
 }
-

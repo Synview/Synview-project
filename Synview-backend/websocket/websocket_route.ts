@@ -11,7 +11,6 @@ type AppState = {
 };
 
 const wsRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
 
 wsRouter.use(AuthMiddleware);
 

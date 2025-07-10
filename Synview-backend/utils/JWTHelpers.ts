@@ -1,19 +1,30 @@
 import { Context } from "@oak/oak";
+import { create, verify } from "@zaubrik/djwt";
+
 import { AppState } from "../../common/types.ts";
 import { decode } from "@zaubrik/djwt";
 
-const key = Deno.env.get("AUTH_KEY");
-const keyBytes = new TextEncoder().encode(key)
-export async function generateKey() {
+let key: CryptoKey;
+
+const keySecret = Deno.env.get("AUTH_KEY");
+const keyBytes = new TextEncoder().encode(keySecret);
+export async function getKey() {
   return await crypto.subtle.importKey(
     "raw",
     keyBytes,
     { name: "HMAC", hash: "SHA-512" },
     true,
-    ["sign", "verify"],
+    ["sign", "verify"]
   );
 }
 
+export async function createToken(payload: any): Promise<string> {
+  key = await getKey();
+  return create({ alg: "HS512", typ: "JWT" }, payload, key);
+}
+export async function verifyGetPayload(token: string, key : CryptoKey) {
+  return await verify(token, key);
+}
 export function getToken(auth: string) {
   const authorization = auth;
   if (!authorization) {
@@ -32,9 +43,9 @@ export function getToken(auth: string) {
   return token;
 }
 
-export function getPayloadFromToken(context: Context<AppState>) {
+export async function getPayloadFromToken(context: Context<AppState>) {
   try {
-    const auth = context.state.session.get("Authorization");
+    const auth = await context.cookies.get("Authorization");
     if (!auth) {
       return null;
     }

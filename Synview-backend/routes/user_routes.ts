@@ -2,9 +2,11 @@ import { Router } from "@oak/oak";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { PrismaClient } from "../generated/prisma/client.ts";
 import { hash, verify as bycryptVerify } from "@felix/bcrypt";
-import { createToken, getPayload } from "../middleware/auth_middleware.ts";
+import { getPayloadFromBody } from "../middleware/auth_middleware.ts";
 import { getPayloadFromToken } from "../utils/JWTHelpers.ts";
+import { createToken } from "../utils/JWTHelpers.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
+
 import {
   EmailLoginRequestSchema,
   EmailRegisterRequestSchema,
@@ -111,13 +113,13 @@ userRouter
         id: user.user_id,
       };
 
-      const access_token = await createToken(getPayload(userPayload));
+      const access_token = await createToken(getPayloadFromBody(userPayload));
       context.response.body = {
         token: access_token,
       };
-
-      context.state.session.set("Authorization", `Bearer ${access_token}`);
-      context.response.headers.set("Authorization", `Bearer ${access_token}`);
+      context.cookies.set("Authorization", `Bearer ${access_token}`, {
+        expires: new Date(Date.now() + 60 * 60 * 1000),
+      });
     } catch (e) {
       context.response.status = 500;
       context.response.body = {
@@ -130,8 +132,8 @@ userRouter
 userRouter.use(AuthMiddleware);
 
 userRouter
-  .get("/getPayload", (context) => {
-    const payload = getPayloadFromToken(context);
+  .get("/getPayload", async (context) => {
+    const payload = await getPayloadFromToken(context);
     context.response.body = payload;
   })
   .post("/inviteUser", async (context) => {
@@ -140,7 +142,7 @@ userRouter
         await context.request.body.json()
       );
       await prisma.project_invitation.create({
-        data: Invite
+        data: Invite,
       });
       context.response.status = 201;
       context.response.body = {
@@ -178,7 +180,6 @@ userRouter
       context.response.body = {
         error: "accepted invitations error : " + error,
       };
-      
     }
   })
   .get("/getInvitations/:id", async (context) => {
