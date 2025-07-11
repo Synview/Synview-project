@@ -26,7 +26,7 @@ updateRouter
       context.response.body = MyUpdates;
     } catch (e) {
       context.response.body = {
-        error: "Error fetching updates" + e,
+        error: `Error fetching updates: ${e}`,
       };
     }
   })
@@ -42,7 +42,7 @@ updateRouter
     } catch (e) {
       context.response.status = 402;
       context.response.body = {
-        error: "Error fetching update" + e,
+        error: `Error fetching update: ${e}`,
       };
     }
   })
@@ -64,7 +64,7 @@ updateRouter
     } catch (error) {
       context.response.status = 500;
       context.response.body = {
-        error: "Error creating update: " + error,
+        error: `Error creating update: ${error}`,
       };
     }
   });
