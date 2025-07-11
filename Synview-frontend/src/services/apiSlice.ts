@@ -49,6 +49,12 @@ export const apiSlice = createApi({
         body: User,
       }),
     }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: `logout`,
+        method: "POST",
+      }),
+    }),
     getMyProjects: builder.query<Projects, number>({
       query: (id) => `getMyProjects/${id}`,
       providesTags: ["Projects"],
@@ -111,7 +117,6 @@ export const apiSlice = createApi({
           (newMessage: Question) => {
             updateCachedData((draft) => {
               draft.push(newMessage);
-
             });
           }
         );
@@ -178,4 +183,5 @@ export const {
   useGetMentorsQuery,
   useGetFilesQuery,
   useGetUpdateByIdQuery,
+  useLogoutMutation,
 } = apiSlice;
