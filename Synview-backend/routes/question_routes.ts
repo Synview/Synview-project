@@ -34,10 +34,10 @@ questionRouter
       const newUpdate = PostQuestionSchema.parse(
         await context.request.body.json()
       );
-      await prisma.questions.create({
+      const result = await prisma.questions.create({
         data: newUpdate,
       });
-      sendtoChannel(`UpdateQuestions:${newUpdate.update_id}`, newUpdate);
+      sendtoChannel(`UpdateQuestions:${result.update_id}`, result);
       context.response.status = 201;
       context.response.body = {
         message: "New question created!",
