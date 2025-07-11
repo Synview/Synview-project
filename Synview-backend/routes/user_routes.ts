@@ -136,6 +136,20 @@ userRouter
     const payload = await getPayloadFromToken(context);
     context.response.body = payload;
   })
+  .post("/logout", async (context) => {
+    try {
+      await context.cookies.delete("Authorization");
+      context.response.status = 200;
+      context.response.body = {
+        messae: "Logout user succesfully!",
+      };
+    } catch (error) {
+      context.response.status = 500;
+      context.response.body = {
+        error: "Logout failed, error : " + error,
+      };
+    }
+  })
   .post("/inviteUser", async (context) => {
     try {
       const Invite = PostInvitationSchema.parse(
