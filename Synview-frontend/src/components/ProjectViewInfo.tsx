@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import {
   useGetPayloadQuery,
+  useGetProjectByIdQuery,
 } from "../services/apiSlice.ts";
 import {
   closeGithubModal,
@@ -27,9 +28,13 @@ export default function ProjectViewInfo() {
     return <NotFound />;
   }
 
-  const { data: UserData, isLoading : isUserLoading } = useGetPayloadQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: ProjectData } = useGetProjectByIdQuery(id);
+  const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
+    undefined,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   if (isUserLoading) {
     return <Loading />;
@@ -38,7 +43,7 @@ export default function ProjectViewInfo() {
   return (
     <div className="flex flex-col p-10 bg-neutral-900">
       <div className="flex flex-row justify-between w-full gap-10">
-        <h1>{UserData?.username}</h1>
+        <h1>{ProjectData?.title} - </h1>
         <div className="flex items-center">
           <button
             type="button"
@@ -64,7 +69,7 @@ export default function ProjectViewInfo() {
             type="button"
             className="btn"
             onClick={() => {
-              if(!UserData?.id) return
+              if (!UserData?.id) return;
               dispatch(
                 openInviteMentorModal({
                   project_id: parseInt(id),
