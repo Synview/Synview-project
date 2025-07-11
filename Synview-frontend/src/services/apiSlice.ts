@@ -64,22 +64,19 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Projects"],
     }),
-    getMyUpdates: builder.query<Updates[], string>({
+    getMyUpdates: builder.query<Updates, string>({
       query: (id) => `getMyUpdates/${id}`,
       async onCacheEntryAdded(
         id,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
-        await cacheDataLoaded;
         connect(wsurl);
-        const unsubscribe = subscribe(
-          `Updates:${id}`,
-          (newMessage: Updates) => {
-            updateCachedData((draft) => {
-              draft.push(newMessage);
-            });
-          }
-        );
+        await cacheDataLoaded;
+        const unsubscribe = subscribe(`Updates:${id}`, (newMessage: Update) => {
+          updateCachedData((draft) => {
+            draft.push(newMessage);
+          });
+        });
 
         await cacheEntryRemoved;
         unsubscribe();
@@ -108,18 +105,19 @@ export const apiSlice = createApi({
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         connect(wsurl);
-          await cacheDataLoaded;
-          const unsubscribe = subscribe(
-            `UpdateQuestions:${id}`,
-            (newMessage: Question) => {
-              updateCachedData((draft) => {
-                draft.push(newMessage);
-              });
-            }
-          );
-        
+        await cacheDataLoaded;
+        const unsubscribe = subscribe(
+          `UpdateQuestions:${id}`,
+          (newMessage: Question) => {
+            updateCachedData((draft) => {
+              draft.push(newMessage);
+
+            });
+          }
+        );
+
         await cacheEntryRemoved;
-        unsubscribe()
+        unsubscribe();
       },
       providesTags: ["Questions"],
     }),
