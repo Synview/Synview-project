@@ -132,6 +132,20 @@ userRouter
 userRouter.use(AuthMiddleware);
 
 userRouter
+  .get("/getUser/:id", async (context) => {
+    const id = context.params.id;
+    try {
+      const user = await prisma.users.findUnique({
+        where: { user_id: parseInt(id) },
+      });
+      context.response.body = user;
+    } catch (error) {
+      context.response.status = 500;
+      context.response.body = {
+        error: "Error getting user by id: " + error,
+      };
+    }
+  })
   .get("/getPayload", async (context) => {
     const payload = await getPayloadFromToken(context);
     context.response.body = payload;
