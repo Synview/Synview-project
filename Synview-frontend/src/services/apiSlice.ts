@@ -16,6 +16,7 @@ import {
   type UserData,
   type Update,
   type Invitation,
+  type User,
 } from "../../../common/types.ts";
 import {
   PostQuestionSchema,
@@ -43,6 +44,9 @@ export const apiSlice = createApi({
     "Invitations",
   ],
   endpoints: (builder) => ({
+    getUserById: builder.query<User, number>({
+      query: (id) => `getUser/${id}`,
+    }),
     register: builder.mutation<void, EmailRegisterRequestSchema>({
       query: (newUser: EmailRegisterRequestSchema) => ({
         url: "register",
@@ -67,7 +71,7 @@ export const apiSlice = createApi({
       query: (id) => `getMyProjects/${id}`,
       providesTags: ["Projects"],
     }),
-    getProjectById: builder.query<Project, string>({
+    getProjectById: builder.query<Project, number>({
       query: (id) => `getProject/${id}`,
     }),
     postProject: builder.mutation<void, PostProject>({
@@ -177,6 +181,13 @@ export const apiSlice = createApi({
       query: (id) => `getInvitations/${id}`,
       providesTags: ["Invitations"],
     }),
+    acceptInvitation: builder.mutation<void, Invitation>({
+      query: (Invite: Invitation) => ({
+        url: "acceptInvitations",
+        method: "PUT",
+        body: Invite,
+      }),
+    }),
   }),
 });
 
@@ -197,5 +208,7 @@ export const {
   useGetFilesQuery,
   useGetUpdateByIdQuery,
   useLogoutMutation,
-  useGetInvitationsQuery
+  useGetInvitationsQuery,
+  useGetUserByIdQuery,
+  useAcceptInvitationMutation
 } = apiSlice;
