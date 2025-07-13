@@ -190,7 +190,7 @@ userRouter
         where: {
           project_invitation_id: Invite.project_invitation_id,
         },
-        data: { status: "COMPLETE" },
+        data: { status: "COMPLETE", accepted_at: new Date() },
       });
       await prisma.user_projects.create({
         data: {
