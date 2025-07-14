@@ -5,7 +5,7 @@ import {
   useGetMyProjectsQuery,
   useGetPayloadQuery,
 } from "../services/apiSlice.ts";
-import Loading from './HelperComponents/Loading.tsx'
+import Loading from "./HelperComponents/Loading.tsx";
 import NoProjects from "./HelperComponents/NoProjects.tsx";
 import Project from "./Project.tsx";
 export default function DashboardStart() {
@@ -20,9 +20,18 @@ export default function DashboardStart() {
     skip: !UserData?.id,
   });
 
-  if (isLoading || isUserLoading) {
-    return <Loading/>;
+  if (isLoading || isUserLoading ) {
+    return <Loading />;
   }
+
+  const testproject = {
+    project_id: 1,
+    title: "hey",
+    description : "",
+    owner_id: 2,
+    created_at: new Date(0)
+  }
+
   return (
     <div className=" justify-center items-center w-full p-10">
       <div className="grid justify-center grid-cols-[repeat(auto-fill,_300px)] gap-10 ">
@@ -39,7 +48,6 @@ export default function DashboardStart() {
         ) : (
           <NoProjects />
         )}
-        
       </div>
     </div>
   );

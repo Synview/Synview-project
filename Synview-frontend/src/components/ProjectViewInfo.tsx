@@ -28,32 +28,34 @@ export default function ProjectViewInfo() {
     return <NotFound />;
   }
 
-  const { data: ProjectData } = useGetProjectByIdQuery(id);
-  const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
+  const { data: projectData, isLoading: isProjectDataLoading } =
+    useGetProjectByIdQuery(parseInt(id));
+  const { data: userData, isLoading: isUserLoading } = useGetPayloadQuery(
     undefined,
     {
       refetchOnMountOrArgChange: true,
     }
   );
+ 
 
-  if (isUserLoading) {
+  if (isUserLoading || isProjectDataLoading) {
     return <Loading />;
   }
-
+  
   return (
     <div className="flex flex-col p-10 bg-neutral-900">
       <div className="flex flex-row justify-between w-full gap-10">
-        <h1>{ProjectData?.title} - </h1>
+        <h1>{projectData?.title} - </h1>
         <div className="flex items-center">
           <button
             type="button"
             className="btn"
             onClick={() => {
-              if (!UserData?.id) return;
+              if (!userData?.id) return;
               dispatch(
                 openGithubModal({
                   project_id: parseInt(id),
-                  user_id: UserData.id,
+                  user_id: userData.id,
                   isOpen: true,
                 })
               );
@@ -69,11 +71,11 @@ export default function ProjectViewInfo() {
             type="button"
             className="btn"
             onClick={() => {
-              if (!UserData?.id) return;
+              if (!userData?.id) return;
               dispatch(
                 openInviteMentorModal({
                   project_id: parseInt(id),
-                  user_id: UserData.id,
+                  user_id: userData.id,
                   isOpen: true,
                 })
               );
@@ -81,7 +83,7 @@ export default function ProjectViewInfo() {
           >
             Invite a mentor
           </button>
-          <ProjectUsersTable />
+         <ProjectUsersTable />
         </div>
       </div>
       <Modal
