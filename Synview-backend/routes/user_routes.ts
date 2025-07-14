@@ -118,7 +118,7 @@ userRouter
         token: access_token,
       };
       context.cookies.set("Authorization", `Bearer ${access_token}`, {
-        expires: new Date(Date.now() + 60 * 60 * 1000),
+        expires: new Date(Date.now() + 168 * 60 * 60 * 1000),
       });
     } catch (e) {
       context.response.status = 500;
@@ -137,6 +137,11 @@ userRouter
     try {
       const user = await prisma.users.findUnique({
         where: { user_id: parseInt(id) },
+        select: {
+          user_id: true,
+          username: true,
+          email: true,
+        },
       });
       context.response.body = user;
     } catch (error) {
