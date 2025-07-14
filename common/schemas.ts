@@ -6,16 +6,15 @@ export const InvitationStatusSchema = z.enum(invitation_status);
 
 export const UserDataSchema = z.object({
   email: z.string(),
-  user_id: z.string(),
+  user_id: z.number(),
   username: z.string(),
-  role: ProjectRolesSchema,
 });
 
 export const UserModelSchema = z.object({
-  created_at: z.date(),
   user_id: z.number(),
   username: z.string(),
   email: z.string(),
+  role: ProjectRolesSchema,
 });
 
 export const GithubInfoSchema = z.object({

@@ -1,18 +1,46 @@
 import { Avatar, Badge, Group, Select, Table, Text } from "@mantine/core";
 import React from "react";
-import { useGetMentorsQuery } from "../services/apiSlice.ts";
+import {
+  useGetMentorsQuery,
+  useGetPayloadQuery,
+  useGetPresenceQuery,
+} from "../services/apiSlice.ts";
 import { useParams } from "react-router-dom";
 import NotFound from "./NotFound.tsx";
 import Loading from "./HelperComponents/Loading.tsx";
+import { useGetUserByIdQuery } from "../services/apiSlice.ts";
+import { skipToken } from "@reduxjs/toolkit/query";
+
 export default function ProjectUsersTable() {
   const { id } = useParams();
   if (!id) {
     return <NotFound />;
   }
+
+  const { data: userPayload, isLoading: isUserPayloadLoading } =
+    useGetPayloadQuery(undefined, {
+      refetchOnMountOrArgChange: true,
+    });
+
+  const {
+    data: user,
+    error: userError,
+    isLoading: isUserLoading,
+  } = useGetUserByIdQuery(userPayload?.id ?? skipToken, {
+    refetchOnMountOrArgChange: true,
+  });
+
+  const { data: presentUsers, isLoading: isPresenceLoading } =
+    useGetPresenceQuery(id);
   const { data: mentorsData, isLoading: mentorsLoading } = useGetMentorsQuery(
     parseInt(id)
   );
-  if (mentorsLoading) {
+  if (
+    mentorsLoading ||
+    isPresenceLoading ||
+    isUserLoading ||
+    isUserPayloadLoading
+  ) {
     return <Loading />;
   }
   const rows = mentorsData?.map((mentor) => (
@@ -30,16 +58,17 @@ export default function ProjectUsersTable() {
           </div>
         </Group>
       </Table.Td>
-      <Table.Td>
-        <Text fz="xs" c="dimmed">
-          {mentor.role}
-        </Text>
-      </Table.Td>
       <Table.Td>{mentor.user_id}</Table.Td>
       <Table.Td>
-        <Badge fullWidth variant="light">
-          Active
-        </Badge>
+        {presentUsers?.some((u) => u.user_id === mentor.user_id) ? (
+          <Badge fullWidth variant="light">
+            Active
+          </Badge>
+        ) : (
+          <Badge color="gray" fullWidth variant="light">
+            Disabled
+          </Badge>
+        )}
       </Table.Td>
     </Table.Tr>
   ));
@@ -50,7 +79,6 @@ export default function ProjectUsersTable() {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>User</Table.Th>
-              <Table.Th>Role</Table.Th>
               <Table.Th>Id</Table.Th>
               <Table.Th>Active</Table.Th>
             </Table.Tr>

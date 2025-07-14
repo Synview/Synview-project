@@ -5,7 +5,7 @@ import {
   useGetMyProjectsQuery,
   useGetPayloadQuery,
 } from "../services/apiSlice.ts";
-import Loading from './HelperComponents/Loading.tsx'
+import Loading from "./HelperComponents/Loading.tsx";
 import NoProjects from "./HelperComponents/NoProjects.tsx";
 import Project from "./Project.tsx";
 export default function DashboardStart() {
@@ -20,8 +20,8 @@ export default function DashboardStart() {
     skip: !UserData?.id,
   });
 
-  if (isLoading || isUserLoading) {
-    return <Loading/>;
+  if (isLoading || isUserLoading ) {
+    return <Loading />;
   }
   return (
     <div className=" justify-center items-center w-full p-10">
@@ -39,7 +39,6 @@ export default function DashboardStart() {
         ) : (
           <NoProjects />
         )}
-        
       </div>
     </div>
   );
