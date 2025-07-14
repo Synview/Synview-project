@@ -204,14 +204,14 @@ export const apiSlice = createApi({
         body: GitInfo,
       }),
     }),
-    getFiles: builder.query<
-      { name: string; content: string }[],
+    getCommitData: builder.query<
+      { files: { name: string; content: string }[]; diffs: string },
       { user: string; repo: string; sha: string }
     >({
       query: (arg) => {
         const { user, repo, sha } = arg;
         return {
-          url: "getCommitFiles",
+          url: "getCommitData",
           params: { user, repo, sha },
         };
       },
@@ -256,7 +256,7 @@ export const {
   useGetMyCommitsMutation,
   useInviteMentorMutation,
   useGetMentorsQuery,
-  useGetFilesQuery,
+  useGetCommitDataQuery,
   useGetUpdateByIdQuery,
   useLogoutMutation,
   useGetInvitationsQuery,

@@ -3,9 +3,7 @@ import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
-import {
-  GithubInfoSchema,
-} from "../../common/schemas.ts";
+import { GithubInfoSchema } from "../../common/schemas.ts";
 import { Octokit } from "npm:@octokit/rest";
 const env = Deno.env.toObject();
 type AppState = {
@@ -70,7 +68,7 @@ githubRouter
       };
     }
   })
-  .get("/getCommitFiles", async (context) => {
+  .get("/getCommitData", async (context) => {
     try {
       const url = context.request.url;
       const github_user = url.searchParams.get("user");
@@ -84,6 +82,18 @@ githubRouter
         repo: repo_name,
         ref: commit_sha,
       });
+
+      const { data: diffs } = await octokit.request(
+        `GET /repos/{owner}/{repo}/commits/{ref}`,
+        {
+          owner: github_user,
+          repo: repo_name,
+          ref: commit_sha,
+          headers: {
+            accept: "application/vnd.github.diff",
+          },
+        }
+      );
       const commitFiles = response.data.files;
       if (commitFiles) {
         const files = await Promise.all(
@@ -99,7 +109,7 @@ githubRouter
         const decodedFiles = files.map((file) => {
           return { name: file.data.name, content: atob(file.data.content) };
         });
-        context.response.body = decodedFiles;
+        context.response.body = { files: decodedFiles, diffs: diffs };
       } else {
         context.response.status = 404;
         context.response.body = {
