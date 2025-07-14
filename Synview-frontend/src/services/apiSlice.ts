@@ -22,8 +22,16 @@ import {
   PostQuestionSchema,
   PostUpdateSchema,
 } from "../../../common/schemas.ts";
-import { connect, subscribe } from "../services/webSocket.ts";
+import {
+  connect,
+  sendIsGone,
+  sendIsPresent,
+  subscribe,
+} from "../services/webSocket.ts";
 import { LogLevel, createLogger } from "../../../common/Logger.ts";
+import type { RootState } from "../store.ts";
+import { setUser } from "../slices/userSlice.ts";
+import sleep from "../utils/sleep.ts";
 
 const logger = createLogger("[Api Slice]", LogLevel.ERROR);
 
@@ -44,8 +52,50 @@ export const apiSlice = createApi({
     "Invitations",
   ],
   endpoints: (builder) => ({
+    getPresence: builder.query<UserData[], string>({
+      queryFn: () => ({ data: [] }),
+      keepUnusedDataFor: 0,
+      async onCacheEntryAdded(
+        id,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState }
+      ) {
+        await connect(wsurl);
+        await cacheDataLoaded;
+        const state = (state: RootState) => state.user;
+        let currUser = state(getState() as RootState);
+
+        while (true) {
+          currUser = state(getState() as RootState);
+          if (currUser.user_id !== 0) break;
+          await sleep(100);
+        }
+
+        sendIsPresent(`Presence:${id}`, currUser);
+        const unsubscribe = subscribe(
+          `Presence:${id}`,
+          (data: { present: UserData[] }) => {
+            updateCachedData(() => {
+              return data.present;
+            });
+          }
+        );
+
+        await cacheEntryRemoved;
+        sendIsGone(`Presence:${id}`);
+        unsubscribe();
+      },
+    }),
     getUserById: builder.query<User, number>({
       query: (id) => `getUser/${id}`,
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log(data);
+          dispatch(setUser(data));
+        } catch {
+          logger.error("Couldn't get user data");
+        }
+      },
     }),
     register: builder.mutation<void, EmailRegisterRequestSchema>({
       query: (newUser: EmailRegisterRequestSchema) => ({
@@ -90,6 +140,7 @@ export const apiSlice = createApi({
       ) {
         connect(wsurl);
         await cacheDataLoaded;
+
         const unsubscribe = subscribe(`Updates:${id}`, (newMessage: Update) => {
           updateCachedData((draft) => {
             draft.push(newMessage);
@@ -120,10 +171,11 @@ export const apiSlice = createApi({
       query: (id) => `getUpdateQuestions/${id}`,
       async onCacheEntryAdded(
         id,
-        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState }
       ) {
         connect(wsurl);
         await cacheDataLoaded;
+
         const unsubscribe = subscribe(
           `UpdateQuestions:${id}`,
           (newMessage: Question) => {
@@ -210,5 +262,6 @@ export const {
   useLogoutMutation,
   useGetInvitationsQuery,
   useGetUserByIdQuery,
-  useAcceptInvitationMutation
+  useAcceptInvitationMutation,
+  useGetPresenceQuery,
 } = apiSlice;
