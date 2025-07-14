@@ -58,7 +58,6 @@ export default function ProjectUsersTable() {
           </div>
         </Group>
       </Table.Td>
-      <Table.Td></Table.Td>
       <Table.Td>{mentor.user_id}</Table.Td>
       <Table.Td>
         {presentUsers?.some((u) => u.user_id === mentor.user_id) ? (

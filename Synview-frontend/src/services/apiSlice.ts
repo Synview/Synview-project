@@ -90,7 +90,6 @@ export const apiSlice = createApi({
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log(data);
           dispatch(setUser(data));
         } catch {
           logger.error("Couldn't get user data");

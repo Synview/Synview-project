@@ -14,7 +14,7 @@ export function connect(url: string): Promise<void> {
 
     socket.onopen = () => {
       logger.info("[WS] is open");
-      resolve()
+      resolve();
     };
 
     socket.onmessage = (event) => {
@@ -30,9 +30,11 @@ export function connect(url: string): Promise<void> {
     socket.onclose = () => {
       logger.warn("[WS] Closing");
       socket = null;
+      resolve();
     };
     socket.onerror = (err) => {
       logger.warn("[WS] Error : " + err);
+      resolve();
     };
   });
 }

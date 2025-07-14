@@ -9,6 +9,7 @@ import { Modal } from "@mantine/core";
 import { useAppSelector, useAppDispatch } from "../hooks.ts";
 import { closeQuestionModal } from "../slices/questionModalSlice.ts";
 import UpdateModalContent from "./UpdateModalContent.tsx";
+import NotFound from "./NotFound.tsx";
 
 export default function ProjectView() {
   const { id } = useParams();
@@ -16,7 +17,7 @@ export default function ProjectView() {
   const dispatch = useAppDispatch();
 
   if (!id) {
-    return;
+    return <NotFound/>;
   }
   const { data, error, isLoading } = useGetProjectByIdQuery(
     parseInt(id) ?? "",
