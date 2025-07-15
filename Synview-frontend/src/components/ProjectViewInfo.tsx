@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   useGetPayloadQuery,
   useGetProjectByIdQuery,
+  useProjectReviewMutation,
 } from "../services/apiSlice.ts";
 import {
   closeGithubModal,
@@ -13,17 +14,20 @@ import {
   openInviteMentorModal,
 } from "../slices/inviteMentorModalSlice.ts";
 import { useAppDispatch, useAppSelector } from "../hooks.ts";
-import { Modal } from "@mantine/core";
+import { Button, Modal } from "@mantine/core";
 import NotFound from "./NotFound.tsx";
 import SyncForm from "./SyncForm.tsx";
 import MentorInviteForm from "./MentorInviteForm.tsx";
 import Loading from "./HelperComponents/Loading.tsx";
 import ProjectUsersTable from "./ProjectUsersTable.tsx";
+import { rootLogger } from "../../../common/Logger.ts";
+import ProjectSummarizeAI from "./ProjectSummarizeAI.tsx";
 export default function ProjectViewInfo() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const githubOpen = useAppSelector((state) => state.githubModal.isOpen);
   const inviteOpen = useAppSelector((state) => state.inviteMentorModal.isOpen);
+
   if (!id) {
     return <NotFound />;
   }
@@ -36,12 +40,22 @@ export default function ProjectViewInfo() {
       refetchOnMountOrArgChange: true,
     }
   );
- 
+
+  const [projectReview, { isLoading: isProjectReviewLoading }] =
+    useProjectReviewMutation();
 
   if (isUserLoading || isProjectDataLoading) {
     return <Loading />;
   }
-  
+
+  const summarizeProjectAI = async () => {
+    if (!id) {
+      rootLogger.error("No project id");
+      return;
+    }
+    await projectReview(id);
+  };
+
   return (
     <div className="flex flex-col p-10 bg-neutral-900">
       <div className="flex flex-row justify-between w-full gap-10">
@@ -83,7 +97,13 @@ export default function ProjectViewInfo() {
           >
             Invite a mentor
           </button>
-         <ProjectUsersTable />
+          <ProjectUsersTable />
+        </div>
+        <div className="flex w-full flex-col">
+          <Button className=""onClick={summarizeProjectAI} loading={isProjectReviewLoading}>
+            Summarize
+          </Button>
+          <ProjectSummarizeAI />
         </div>
       </div>
       <Modal
