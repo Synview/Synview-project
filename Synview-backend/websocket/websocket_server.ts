@@ -30,7 +30,6 @@ export function EntrySocket(socket: WebSocket): void {
     }
 
     if (message.action === "subscribe") {
-
       subscribeToChannel(socket, message.channel);
     }
     if (message.action === "unsubscribe") {
@@ -85,6 +84,7 @@ function cleanupSocket(socket: WebSocket) {
       if (subscribers.get(channel)?.size === 0) {
         subscribers.delete(channel);
       }
+      broadcastPresence(channel);
     }
     socketChannels.delete(socket);
   }
