@@ -28,13 +28,14 @@ model users {
 }
 
 model projects {
-  project_id  Int      @id @default(autoincrement())
-  title       String
-  description String
-  owner_id    Int
-  repo_url    String?
-  doc_url     String?
-  created_at  DateTime @default(now())
+  project_id       Int      @id @default(autoincrement())
+  title            String
+  description      String
+  owner_id         Int
+  repo_url         String?
+  doc_url          String?
+  project_git_name String?
+  created_at       DateTime @default(now())
 
   user_projects      user_projects[]
   updates            updates[]
