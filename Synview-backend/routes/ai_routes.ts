@@ -74,7 +74,7 @@ aiRouter
   })
   .post("/commitAiReview", async (context) => {
     try {
-      const { id } = await context.request.body.json();
+      const id = await context.request.body.json();
 
       const commit = await prisma.updates.findUnique({
         where: { update_id: parseInt(id) },
