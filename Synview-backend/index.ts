@@ -7,6 +7,7 @@ import { questionRouter } from "./routes/question_routes.ts";
 import { githubRouter } from "./routes/github_routes.ts";
 import { wsRouter } from "./websocket/websocket_route.ts";
 import { invitationRouter } from "./routes/invitation_routes.ts";
+import { aiRouter } from "./routes/ai_routes.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 
 type AppState = {
@@ -52,6 +53,9 @@ app.use(wsRouter.allowedMethods());
 
 app.use(invitationRouter.routes());
 app.use(invitationRouter.allowedMethods());
+
+app.use(aiRouter.routes());
+app.use(aiRouter.allowedMethods());
 
 app.use(mainRouter.routes());
 app.use(mainRouter.allowedMethods());
