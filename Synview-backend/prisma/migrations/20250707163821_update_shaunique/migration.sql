@@ -6,3 +6,4 @@
 */
 -- CreateIndex
 CREATE UNIQUE INDEX "updates_sha_key" ON "updates"("sha");
+∏

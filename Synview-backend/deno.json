@@ -8,6 +8,7 @@
   },
   "imports": {
     "@felix/bcrypt": "jsr:@felix/bcrypt@^1.0.5",
+    "@google/genai": "npm:@google/genai@^1.9.0",
     "@oak/oak": "jsr:@oak/oak",
     "@octokit/rest": "npm:@octokit/rest@^22.0.0",
     "@prisma/client": "npm:@prisma/client@^6.10.1",
