@@ -71,7 +71,9 @@ export default function UserDrawer() {
           justify="flex-start"
           gap="md"
         >
-          <Button variant="default"><Link to="/dashboard">Go to dashboard</Link></Button>
+          <Button variant="default" component={Link} to="/dashboard">
+            Go to dashboard
+          </Button>
 
           <Tree data={data} />
         </Stack>

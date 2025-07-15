@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useGetProjectByIdQuery} from "../services/apiSlice.ts";
+import { useGetProjectByIdQuery } from "../services/apiSlice.ts";
 import Loading from "./HelperComponents/Loading.tsx";
 
 import ProjectViewInfo from "./ProjectViewInfo.tsx";
@@ -34,13 +34,17 @@ export default function ProjectView() {
     return <h1>Something wrong happened</h1>;
   }
 
-
+  
 
   return (
     <div className="overflow-y-hidden">
       <div className="flex h-full flex-row card bg-neutral-900 shadow-sm overflow-y-scroll">
-        <ProjectViewUpdates />
-        <ProjectViewInfo />
+        <div className="flex-1 h-full overflow-y-scroll">
+          <ProjectViewUpdates />
+        </div>
+        <div className="flex-1 h-full overflow-y-scroll">
+          <ProjectViewInfo />
+        </div>
       </div>
       <Modal
         opened={open}
