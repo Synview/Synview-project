@@ -5,6 +5,7 @@ import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
 import { GithubInfoSchema } from "../../common/schemas.ts";
 import { Octokit } from "npm:@octokit/rest";
+import diffExtracter from "../utils/diffExtracter.ts";
 const env = Deno.env.toObject();
 type AppState = {
   session: Session;
@@ -83,17 +84,12 @@ githubRouter
         ref: commit_sha,
       });
 
-      const { data: diffs } = await octokit.request(
-        `GET /repos/{owner}/{repo}/commits/{ref}`,
-        {
-          owner: github_user,
-          repo: repo_name,
-          ref: commit_sha,
-          headers: {
-            accept: "application/vnd.github.diff",
-          },
-        }
+      const diffs = await diffExtracter(
+        github_user,
+        repo_name,
+        commit_sha
       );
+
       const commitFiles = response.data.files;
       if (commitFiles) {
         const files = await Promise.all(
