@@ -48,7 +48,39 @@ export async function GetMetadata(
     return "";
   }
 }
-
-export function FileSearch(tool: string) {
-  return "not implemented yet ";
+export async function DirectorySearch(
+  owner: string,
+  repo: string
+): Promise<string> {
+  try {
+    const result = await octokit.request(
+      `GET /repos/{owner}/{repo}/contents/`,
+      {
+        owner: owner,
+        repo: repo,
+      }
+    );
+    return JSON.stringify(result.data);
+  } catch {
+    return "";
+  }
+}
+export async function FileSearch(
+  owner: string,
+  repo: string,
+  path: string
+): Promise<string> {
+  try {
+    const result = await octokit.request(
+      `GET /repos/{owner}/{repo}/contents/{path}`,
+      {
+        owner: owner,
+        repo: repo,
+        path: path,
+      }
+    );
+    return JSON.stringify(result.data);
+  } catch {
+    return "";
+  }
 }
