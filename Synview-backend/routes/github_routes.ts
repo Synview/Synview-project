@@ -5,7 +5,7 @@ import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
 import { GithubInfoSchema } from "../../common/schemas.ts";
 import { Octokit } from "npm:@octokit/rest";
-import diffExtracter from "../utils/diffExtracter.ts";
+import diffExtracter from "../utils/GITHelpers.ts";
 const env = Deno.env.toObject();
 type AppState = {
   session: Session;

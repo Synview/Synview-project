@@ -3,12 +3,14 @@ import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
-import { recentCodeAnalisis, commitAnalisis } from "../AI/geminiHandler.ts";
-import diffExtracter from "../utils/diffExtracter.ts";
-import { rootLogger } from "../../common/Logger.ts";
+import { recentCodeAnalisis } from "../AI/geminiHandler.ts";
+import diffExtracter from "../utils/GITHelpers.ts";
+import { createLogger, LogLevel, rootLogger } from "../../common/Logger.ts";
 type AppState = {
   session: Session;
 };
+
+const logger = createLogger("AI [API]", LogLevel.INFO);
 
 const aiRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
@@ -25,6 +27,9 @@ aiRouter
       const commits = await prisma.updates.findMany({
         where: {
           project_id: parseInt(id),
+          summary: {
+            not: null,
+          },
         },
         orderBy: {
           created_at: "desc",
@@ -42,17 +47,23 @@ aiRouter
       }
 
       const commitString = await Promise.all(
-        commits.map((commit) => {
+        commits.map(async (commit) => {
           if (!commit?.sha) return "";
-          return diffExtracter(
+          const diff = await diffExtracter(
             project?.project_git_name!,
             project?.repo_url!,
             commit.sha
           );
+          return `Commit SHA : ${commit.sha} \n Commit diff start - ${diff} - Commit diff end`;
         })
       );
-
-      const response = await recentCodeAnalisis(commitString.join(" "));
+      logger.info("Started code analisis");
+      const response = await recentCodeAnalisis(
+        project.project_git_name!,
+        project.repo_url!,
+        commitString.join(" ")
+      );
+      logger.info("finished code analisis");
 
       await prisma.projects.update({
         where: {
