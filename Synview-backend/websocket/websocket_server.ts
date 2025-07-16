@@ -7,6 +7,15 @@ import { createLogger, LogLevel } from "../../common/Logger.ts";
 import type { UserData } from "../../common/types.ts";
 
 const logger = createLogger("Backend [WS]", LogLevel.ERROR);
+const bc = new BroadcastChannel("across-server-updates");
+
+export function sendToAllServers(channel: string, payload: any) {
+  bc.postMessage({ channel, payload });
+}
+
+bc.onmessage = (event: MessageEvent<{ channel: string; payload: any }>) => {
+  sendtoChannel(event.data.channel, event.data.payload);
+};
 
 export function EntrySocket(socket: WebSocket): void {
   sockets.add(socket);

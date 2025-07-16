@@ -21,7 +21,7 @@ wsRouter.get("/ws", async (context) => {
     };
   }
   const ws = context.upgrade();
-  await EntrySocket(ws);
+  EntrySocket(ws);
 });
 
 export { wsRouter };
