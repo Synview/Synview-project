@@ -8,6 +8,12 @@ import {
 import Loading from "./HelperComponents/Loading.tsx";
 import NoProjects from "./HelperComponents/NoProjects.tsx";
 import Project from "./Project.tsx";
+
+import { connect } from "../services/webSocket.ts";
+const wsurl = import.meta.env.VITE_WS_URL;
+
+connect(wsurl);
+
 export default function DashboardStart() {
   const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
     undefined,
@@ -20,7 +26,7 @@ export default function DashboardStart() {
     skip: !UserData?.id,
   });
 
-  if (isLoading || isUserLoading ) {
+  if (isLoading || isUserLoading) {
     return <Loading />;
   }
   return (
