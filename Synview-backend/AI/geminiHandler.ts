@@ -1,83 +1,127 @@
 import { GoogleGenAI } from "@google/genai";
+import { createLogger, LogLevel } from "../../common/Logger.ts";
+import diffExtracter, { FileSearch, GetMetadata } from "../utils/GITHelpers.ts";
 const googleKey = Deno.env.get("GEMINI_API_KEY");
 const ai = new GoogleGenAI({ apiKey: googleKey });
 
-export async function recentCodeAnalisis(code: string) {
+const logger = createLogger("AI [API]", LogLevel.INFO);
+
+export async function recentCodeAnalisis(
+  projectGitName: string,
+  projectRepoName: string,
+  code: string
+) {
+  let finalResponse = "";
   const systemPrompt = `
-  You are an expert software reviewer trained in all programming languages and development best practices. 
-  You will be given commit messages and the code diffs from those commits. 
-  Your job is to perform a troughtful review that is useful for both developers doing and reviewing the commits and to non-technical team members.
-  Please analyze the changes and respond with the following sections, using clear and respectful and friendly language. 
-  Think of it as a summary for someone who is trying to grasp the project idea quickly and treat the response as a formal document without talking to someone, just describe the project
+  You are an expert software review agent with autonomous reasoning.
 
+Your job is to analyze commit messages and code diffs, and produce a helpful, clear summary for both developers and non-technical stakeholders.
 
-  - What changes were made 
-    Briefly summarize the purpose of the changes in simple, non-technical terms. Imagine you're explaining it to a product manager or designer
+You have access to these tools. **Use only ONE per message**, formatted **exactly** as shown:
 
-  - How it works
-    Walk trough what the code is doing in a step-by-step, beginner-friendly way. Clarify how the changes solve problems or add functionality
+- TOOL:FileSearch <filepath>
+- TOOL:GetMetadata <commitSha>
+- TOOL:CommitExplainer <commitSha>
+- FINAL:<your completed review>
 
-  - Strenghts
-    Point out what was done well, for example: clarity, good coding practicees, proper structure, secutiry improvements, etc. based on the projecet focus.
+### Rules (you must follow these strictly):
 
-  - Potential Issues or bad practices
-    List any bugs, confusing logic, bad patterns, or risk/code smells introduced by the changes, keep this calm and extremely constructive.
-
-  - Developer notes
-    If useful, include deeper tecnical notes that a developer would appreciate - such as architectural thoughts, performance trade-offs, or relevant best practices 
-
-    For extra information to keep the diffs info separated correctly, the changes per commit start with diff
-    think of it as a summary for someone who is trying to grasp the project idea
+1. Only respond with ONE tool call or the FINAL summary.
+2. DO NOT ask questions or give explanations outside tool usage.
+3. DO NOT repeat tool calls in the same message.
+4. You must use at least 2 tools before responding with FINAL.
+5. If tool output fails, ignore and move on.
+6. Final review must begin with Summary: — that’s the only place where full natural language is allowed.
+7. Final review will have 2 sections, 1st: For non technical people labeled as : "Non-Technical summary" and 2nd one, labeled as: "Technical summary"
 
  `;
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-pro",
-    contents: code,
+  const AIchat = ai.chats.create({
+    model: "gemini-2.5-flash",
+    history: [
+      {
+        role: "user",
+        parts: [{ text: code }],
+      },
+    ],
     config: {
       systemInstruction: systemPrompt,
     },
   });
 
-  return response.text;
+  let isRunning = true;
+  let iteration = 0;
+
+  while (isRunning && iteration < 10) {
+    iteration++;
+    const response = await AIchat.sendMessage({
+      message: "Start",
+    });
+
+    const text = response.text.trim();
+    logger.info(`Iteration:  ${iteration}`);
+
+    if (text.startsWith("TOOL:FileSearch")) {
+      const tool = text.replace("TOOL:FileSearch", "").trim();
+      logger.info(`Tool request FileSearch:${tool}`);
+
+      const toolResult = FileSearch(tool);
+      logger.info(`Result : ${toolResult}`);
+
+      await AIchat.sendMessage({ message: toolResult });
+    } else if (text.startsWith("TOOL:GetMetadata")) {
+      const tool = text.replace("TOOL:GetMetadata", "").trim();
+      logger.info(`Tool request Metadata :${tool}`);
+
+      const toolResult = await GetMetadata(
+        projectGitName,
+        projectRepoName,
+        tool
+      );
+      logger.info(`Result : ${toolResult}`);
+      await AIchat.sendMessage({ message: toolResult });
+    } else if (text.startsWith("TOOL:CommitExplainer")) {
+      const tool = text.replace("TOOL:CommitExplainer", "").trim();
+      logger.info(`Tool request CommitExplainer :${tool}`);
+
+      const toolResult = await CommitExplainer(
+        projectGitName,
+        projectRepoName,
+        tool
+      );
+      logger.info(`Result : ${toolResult}`);
+
+      await AIchat.sendMessage({ message: toolResult });
+    } else {
+      logger.info(`Ai final answer :  ${text}`);
+      finalResponse = text;
+      isRunning = false;
+    }
+  }
+
+  return finalResponse;
 }
 
-export async function commitAnalisis(code: string) {
+async function CommitExplainer(
+  owner: string,
+  repo: string,
+  sha: string
+): Promise<string> {
   const systemPrompt = `
   You are an expert software reviewer trained in all programming languages and development best practices. 
-  You will be given a commit message and the code diff. 
-  Your job is to perform a troughtful review that is useful for both developers doing and reviewing the commit and to non-technical team members.
-  Please analyze the changes and respond with the following sections, using clear and respectful and friendly language. 
-  Think of it as a summary for someone who is trying to grasp the project idea quickly and treat the response as a formal document without talking to someone, just describe the project
+  You will be given code diff. 
+  Your task is to produce a concise, clear, and insightful review to another LLM
+  `;
 
-
-  - What changes were made 
-    Briefly summarize the purpose of the changes in simple, non-technical terms. Imagine you're explaining it to a product manager or designer
-
-  - How it works
-    Walk trough what the code is doing in a step-by-step, beginner-friendly way. Clarify how the changes solve problems or add functionality
-
-  - Strenghts
-    Point out what was done well, for example: clarity, good coding practicees, proper structure, secutiry improvements, etc. based on the projecet focus.
-
-  - Potential Issues or bad practices
-    List any bugs, confusing logic, bad patterns, or risk/code smells introduced by the changes, keep this calm and extremely constructive.
-
-  - Developer notes
-    If useful, include deeper tecnical notes that a developer would appreciate - such as architectural thoughts, performance trade-offs, or relevant best practices 
-    Just give the bullet points
-
-  Please provide specific line-by-line suggestions/comments
-
-  
-
-    `;
-
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-pro",
-    contents: code,
-    config: {
-      systemInstruction: systemPrompt,
-    },
-  });
-  return response.text;
+  const code = await diffExtracter(owner, repo, sha);
+  if (code) {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-pro",
+      contents: code,
+      config: {
+        systemInstruction: systemPrompt,
+      },
+    });
+    return response.text;
+  }
+  return "Error finding commit";
 }
