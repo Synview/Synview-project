@@ -1,7 +1,7 @@
 let socket: WebSocket | null = null;
 type Listener = (data: any) => void;
 import { createLogger, LogLevel } from "../../../common/Logger.ts";
-import type { User, UserData } from "../../../common/types.ts";
+import type { UserData } from "../../../common/types.ts";
 import sleep from "../utils/sleep.ts";
 const subscribers = new Map<string, Set<Listener>>();
 
@@ -30,12 +30,12 @@ export function connect(url: string): Promise<void> {
 
     socket.onclose = async () => {
       logger.warn("[WS] Closing - reconnecting");
-      await sleep(100);
+      await sleep(1000);
       connect(url);
     };
     socket.onerror = async (err) => {
-      logger.warn("[WS] Error - reconnecting : " + err);
-      await sleep(100);
+      logger.warn(`[WS] Error - reconnecting : ${err}`);
+      await sleep(1000);
       connect(url);
     };
   });
