@@ -1,4 +1,3 @@
-import { PostQuestion, Question } from "../../common/types.ts";
 
 const sockets = new Set<WebSocket>();
 const subscribers = new Map<string, Set<WebSocket>>();
