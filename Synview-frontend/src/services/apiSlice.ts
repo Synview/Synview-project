@@ -191,5 +191,5 @@ export const {
   useGetFilesQuery,
   useGetUpdateByIdQuery,
   useLogoutMutation,
-  useGetInvitationsQuery
+  useGetInvitationsQuery,
 } = apiSlice;
