@@ -2,20 +2,12 @@ const sockets = new Set<WebSocket>();
 const subscribers = new Map<string, Set<WebSocket>>();
 const socketChannels = new Map<WebSocket, Set<string>>();
 const socketUserData = new Map<WebSocket, UserData>();
+const broadcastChannels = new Map<string, BroadcastChannel>();
 
 import { createLogger, LogLevel } from "../../common/Logger.ts";
 import type { UserData } from "../../common/types.ts";
 
 const logger = createLogger("Backend [WS]", LogLevel.ERROR);
-const bc = new BroadcastChannel("across-server-updates");
-
-export function sendToAllServers(channel: string, payload: any) {
-  bc.postMessage({ channel, payload });
-}
-
-bc.onmessage = (event: MessageEvent<{ channel: string; payload: any }>) => {
-  sendtoChannel(event.data.channel, event.data.payload);
-};
 
 export function EntrySocket(socket: WebSocket): void {
   sockets.add(socket);
@@ -52,6 +44,21 @@ export function EntrySocket(socket: WebSocket): void {
     }
   };
   return;
+}
+
+function createBroadcastChannel(channel: string) {
+  if (!broadcastChannels?.has(channel)) {
+    const bc = new BroadcastChannel(channel);
+    bc.onmessage = (msg) => {
+      const subs = subscribers.get(channel);
+      if (subs) {
+        for (const sub of subs) {
+          sub.send(JSON.stringify(msg));
+        }
+      }
+    };
+    broadcastChannels.set(channel, bc);
+  }
 }
 
 function joinProject(socket: WebSocket, channel: string, userData: UserData) {
@@ -100,6 +107,8 @@ function cleanupSocket(socket: WebSocket) {
 }
 
 function subscribeToChannel(socket: WebSocket, channel: string) {
+  createBroadcastChannel(channel);
+
   if (!subscribers.has(channel)) {
     subscribers.set(channel, new Set());
   }
@@ -138,6 +147,7 @@ export function broadcastPresence(channel: string) {
 export function sendtoChannel(channel: string, payload: any) {
   const jsonData = JSON.stringify({ channel, data: payload });
   const channelSubscribers = subscribers.get(channel);
+  broadcastChannels.get(channel)?.postMessage(jsonData);
   if (channelSubscribers) {
     for (const subscriber of channelSubscribers) {
       try {
