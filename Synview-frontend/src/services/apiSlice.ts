@@ -14,21 +14,10 @@ import {
   type GithubInfo,
   type PostInvitaion,
   type UserData,
-  type Update,,
+  type Update,
 } from "../../../common/types.ts";
-import {
-  PostQuestionSchema,
-  PostUpdateSchema,
-} from "../../../common/schemas.ts";
 import { connect, subscribe } from "../services/webSocket.ts";
-import { LogLevel, createLogger } from "../../../common/Logger.ts";
 
-const logger = createLogger("[Api Slice]", LogLevel.ERROR);
-
-import { connect, subscribe } from "../services/webSocket.ts";
-import { LogLevel, createLogger } from "../../../common/Logger.ts";
-
-const logger = createLogger("[Api Slice]", LogLevel.ERROR);
 
 const url = import.meta.env.VITE_URL;
 const wsurl = import.meta.env.VITE_WS_URL;
@@ -110,16 +99,17 @@ export const apiSlice = createApi({
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         connect(wsurl);
-          await cacheDataLoaded;
-          const unsubscribe = subscribe(
-            `UpdateQuestions:${id}`,
-            (newMessage: Question) => {
-              updateCachedData((draft) => {
-                draft.push(newMessage);
-              });
-            }
-          );
-        
+        await cacheDataLoaded;
+        const unsubscribe = subscribe(
+          `UpdateQuestions:${id}`,
+          (newMessage: Question) => {
+            updateCachedData((draft) => {
+              draft.push(newMessage);
+
+            });
+          }
+        );
+
         await cacheEntryRemoved;
         unsubscribe();
       },
@@ -140,10 +130,6 @@ export const apiSlice = createApi({
         body: GitInfo,
       }),
     }),
-    getFiles: builder.query<
-      { name: string; content: string }[],
-      { user: string; repo: string; sha: string }
-    >({
     getFiles: builder.query<
       { name: string; content: string }[],
       { user: string; repo: string; sha: string }
