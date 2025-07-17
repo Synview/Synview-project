@@ -34,7 +34,7 @@ questionRouter
       const newUpdate = PostQuestionSchema.parse(
         await context.request.body.json()
       );
-      await prisma.questions.create({
+      const result = await prisma.questions.create({
         data: newUpdate,
       });
       sendToChannel(`UpdateQuestions:${newUpdate.update_id}`, newUpdate);

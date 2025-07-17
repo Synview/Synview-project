@@ -7,7 +7,7 @@ import { createLogger, LogLevel } from "../../common/Logger.ts";
 
 const logger = createLogger("Backend [WS]", LogLevel.ERROR);
 
-export function EntrySocket(socket: WebSocket): Promise<void> {
+export function EntrySocket(socket: WebSocket): void {
   sockets.add(socket);
   socket.onclose = () => {
     logger.info("Socket closed");
@@ -35,7 +35,6 @@ export function EntrySocket(socket: WebSocket): Promise<void> {
       unsubscribeFromChannel(socket, message.channel);
     }
   };
-
   return;
 }
 function cleanupSocket(socket: WebSocket) {

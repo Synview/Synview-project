@@ -23,6 +23,7 @@ updateRouter
           project_id: parseInt(id),
         },
       });
+
       context.response.body = MyUpdates;
     } catch (e) {
       context.response.body = {
@@ -51,7 +52,7 @@ updateRouter
       const newUpdate = PostUpdateSchema.parse(
         await context.request.body.json()
       );
-      await prisma.updates.create({
+      const result = await prisma.updates.create({
         data: newUpdate,
       });
 

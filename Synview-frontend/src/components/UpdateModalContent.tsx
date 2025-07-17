@@ -11,7 +11,6 @@ import {
 } from "../services/apiSlice.ts";
 import Loading from "./HelperComponents/Loading.tsx";
 import { useParams } from "react-router-dom";
-import NotFound from "./NotFound.tsx";
 export default function UpdateModalContent() {
   const { id: project_id } = useParams();
   const id = useAppSelector((state) => state.questionModal.commit_id);
@@ -42,7 +41,6 @@ export default function UpdateModalContent() {
         }
       : skipToken;
 
-
   const { data: fileData, isLoading: isFilesLoading } = useGetFilesQuery(args);
 
   if (
@@ -54,6 +52,9 @@ export default function UpdateModalContent() {
   ) {
     return <Loading />;
   }
+  const sortedQuestions = [...questions!].sort((a, b) => {
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
 
   const handleNewUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -78,7 +79,14 @@ export default function UpdateModalContent() {
           <pre data-prefix="$">
             {fileData ? (
               fileData.map((data) => {
-                return <code className="break-all whitespace-break-spaces" key={data.content}>{data.content}</code>;
+                return (
+                  <code
+                    className="break-all whitespace-break-spaces"
+                    key={data.content}
+                  >
+                    {data.content}
+                  </code>
+                );
               })
             ) : (
               <code>No code found</code>
@@ -118,11 +126,16 @@ export default function UpdateModalContent() {
               </details>
             </form>
           </div>
-          <div className="border min-h-24">
-            {questions &&
-              questions.map((questions) => {
+          <div className="min-h-24">
+            {sortedQuestions &&
+              sortedQuestions.map((questions, idx) => {
                 return (
-                  <div key={questions.question_id}>
+                  <div
+                    key={questions.question_id}
+                    className={`p-1 m-1 border rounded ${
+                      idx === 0 ? "animation-fade" : ""
+                    }`}
+                  >
                     <h2>{questions.content}</h2>
                   </div>
                 );

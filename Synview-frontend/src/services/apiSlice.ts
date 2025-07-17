@@ -16,14 +16,8 @@ import {
   type UserData,
   type Update,
 } from "../../../common/types.ts";
-import {
-  PostQuestionSchema,
-  PostUpdateSchema,
-} from "../../../common/schemas.ts";
 import { connect, subscribe } from "../services/webSocket.ts";
-import { LogLevel, createLogger } from "../../../common/Logger.ts";
 
-const logger = createLogger("[Api Slice]", LogLevel.ERROR);
 
 const url = import.meta.env.VITE_URL;
 const wsurl = import.meta.env.VITE_WS_URL;
@@ -70,16 +64,13 @@ export const apiSlice = createApi({
         id,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
-        await cacheDataLoaded;
         connect(wsurl);
-        const unsubscribe = subscribe(
-          `Updates:${id}`,
-          (newMessage: Updates) => {
-            updateCachedData((draft) => {
-              draft.push(newMessage);
-            });
-          }
-        );
+        await cacheDataLoaded;
+        const unsubscribe = subscribe(`Updates:${id}`, (newMessage: Update) => {
+          updateCachedData((draft) => {
+            draft.push(newMessage);
+          });
+        });
 
         await cacheEntryRemoved;
         unsubscribe();
@@ -108,18 +99,19 @@ export const apiSlice = createApi({
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         connect(wsurl);
-          await cacheDataLoaded;
-          const unsubscribe = subscribe(
-            `UpdateQuestions:${id}`,
-            (newMessage: Question) => {
-              updateCachedData((draft) => {
-                draft.push(newMessage);
-              });
-            }
-          );
-        
+        await cacheDataLoaded;
+        const unsubscribe = subscribe(
+          `UpdateQuestions:${id}`,
+          (newMessage: Question) => {
+            updateCachedData((draft) => {
+              draft.push(newMessage);
+
+            });
+          }
+        );
+
         await cacheEntryRemoved;
-        unsubscribe()
+        unsubscribe();
       },
       providesTags: ["Questions"],
     }),
