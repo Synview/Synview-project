@@ -5,7 +5,6 @@ import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
 import { EntrySocket } from "./websocket_server.ts";
 
-const env = Deno.env.toObject();
 type AppState = {
   session: Session;
 };
