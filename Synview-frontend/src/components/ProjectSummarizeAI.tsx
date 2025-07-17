@@ -1,8 +1,9 @@
 import React from "react";
-import { useGetProjectByIdQuery } from "../services/apiSlice.ts";
+import { Paper, Text } from "@mantine/core";
 
-import { Textarea } from "@mantine/core";
+import { useGetProjectByIdQuery } from "../services/apiSlice.ts";
 import { useParams } from "react-router-dom";
+import ReactMarkdown from 'react-markdown';
 
 export default function ProjectSummarizeAI() {
   const { id } = useParams();
@@ -11,14 +12,8 @@ export default function ProjectSummarizeAI() {
     skip: !id,
   });
   return (
-      <Textarea
-        autosize
-        label="AI summarize"
-        variant="light"
-        radius="lg"
-        placeholder={projectData?.doc_url}
-        disabled
-        className="flex-1 "
-      />
+    <Paper className="p-2 text-start !text-black">
+      <ReactMarkdown>{projectData?.doc_url}</ReactMarkdown>
+    </Paper>
   );
 }
