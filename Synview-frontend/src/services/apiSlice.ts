@@ -18,7 +18,6 @@ import {
 } from "../../../common/types.ts";
 import { connect, subscribe } from "../services/webSocket.ts";
 
-
 const url = import.meta.env.VITE_URL;
 const wsurl = import.meta.env.VITE_WS_URL;
 export const apiSlice = createApi({
@@ -48,6 +47,7 @@ export const apiSlice = createApi({
         url: `logout`,
         method: "POST",
       }),
+      invalidatesTags: ["User"],
     }),
     getMyProjects: builder.query<Projects, number>({
       query: (id) => `getMyProjects/${id}`,
