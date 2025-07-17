@@ -18,7 +18,6 @@ import {
 } from "../../../common/types.ts";
 import { connect, subscribe } from "../services/webSocket.ts";
 
-
 const url = import.meta.env.VITE_URL;
 const wsurl = import.meta.env.VITE_WS_URL;
 export const apiSlice = createApi({
@@ -42,6 +41,13 @@ export const apiSlice = createApi({
         method: "POST",
         body: User,
       }),
+    }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: `logout`,
+        method: "POST",
+      }),
+      invalidatesTags: ["User"],
     }),
     getMyProjects: builder.query<Projects, number>({
       query: (id) => `getMyProjects/${id}`,
@@ -105,7 +111,6 @@ export const apiSlice = createApi({
           (newMessage: Question) => {
             updateCachedData((draft) => {
               draft.push(newMessage);
-
             });
           }
         );
@@ -172,4 +177,5 @@ export const {
   useGetMentorsQuery,
   useGetFilesQuery,
   useGetUpdateByIdQuery,
+  useLogoutMutation,
 } = apiSlice;

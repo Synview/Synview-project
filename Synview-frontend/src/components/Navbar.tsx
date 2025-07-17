@@ -1,5 +1,5 @@
 import React from "react";
-import { useAppSelector } from "../hooks.ts";
+import NavbarDropdown from "./NavbarDropdown.tsx";
 import {
   useGetPayloadQuery,
   useGetProjectByIdQuery,
@@ -15,12 +15,13 @@ export default function Navbar() {
   });
 
   return (
-    <div className="navbar z-1000 bg-neutral-800 p-4">
+    <div className="navbar bg-neutral-800 p-4">
       <div className="navbar-start">
         <Drawer />
       </div>
-      <div className="navbar-end">
+      <div className="navbar-end gap-10">
         <p>{data?.username}</p>
+        <NavbarDropdown />
       </div>
     </div>
   );
