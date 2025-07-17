@@ -4,10 +4,7 @@ import { PrismaClient } from "../generated/prisma/client.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { PostQuestionSchema } from "../../common/schemas.ts";
-import {
-  sendToAllServers,
-  sendtoChannel,
-} from "../websocket/websocket_server.ts";
+import { sendtoChannel } from "../websocket/websocket_server.ts";
 type AppState = {
   session: Session;
 };
@@ -41,7 +38,6 @@ questionRouter
         data: newUpdate,
       });
       sendtoChannel(`UpdateQuestions:${result.update_id}`, result);
-      sendToAllServers(`UpdateQuestions:${result.update_id}`, result);
       context.response.status = 201;
       context.response.body = {
         message: "New question created!",
