@@ -36,6 +36,6 @@ jobs:
         with:
           project: "dusuan-synview-pro-15"
           entrypoint: "index.ts"
-          root: "./Synview-Backend"
+          root: "./Synview-backend"
           
           
