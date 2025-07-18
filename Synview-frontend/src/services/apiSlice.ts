@@ -54,6 +54,18 @@ export const apiSlice = createApi({
     "ProjectReview",
   ],
   endpoints: (builder) => ({
+    getHasAccess: builder.query<
+      boolean,
+      { user_id: number; project_id: number }
+    >({
+      query: (arg) => {
+        const { user_id, project_id } = arg;
+        return {
+          url: "getProjectWithAccess",
+          params: { user_id, project_id },
+        };
+      },
+    }),
     getPresence: builder.query<UserData[], string>({
       queryFn: () => ({ data: [] }),
       keepUnusedDataFor: 0,
@@ -280,4 +292,5 @@ export const {
   useGetPresenceQuery,
   useProjectReviewMutation,
   useCommitReviewMutation,
+  useGetHasAccessQuery,
 } = apiSlice;
