@@ -41,8 +41,8 @@ export const InvitationSchema = z.object({
 });
 
 export const PostInvitationSchema = z.object({
+  invited_username : z.string(),
   invited_project_id: z.number(),
-  invited_user_id: z.number(),
   inviting_user_id: z.number(),
   role: ProjectRolesSchema,
 });

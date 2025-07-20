@@ -25,7 +25,6 @@ export default function LoginForm() {
       }
     } catch (error) {
       setTryAgain(true);
-      console.error(error);
     }
   };
 

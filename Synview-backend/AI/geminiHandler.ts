@@ -68,11 +68,11 @@ FINAL must begin with "Summary:" and contain two parts:
 
 "Technical summary"
 
-You must respond with FINAL within 6 iterations.
+You must respond with FINAL within 4 iterations.
 
 FINAL must reflect your own insight from the original code — do not copy tool output.
-FINAL must have markdown style
-You only have 3 iterations to get what you want, 4th needs to be "FINAL"
+FINAL must have markdown style **ON the value** 
+You only have 3 iterations to get what you want, **4th one needs to be "FINAL"**
 `
 
 
@@ -177,7 +177,7 @@ export async function commitExplainer(code: string): Promise<string> {
   `;
   if (code) {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-pro",
       contents: code,
       config: {
         systemInstruction: systemPrompt,

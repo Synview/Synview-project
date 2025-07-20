@@ -28,7 +28,7 @@ import {
   sendIsPresent,
   subscribe,
 } from "../services/webSocket.ts";
-import { LogLevel, createLogger } from "../../../common/Logger.ts";
+import { LogLevel, createLogger, rootLogger } from "../../../common/Logger.ts";
 import type { RootState } from "../store.ts";
 import { setUser } from "../slices/userSlice.ts";
 import sleep from "../utils/sleep.ts";
@@ -45,6 +45,7 @@ export const apiSlice = createApi({
   }),
   tagTypes: [
     "Projects",
+    "ReviewingProjects",
     "User",
     "Updates",
     "Questions",
@@ -54,6 +55,10 @@ export const apiSlice = createApi({
     "ProjectReview",
   ],
   endpoints: (builder) => ({
+    getReviewingProjects: builder.query<Projects, number>({
+      query: (id) => `reviewingProjects/${id}`,
+      providesTags: ["ReviewingProjects"],
+    }),
     getHasAccess: builder.query<
       boolean,
       { user_id: number; project_id: number }
@@ -83,6 +88,7 @@ export const apiSlice = createApi({
           if (currUser.user_id !== 0) break;
           await sleep(100);
         }
+        rootLogger.info(currUser.email);
 
         sendIsPresent(`Presence:${id}`, currUser);
         const unsubscribe = subscribe(
@@ -99,17 +105,22 @@ export const apiSlice = createApi({
         unsubscribe();
       },
     }),
-    getUserById: builder.query<User, number>({
+    getLocalUserById: builder.query<User, number>({
       query: (id) => `getUser/${id}`,
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          dispatch(setUser(data));
-        } catch {
-          logger.error("Couldn't get user data");
-        }
+          try {
+            const { data } = await queryFulfilled;
+            dispatch(setUser(data));
+          } catch {
+            logger.error("Couldn't get user data");
+          }
+        },
       },
-    }),
+    ),
+    getUserById: builder.query<User, number>({
+      query: (id) => `getUser/${id}`,
+      },
+    ),
     register: builder.mutation<void, EmailRegisterRequestSchema>({
       query: (newUser: EmailRegisterRequestSchema) => ({
         url: "register",
@@ -134,6 +145,7 @@ export const apiSlice = createApi({
       query: (id) => `getMyProjects/${id}`,
       providesTags: ["Projects"],
     }),
+
     getProjectById: builder.query<Project, number>({
       query: (id) => `getProject/${id}`,
       providesTags: ["ProjectReview"],
@@ -293,4 +305,6 @@ export const {
   useProjectReviewMutation,
   useCommitReviewMutation,
   useGetHasAccessQuery,
+  useGetReviewingProjectsQuery,
+  useGetLocalUserByIdQuery
 } = apiSlice;
