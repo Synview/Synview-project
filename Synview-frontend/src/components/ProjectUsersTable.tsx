@@ -1,6 +1,7 @@
 import { Avatar, Badge, Group, Select, Table, Text } from "@mantine/core";
 import React from "react";
 import {
+useGetLocalUserByIdQuery,
   useGetMentorsQuery,
   useGetPayloadQuery,
   useGetPresenceQuery,
@@ -35,11 +36,18 @@ export default function ProjectUsersTable() {
   const { data: mentorsData, isLoading: mentorsLoading } = useGetMentorsQuery(
     parseInt(id)
   );
+  const { isLoading: isLocalUserLoading } = useGetLocalUserByIdQuery(
+    user?.user_id ?? 0,
+    {
+      skip: !user?.user_id,
+    }
+  );
   if (
     mentorsLoading ||
     isPresenceLoading ||
     isUserLoading ||
-    isUserPayloadLoading
+    isUserPayloadLoading ||
+    isLocalUserLoading
   ) {
     return <Loading />;
   }
