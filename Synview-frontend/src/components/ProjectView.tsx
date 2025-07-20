@@ -58,6 +58,9 @@ export default function ProjectView() {
             padding: 0,
             scrollbarWidth: "none",
           },
+          header : {
+            backgroundColor : "black"
+          }
         }}
       >
         <UpdateModalContent />
