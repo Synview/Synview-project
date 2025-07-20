@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   useGetPayloadQuery,
   useGetProjectByIdQuery,
+  useGetUserByIdQuery,
   useProjectReviewMutation,
 } from "../services/apiSlice.ts";
 import {
@@ -22,6 +23,7 @@ import Loading from "./HelperComponents/Loading.tsx";
 import ProjectUsersTable from "./ProjectUsersTable.tsx";
 import { rootLogger } from "../../../common/Logger.ts";
 import ProjectSummarizeAI from "./ProjectSummarizeAI.tsx";
+import { skipToken } from "@reduxjs/toolkit/query";
 export default function ProjectViewInfo() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
@@ -34,17 +36,18 @@ export default function ProjectViewInfo() {
 
   const { data: projectData, isLoading: isProjectDataLoading } =
     useGetProjectByIdQuery(parseInt(id));
-  const { data: userData, isLoading: isUserLoading } = useGetPayloadQuery(
-    undefined,
-    {
+  const { data: userPayload, isLoading: isUserPayloadLoading } =
+    useGetPayloadQuery(undefined, {
       refetchOnMountOrArgChange: true,
-    }
-  );
+    });
+
+  const { data: projectOwner, isLoading: isProjectOwnerLoading } =
+    useGetUserByIdQuery(projectData?.owner_id ?? skipToken);
 
   const [projectReview, { isLoading: isProjectReviewLoading }] =
     useProjectReviewMutation();
 
-  if (isUserLoading || isProjectDataLoading) {
+  if (isUserPayloadLoading || isProjectDataLoading || isProjectOwnerLoading) {
     return <Loading />;
   }
 
@@ -59,17 +62,19 @@ export default function ProjectViewInfo() {
   return (
     <div className="flex flex-col p-10 bg-neutral-900 text-white">
       <div className="flex flex-row justify-between w-full gap-10">
-        <h1>{projectData?.title} - </h1>
+        <h1>
+          {projectData?.title} - From: {projectOwner?.username}
+        </h1>
         <div className="flex items-center">
           <button
             type="button"
             className="btn"
             onClick={() => {
-              if (!userData?.id) return;
+              if (!userPayload?.id) return;
               dispatch(
                 openGithubModal({
                   project_id: parseInt(id),
-                  user_id: userData.id,
+                  user_id: userPayload.id,
                   isOpen: true,
                 })
               );
@@ -85,11 +90,11 @@ export default function ProjectViewInfo() {
             type="button"
             className="btn"
             onClick={() => {
-              if (!userData?.id) return;
+              if (!userPayload?.id) return;
               dispatch(
                 openInviteMentorModal({
                   project_id: parseInt(id),
-                  user_id: userData.id,
+                  user_id: userPayload.id,
                   isOpen: true,
                 })
               );
@@ -100,7 +105,11 @@ export default function ProjectViewInfo() {
           <ProjectUsersTable />
         </div>
         <div className="flex w-full flex-col">
-          <Button className=""onClick={summarizeProjectAI} loading={isProjectReviewLoading}>
+          <Button
+            className=""
+            onClick={summarizeProjectAI}
+            loading={isProjectReviewLoading}
+          >
             Summarize
           </Button>
           <ProjectSummarizeAI />
