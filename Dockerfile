@@ -20,4 +20,4 @@ COPY common ../common
 
 EXPOSE 8080
 
-CMD ["run", "--allow-env", "--allow-read", "--allow-ffi", "--allow-net", "--unstable-broadcast-channel", "index.ts"]
+CMD ["run", "--allow-env", "--allow-read", "--allow-ffi", "--allow-net", "--unstable-broadcast-channel", "./Synview-backend/index.ts"]
