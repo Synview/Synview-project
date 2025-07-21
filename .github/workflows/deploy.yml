@@ -23,19 +23,14 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-
-      - name: Install step
-        run: "deno install"
+      - name: Build step
+        run: "cd Synview-backend && deno run -A npm:prisma generate "
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "dusuan-synview-pro-15"
-          entrypoint: "index.ts"
-          root: "./Synview-backend"
+          project: "dusuan-synview-pro-96"
+          entrypoint: "Synview-backend/index.ts"
+          root: ""
           
           
