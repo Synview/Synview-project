@@ -3,7 +3,7 @@
 
   "scripts": {
     "start": {
-    "cmd": "denon run --allow-env --allow-read --allow-net --unstable-broadcast-channel --env=.env index.ts",
+    "cmd": "denon run --allow-env --allow-read --allow-net  --allow-ffi --unstable-broadcast-channel --env=.env index.ts",
       "desc": "run my app.ts file",
       "env": {
         "file": ".env"

@@ -18,7 +18,7 @@
     "npm:@octokit/rest@*": "22.0.0_@octokit+core@7.0.2",
     "npm:@octokit/rest@22": "22.0.0_@octokit+core@7.0.2",
     "npm:@prisma/client@^6.12.0": "6.12.0",
-    "npm:@prisma/extension-accelerate@^2.0.2": "2.0.2_@prisma+client@6.12.0",
+    "npm:@prisma/extension-accelerate@*": "2.0.2_@prisma+client@6.12.0",
     "npm:@types/node@*": "22.15.15",
     "npm:bcryptjs@*": "3.0.2",
     "npm:path-to-regexp@^6.3.0": "6.3.0",
@@ -996,7 +996,7 @@
       "npm:@google/genai@^1.9.0",
       "npm:@octokit/rest@22",
       "npm:@prisma/client@^6.12.0",
-      "npm:@prisma/extension-accelerate@^2.0.2",
+      "npm:@prisma/extension-accelerate@*",
       "npm:bcryptjs@*",
       "npm:zod@^3.25.67"
     ]
