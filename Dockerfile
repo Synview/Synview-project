@@ -16,8 +16,8 @@ WORKDIR /app
 
 COPY Synview-backend/ .
 
-COPY common ../common
+COPY common ./common
 
 EXPOSE 8080
 
-CMD ["run", "--allow-env", "--allow-read", "--allow-ffi", "--allow-net", "--unstable-broadcast-channel", "./Synview-backend/index.ts"]
+CMD ["deno", "run", "--allow-env", "--allow-read", "--allow-ffi", "--allow-net", "--unstable-broadcast-channel", "index.ts"]
