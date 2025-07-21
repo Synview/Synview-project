@@ -1,7 +1,7 @@
 import { Router } from "@oak/oak";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { PrismaClient } from "../generated/prisma/client.ts";
-import { hash, verify as bycryptVerify } from "@felix/bcrypt";
+import bcrypt from "bcryptjs";
 import { getPayloadFromBody } from "../middleware/auth_middleware.ts";
 import { getPayloadFromToken } from "../utils/JWTHelpers.ts";
 import { createToken } from "../utils/JWTHelpers.ts";
@@ -61,7 +61,7 @@ userRouter
       return;
     }
 
-    const hashedPassword = await hash(password);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.users.create({
       data: { username: username, email: email, passwordHash: hashedPassword },
@@ -97,7 +97,7 @@ userRouter
         return;
       }
 
-      const isValidPassowrd = await bycryptVerify(password, user.passwordHash);
+      const isValidPassowrd = await bcrypt.compare(password, user.passwordHash);
 
       if (!isValidPassowrd) {
         context.response.status = 400;
