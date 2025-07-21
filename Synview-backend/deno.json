@@ -7,6 +7,7 @@
     "studio": "deno run -A npm:prisma studio"
   },
   "imports": {
+    "@prisma/client": "npm:@prisma/client@^6.12.0",
     "bcryptjs": "npm:bcryptjs",
     "@google/genai": "npm:@google/genai@^1.9.0",
     "@oak/oak": "jsr:@oak/oak@^17.1.5",
