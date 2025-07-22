@@ -4,7 +4,7 @@ import { PrismaClient } from "../generated/prisma/client.ts";
 import { Router } from "@oak/oak";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 
-const logger = createLogger("AI [API]", LogLevel.INFO);
+const logger = createLogger("WEBHOOK [API]", LogLevel.INFO);
 type AppState = {
   session: Session;
 };
@@ -18,9 +18,9 @@ const prisma = new PrismaClient({
   },
 }).$extends(withAccelerate());
 
-webhookRouter.post("/github/webhook", (context) => {
+webhookRouter.post("/github/webhook", async (context) => {
   const payload = context.request.body;
-  logger.info(`Recieved : ${JSON.stringify(payload)}`);
+  logger.info(await payload.json());
 });
 
 export { webhookRouter };
