@@ -125,6 +125,9 @@ userRouter
       };
       context.cookies.set("Authorization", `Bearer ${access_token}`, {
         expires: new Date(Date.now() + 168 * 60 * 60 * 1000),
+        secure: true,
+        sameSite: "none",
+        httpOnly : true,
       });
     } catch (e) {
       context.response.status = 500;
