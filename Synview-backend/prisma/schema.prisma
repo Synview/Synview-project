@@ -7,8 +7,8 @@
 generator client {
   provider      = "prisma-client"
   output        = "../generated/prisma"
-  runtime       = "deno"
-  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x"]
+  runtime       = "edge"
+  binaryTargets = ["native","debian-openssl-3.0.x"]
 }
 
 datasource db {
