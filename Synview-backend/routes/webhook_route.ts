@@ -9,7 +9,7 @@ type AppState = {
   session: Session;
 };
 
-const aiRouter = new Router<AppState>();
+const webhookRouter = new Router<AppState>();
 const prisma = new PrismaClient({
   datasources: {
     db: {
@@ -18,7 +18,9 @@ const prisma = new PrismaClient({
   },
 }).$extends(withAccelerate());
 
-aiRouter.post("/github/webhook", (context) => {
+webhookRouter.post("/github/webhook", (context) => {
   const payload = context.request.body;
   logger.info(`Recieved : ${payload}`);
 });
+
+export { webhookRouter };
