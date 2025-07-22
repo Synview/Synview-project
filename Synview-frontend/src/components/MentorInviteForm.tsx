@@ -16,7 +16,7 @@ export default function MentorInviteForm() {
     try {
       if (projectId && userId) {
         await inviteMentor({
-          role: ProjectRolesSchema.Enum.REVIEWER,
+          role: ProjectRolesSchema.enum.REVIEWER,
           invited_username: invitedMentorUsername,
           inviting_user_id: userId,
           invited_project_id: projectId,
