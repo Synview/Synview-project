@@ -1,9 +1,9 @@
 let socket: WebSocket | null = null;
-type Listener = (data: any) => void;
+type Listener<T = unknown> = (data : T) => void;
 import { createLogger, LogLevel } from "../../../common/Logger.ts";
 import type { UserData } from "../../../common/types.ts";
 import sleep from "../utils/sleep.ts";
-const subscribers = new Map<string, Set<Listener>>();
+const subscribers = new Map<string, Set<Listener<any>>>();
 
 const logger = createLogger("Frontend [WS]", LogLevel.INFO);
 
@@ -67,7 +67,7 @@ export function sendIsGone(channel: string) {
     socket.send(JSON.stringify({ action: "leave", channel }));
   }
 }
-export function subscribe(channel: string, listener: Listener) {
+export function subscribe<T>(channel: string, listener: Listener<T>) {
   if (!subscribers.has(channel)) {
     subscribers.set(channel, new Set());
     sendSubscribe(channel);

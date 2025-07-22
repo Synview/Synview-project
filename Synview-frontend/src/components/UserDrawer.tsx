@@ -1,4 +1,4 @@
-import React from "react";
+ 
 
 import { useAppDispatch, useAppSelector } from "../hooks.ts";
 import { Button, Drawer, Stack, Tree, Indicator } from "@mantine/core";
@@ -49,6 +49,7 @@ export default function UserDrawer() {
       ),
       children: [
         {
+          value : "b",
           label: (
             <Stack
               className="pt-4"

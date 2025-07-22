@@ -9,7 +9,6 @@ import {
   useGetProjectByIdQuery,
   useGetUpdateByIdQuery,
   useCommitReviewMutation,
-  useProjectReviewMutation,
 } from "../services/apiSlice.ts";
 import Loading from "./HelperComponents/Loading.tsx";
 import { useParams } from "react-router-dom";
@@ -52,7 +51,7 @@ export default function UpdateModalContent() {
   const { data: commitData, isLoading: isCommitDataLoading } =
     useGetCommitDataQuery(args);
 
-  const [commitReview, { data: reviewData, isLoading: isCommitReviewLoading }] =
+  const [commitReview, { isLoading: isCommitReviewLoading }] =
     useCommitReviewMutation();
 
   if (
@@ -112,7 +111,7 @@ export default function UpdateModalContent() {
                 className="mockup-code overflow-x-auto w-full my-4 "
                 key={idx}
               >
-                {parsedLines.length > 0 ? (
+                {parsedLines.length > 0 &&
                   parsedLines.map((line, idx) => {
                     return (
                       <div key={idx} className="break">
@@ -148,10 +147,7 @@ export default function UpdateModalContent() {
                         })()}
                       </div>
                     );
-                  })
-                ) : (
-                  <></>
-                )}{" "}
+                  })}
               </div>
             );
           })

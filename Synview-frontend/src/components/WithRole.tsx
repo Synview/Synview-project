@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import NoPermission from "./HelperComponents/NoPermission.tsx";
 import {
   useGetHasAccessQuery,
@@ -23,7 +23,7 @@ export default function WithRole({ children }: Props) {
   );
 
   const { data: projectData, isLoading: isProjectLoading } =
-    useGetProjectByIdQuery(parseInt(id) ?? "", {
+    useGetProjectByIdQuery(parseInt(id!) ?? "", {
       skip: !id,
     });
 

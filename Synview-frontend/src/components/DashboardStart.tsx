@@ -1,16 +1,13 @@
-import React, { useEffect } from "react";
 import { Tabs } from "@mantine/core";
 
 import NewProject from "./NewProject.tsx";
 import {
-  useGetLocalUserByIdQuery,
   useGetMyProjectsQuery,
   useGetPayloadQuery,
   useGetReviewingProjectsQuery,
   useGetUserByIdQuery,
 } from "../services/apiSlice.ts";
 import Loading from "./HelperComponents/Loading.tsx";
-import NoProjects from "./HelperComponents/NoProjects.tsx";
 import Project from "./Project.tsx";
 
 import { connect } from "../services/webSocket.ts";
@@ -29,7 +26,7 @@ export default function DashboardStart() {
 
   
 
-  const { data, error, isLoading } = useGetMyProjectsQuery(UserData?.id ?? 0, {
+  const { data, isLoading } = useGetMyProjectsQuery(UserData?.id ?? 0, {
     skip: !UserData?.id,
   });
 

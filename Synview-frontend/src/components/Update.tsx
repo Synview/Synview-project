@@ -1,4 +1,4 @@
-import React from "react";
+ 
 
 import type { Update as UpdateInfo } from "../../../common/types.ts";
 import { useAppDispatch } from "../hooks.ts";

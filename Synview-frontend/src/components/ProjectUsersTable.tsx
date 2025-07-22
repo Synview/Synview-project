@@ -1,5 +1,5 @@
-import { Avatar, Badge, Group, Select, Table, Text } from "@mantine/core";
-import React from "react";
+import { Avatar, Badge, Group, Table, Text } from "@mantine/core";
+ 
 import {
 useGetLocalUserByIdQuery,
   useGetMentorsQuery,
@@ -25,7 +25,6 @@ export default function ProjectUsersTable() {
 
   const {
     data: user,
-    error: userError,
     isLoading: isUserLoading,
   } = useGetUserByIdQuery(userPayload?.id ?? skipToken, {
     refetchOnMountOrArgChange: true,

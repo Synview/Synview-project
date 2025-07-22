@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import { Group, Avatar, Text, Button } from "@mantine/core";
 import type { Invitation } from "../../../common/types.ts";
 import {
@@ -23,12 +23,10 @@ export default function Invitations({
 
   const {
     data: invitingUser,
-    error: invitingUserError,
     isLoading: isInvitingUserLoading,
   } = useGetUserByIdQuery(inviting_user_id ?? skipToken);
   const {
     data: project,
-    error: projectError,
     isLoading: isProjectLoading,
   } = useGetProjectByIdQuery(invited_project_id ?? skipToken);
   if (isInvitingUserLoading || isProjectLoading) {

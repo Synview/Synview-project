@@ -1,4 +1,4 @@
-import React, { type ChangeEvent, type FormEvent } from "react";
+import { type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRegisterMutation } from "../services/apiSlice.ts";

@@ -19,10 +19,6 @@ import {
   type User,
 } from "../../../common/types.ts";
 import {
-  PostQuestionSchema,
-  PostUpdateSchema,
-} from "../../../common/schemas.ts";
-import {
   connect,
   sendIsGone,
   sendIsPresent,
@@ -107,7 +103,7 @@ export const apiSlice = createApi({
     }),
     getLocalUserById: builder.query<User, number>({
       query: (id) => `getUser/${id}`,
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_id , { dispatch, queryFulfilled }) {
           try {
             const { data } = await queryFulfilled;
             dispatch(setUser(data));
@@ -197,7 +193,7 @@ export const apiSlice = createApi({
       query: (id) => `getUpdateQuestions/${id}`,
       async onCacheEntryAdded(
         id,
-        { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState }
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         connect(wsurl);
         await cacheDataLoaded;

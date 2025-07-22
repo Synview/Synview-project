@@ -1,18 +1,8 @@
-import React from "react";
 import NavbarDropdown from "./NavbarDropdown.tsx";
-import {
-  useGetPayloadQuery,
-  useGetProjectByIdQuery,
-} from "../services/apiSlice.ts";
+import { useGetPayloadQuery } from "../services/apiSlice.ts";
 import Drawer from "./UserDrawer.tsx";
-import { useParams } from "react-router-dom";
 export default function Navbar() {
-  const { data, error, isLoading } = useGetPayloadQuery();
-  const { id } = useParams();
-
-  const { data: ProjectData } = useGetProjectByIdQuery(id ?? "", {
-    skip: !id,
-  });
+  const { data } = useGetPayloadQuery();
 
   return (
     <div className="navbar bg-neutral-800 p-4">
