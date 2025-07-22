@@ -22,17 +22,40 @@ webhookRouter.post("/github/webhook", async (context) => {
   try {
     const body = context.request.body;
     const payload = await body.json();
-    logger.info(payload.repository.name);
-    logger.info(payload.repository.owner.name);
+    const pushedCommits = payload.commits;
+    const repoName = payload.repository.name;
+    const userGitHubName = payload.repository.owner.name;
+
+    const project = await prisma.projects.findFirst({
+      where: {
+        repo_url: repoName,
+      },
+    });
+
+    const commitUpdates = pushedCommits.map((commit) => {
+      return {
+        description: commit.message,
+        sha: commit.id,
+        created_at: commit.timestamp,
+        project_id: project.project_id,
+        user_id: project.owner_id,
+      };
+    });
+
+    await prisma.updates.createMany({
+      data: commitUpdates,
+      skipDuplicates: true,
+    });
+
     context.response.status = 200;
     context.response.body = {
-      message: "Successfull webhook!",
+      message: "Successfull sync!",
     };
   } catch (error) {
     logger.error(error);
     context.response.status = 500;
     context.response.body = {
-      message: "Unsuccessfull webhook!",
+      message: "Unsuccessfull sync!",
     };
   }
 });
