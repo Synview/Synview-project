@@ -1,9 +1,12 @@
 import { getToken, getKey, verifyGetPayload } from "../utils/JWTHelpers.ts";
 import { UserPayloadSchema } from "../../common/schemas.ts";
 import { UserPayload } from "../../common/types.ts";
-import { AppState } from "../../common/types.ts";
 import { Context } from "@oak/oak";
+import { Session } from "https://deno.land/x/oak_sessions@v9.0.0/mod.ts";
 let key: CryptoKey;
+type AppState = {
+  session: Session;
+};
 
 export function getPayloadFromBody(body: UserPayload) {
   try {
