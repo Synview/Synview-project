@@ -32,7 +32,7 @@ app.use(
       "Authorization",
       "Access-Control-Allow-Origin",
     ],
-    exposedHeaders: ["Authorization"],
+    exposedHeaders: ["Authorization", "Set-Cookie"],
   })
 );
 
