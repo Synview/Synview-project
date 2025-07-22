@@ -37,7 +37,7 @@ export function getToken(auth: string) {
   }
 
   const [method, token] = authorization.split(" ");
-
+  rootLogger.info(authorization)
   if (method !== "Bearer") {
     rootLogger.warn("No bearer")
     return null;
