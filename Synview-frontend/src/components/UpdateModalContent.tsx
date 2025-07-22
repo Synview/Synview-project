@@ -40,9 +40,9 @@ export default function UpdateModalContent() {
     useGetUpdateByIdQuery(id ?? skipToken);
 
   const args =
-    UserData?.username && projectData?.repo_url && updateData?.sha
+    projectData?.project_git_name && projectData?.repo_url && updateData?.sha
       ? {
-          user: UserData?.username,
+          user: projectData?.project_git_name,
           repo: projectData?.repo_url,
           sha: updateData?.sha,
         }
