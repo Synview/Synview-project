@@ -18,7 +18,13 @@ type AppState = {
   session: Session;
 };
 const userRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 
 userRouter
   .post("/register", async (context) => {

@@ -8,12 +8,12 @@ generator client {
   provider      = "prisma-client"
   output        = "../generated/prisma"
   runtime       = "deno-deploy"
-  binaryTargets = ["native","debian-openssl-3.0.x"]
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "prisma://accelerate.prisma-data.net/?api_key=123456"
 }
 
 model users {

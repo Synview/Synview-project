@@ -9,7 +9,13 @@ type AppState = {
   session: Session;
 };
 const questionRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 
 questionRouter.use(AuthMiddleware);
 
