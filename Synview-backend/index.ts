@@ -9,6 +9,7 @@ import { wsRouter } from "./websocket/websocket_route.ts";
 import { invitationRouter } from "./routes/invitation_routes.ts";
 import { aiRouter } from "./routes/ai_routes.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
+import { rootLogger } from "../common/Logger.ts";
 
 type AppState = {
   session: Session;
@@ -18,6 +19,7 @@ const mainRouter = new Router();
 const app = new Application<AppState>();
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
+rootLogger.info(env.PRODURL)
 app.use(
   oakCors({
     origin: [env.DEVURL, env.PRODURL],
