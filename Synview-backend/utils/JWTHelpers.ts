@@ -6,6 +6,7 @@ type AppState = {
 };
 import { decode } from "@zaubrik/djwt";
 import { Session } from "https://deno.land/x/oak_sessions@v9.0.0/mod.ts";
+import { rootLogger } from "../../common/Logger.ts";
 
 let key: CryptoKey;
 
@@ -31,15 +32,18 @@ export async function verifyGetPayload(token: string, key: CryptoKey) {
 export function getToken(auth: string) {
   const authorization = auth;
   if (!authorization) {
+    rootLogger.warn("No authorization in GetToken")
     return null;
   }
 
   const [method, token] = authorization.split(" ");
 
   if (method !== "Bearer") {
+    rootLogger.warn("No bearer")
     return null;
   }
   if (!token) {
+    rootLogger.warn("undefined token")
     return null;
   }
 
