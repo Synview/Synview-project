@@ -7,7 +7,7 @@
 generator client {
   provider      = "prisma-client"
   output        = "../generated/prisma"
-  runtime       = "edge"
+  runtime       = "deno-deploy"
   binaryTargets = ["native","debian-openssl-3.0.x"]
 }
 
