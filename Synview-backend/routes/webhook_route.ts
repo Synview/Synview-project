@@ -20,9 +20,10 @@ const prisma = new PrismaClient({
 
 webhookRouter.post("/github/webhook", async (context) => {
   try {
-    const payload = context.request.body;
-    const text =  JSON.stringify(await payload.json());
-    logger.info(text);
+    const body = context.request.body;
+    const payload = await body.json();
+    logger.info(payload.repository.name);
+    logger.info(payload.owner.name);
     context.response.status = 200;
     context.response.body = {
       message: "Successfull webhook!",
