@@ -20,7 +20,7 @@ export default async function AuthMiddleware(
   next: () => Promise<unknown>
 ) {
   try {
-    const auth = await context.cookies.get("Authorization");
+    const auth = context.cookies.get("Authorization");
     if (!auth) {
       throw new Error("No auth header");
     }
