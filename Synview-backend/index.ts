@@ -20,7 +20,7 @@ const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
 app.use(
   oakCors({
-    origin: env.DEVURL,
+    origin: [env.DEVURL, env.PRODURL],
     credentials: true,
     methods: ["POST", "PUT", "DELETE", "GET"],
     allowedHeaders: [
