@@ -18,8 +18,6 @@ type AppState = {
   session: Session;
 };
 
-const isProduction = Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
-
 const userRouter = new Router<AppState>();
 const prisma = new PrismaClient({
   datasources: {
@@ -128,8 +126,7 @@ userRouter
       };
       await context.cookies.set("Authorization", `Bearer ${access_token}`, {
         expires: new Date(Date.now() + 168 * 60 * 60 * 1000),
-        secure: isProduction,
-        sameSite: isProduction ? "none" : "lax",
+        sameSite: "lax",
         httpOnly : true,
       });
     } catch (e) {
