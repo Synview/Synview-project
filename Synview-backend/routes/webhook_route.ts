@@ -20,7 +20,7 @@ const prisma = new PrismaClient({
 
 webhookRouter.post("/github/webhook", (context) => {
   const payload = context.request.body;
-  logger.info(`Recieved : ${payload}`);
+  logger.info(`Recieved : ${JSON.stringify(payload)}`);
 });
 
 export { webhookRouter };
