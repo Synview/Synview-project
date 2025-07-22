@@ -1,4 +1,3 @@
-import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import {
   UserPayloadSchema,
   UserInfoSchema,
@@ -17,11 +16,10 @@ import {
   UserModelSchema,
   AiToolMessageSchema,
 } from "./schemas.ts";
-import { z } from "npm:zod";
+import { z } from "zod";
 
 export type AiTool = z.infer<typeof AiToolMessageSchema>;
 
-export type AppState = { session: Session };
 export type Projects = Project[];
 export type Updates = Update[];
 
