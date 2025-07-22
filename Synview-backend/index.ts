@@ -19,7 +19,9 @@ const mainRouter = new Router();
 const app = new Application<AppState>();
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
-rootLogger.info(env.PRODURL)
+
+
+rootLogger.info(env.PRODURL);
 app.use(
   oakCors({
     origin: [env.DEVURL, env.PRODURL],
@@ -33,7 +35,7 @@ app.use(
     exposedHeaders: ["Authorization"],
   })
 );
-app.use(Session.initMiddleware());
+
 
 app.use(userRouter.routes());
 app.use(userRouter.allowedMethods());
