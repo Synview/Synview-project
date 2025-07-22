@@ -12,8 +12,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = "prisma://accelerate.prisma-data.net/?api_key=123456"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") 
 }
 
 model users {
