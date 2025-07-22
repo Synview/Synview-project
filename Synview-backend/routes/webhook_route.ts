@@ -19,8 +19,20 @@ const prisma = new PrismaClient({
 }).$extends(withAccelerate());
 
 webhookRouter.post("/github/webhook", async (context) => {
-  const payload = context.request.body;
-  logger.info(await payload.json());
+  try {
+    const payload = context.request.body;
+    logger.info(await payload.json());
+    context.response.status = 200;
+    context.response.body = {
+      message: "Successfull webhook!",
+    };
+  } catch (error) {
+    logger.error(error);
+    context.response.status = 500;
+    context.response.body = {
+      message: "Unsuccessfull webhook!",
+    };
+  }
 });
 
 export { webhookRouter };
