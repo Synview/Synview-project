@@ -1,4 +1,3 @@
- 
 import { useParams } from "react-router-dom";
 import {
   useGetPayloadQuery,
@@ -24,6 +23,7 @@ import ProjectUsersTable from "./ProjectUsersTable.tsx";
 import { rootLogger } from "../../../common/Logger.ts";
 import ProjectSummarizeAI from "./ProjectSummarizeAI.tsx";
 import { skipToken } from "@reduxjs/toolkit/query";
+import LinkHook from "./LinkHook.tsx";
 export default function ProjectViewInfo() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
@@ -66,22 +66,26 @@ export default function ProjectViewInfo() {
           {projectData?.title} - From: {projectOwner?.username}
         </h1>
         <div className="flex items-center">
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              if (!userPayload?.id) return;
-              dispatch(
-                openGithubModal({
-                  project_id: parseInt(id),
-                  user_id: userPayload.id,
-                  isOpen: true,
-                })
-              );
-            }}
-          >
-            Sync commits
-          </button>
+          {!projectData?.repo_url ? (
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                if (!userPayload?.id) return;
+                dispatch(
+                  openGithubModal({
+                    project_id: parseInt(id),
+                    user_id: userPayload.id,
+                    isOpen: true,
+                  })
+                );
+              }}
+            >
+              Sync commits
+            </button>
+          ) : (
+            <LinkHook />
+          )}
         </div>
       </div>
       <div className="flex flex-col justify-between items-center gap-10">
@@ -106,7 +110,7 @@ export default function ProjectViewInfo() {
         </div>
         <div className="flex w-full flex-col">
           <Button
-            className=""
+            className="mb-6"
             onClick={summarizeProjectAI}
             loading={isProjectReviewLoading}
           >
