@@ -15,6 +15,7 @@ import {
   UserDataSchema,
   UserModelSchema,
   AiToolMessageSchema,
+  MessageSchema,
 } from "./schemas.ts";
 import { z } from "zod";
 
@@ -24,7 +25,7 @@ export type Projects = Project[];
 export type Updates = Update[];
 
 export type GithubInfo = z.infer<typeof GithubInfoSchema>;
-
+export type Message = z.infer<typeof MessageSchema>;
 export type Invitation = z.infer<typeof InvitationSchema>;
 export type PostInvitaion = z.infer<typeof PostInvitationSchema>;
 export type PostQuestion = z.infer<typeof PostQuestionSchema>;

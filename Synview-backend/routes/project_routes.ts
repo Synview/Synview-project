@@ -10,7 +10,6 @@ type AppState = {
 import { PostProjectSchema } from "../../common/schemas.ts";
 import {
   broadcastPresence,
-  sendtoChannel,
 } from "../websocket/websocket_server.ts";
 import { rootLogger } from "../../common/Logger.ts";
 const projectRouter = new Router<AppState>();

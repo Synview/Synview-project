@@ -47,13 +47,13 @@ export function EntrySocket(socket: WebSocket): void {
 }
 
 function createBroadcastChannel(channel: string) {
-  if (!broadcastChannels?.has(channel)) {
+  if (!broadcastChannels.has(channel)) {
     const bc = new BroadcastChannel(channel);
     bc.onmessage = (msg) => {
       const subs = subscribers.get(channel);
       if (subs) {
         for (const sub of subs) {
-          sub.send(JSON.stringify(msg));
+          sub.send(msg.data);
         }
       }
     };
@@ -80,6 +80,8 @@ function leaveProject(socket: WebSocket, channel: string) {
 
   subscribers.get(channel)?.delete(socket);
   if (subscribers.get(channel)?.size === 0) {
+    cleanupBroadcast(channel);
+
     subscribers.delete(channel);
   }
 
@@ -98,12 +100,18 @@ function cleanupSocket(socket: WebSocket) {
     for (const channel of channels) {
       subscribers.get(channel)?.delete(socket);
       if (subscribers.get(channel)?.size === 0) {
+        cleanupBroadcast(channel);
+
         subscribers.delete(channel);
       }
       broadcastPresence(channel);
     }
     socketChannels.delete(socket);
   }
+}
+
+function cleanupBroadcast(channel: string) {
+  broadcastChannels.delete(channel);
 }
 
 function subscribeToChannel(socket: WebSocket, channel: string) {
@@ -120,8 +128,13 @@ function subscribeToChannel(socket: WebSocket, channel: string) {
   socketChannels.get(socket)!.add(channel);
 }
 function unsubscribeFromChannel(socket: WebSocket, channel: string) {
-  if (subscribers.get(channel)) {
-    subscribers.get(channel)!.delete(socket);
+  const subs = subscribers.get(channel);
+  if (subs) {
+    subs.delete(socket);
+    if (subs.size === 0) {
+      cleanupBroadcast(channel);
+      subscribers.delete(channel);
+    }
   }
   if (socketChannels.get(socket)) {
     socketChannels.get(socket)!.delete(channel);
@@ -132,7 +145,9 @@ export function broadcastPresence(channel: string) {
   const subs = subscribers.get(channel);
   if (!subs) return;
 
-  const present = Array.from(subs).map((sub) => socketUserData.get(sub));
+  const present = Array.from(subs)
+    .map((sub) => socketUserData.get(sub))
+    .filter((userData) => userData !== undefined);
 
   const data = JSON.stringify({ channel, data: { present } });
   for (const sub of subs) {
@@ -144,7 +159,7 @@ export function broadcastPresence(channel: string) {
   }
 }
 
-export function sendtoChannel(channel: string, payload: any) {
+export function sendToChannel(channel: string, payload: any) {
   const jsonData = JSON.stringify({ channel, data: payload });
   const channelSubscribers = subscribers.get(channel);
   broadcastChannels.get(channel)?.postMessage(jsonData);
