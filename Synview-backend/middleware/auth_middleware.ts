@@ -35,7 +35,7 @@ export default async function AuthMiddleware(
       throw new Error("No auth token found in header or cookie");
     }
     
-    const token = getToken(String(auth));
+    const token = auth
     if (!token) {
       throw new Error("Couldn't obtain authorization token");
     }

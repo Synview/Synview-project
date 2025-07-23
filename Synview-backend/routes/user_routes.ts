@@ -131,7 +131,7 @@ userRouter
         context.request.secure ||
         context.request.headers.get("x-forwarded-proto") === "https";
 
-      await context.cookies.set("Authorization", `Bearer ${access_token}`, {
+      await context.cookies.set("Authorization", `${access_token}`, {
         expires: new Date(Date.now() + 168 * 60 * 60 * 1000),
         sameSite: isSecure ? "none" : "lax",
         secure: isSecure,
