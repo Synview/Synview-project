@@ -38,6 +38,13 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: url,
     credentials: "include",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token")
+      if(token)
+      {
+        headers.set("Authorization", `${token}`)
+      }
+    }
   }),
   tagTypes: [
     "Projects",
