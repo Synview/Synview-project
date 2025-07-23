@@ -124,6 +124,8 @@ userRouter
       context.response.body = {
         token: access_token,
       };
+
+      console.log("proto", context.request.headers.get("x-forwarded-proto"));
       await context.cookies.set("Authorization", `Bearer ${access_token}`, {
         expires: new Date(Date.now() + 168 * 60 * 60 * 1000),
         sameSite: "none",
