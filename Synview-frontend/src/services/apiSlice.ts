@@ -18,10 +18,7 @@ import {
   type Invitation,
   type User,
 } from "../../../common/types.ts";
-import {
-  PostQuestionSchema,
-  PostUpdateSchema,
-} from "../../../common/schemas.ts";
+
 import {
   connect,
   sendIsGone,
@@ -115,6 +112,7 @@ export const apiSlice = createApi({
         url: `logout`,
         method: "POST",
       }),
+      invalidatesTags: ["User"],
     }),
     getMyProjects: builder.query<Projects, number>({
       query: (id) => `getMyProjects/${id}`,
@@ -131,7 +129,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Projects"],
     }),
-    getMyUpdates: builder.query<Updates, string>({
+    getMyUpdates: builder.query<Updates[], string>({
       query: (id) => `getMyUpdates/${id}`,
       async onCacheEntryAdded(
         id,
