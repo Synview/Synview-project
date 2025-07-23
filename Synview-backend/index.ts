@@ -24,8 +24,8 @@ const PORT = env.PORT || 3000;
 rootLogger.info(env.PRODURL);
 app.use(
   oakCors({
-    origin: [env.DEVURL, env.PRODURL],
-    credentials: true,
+    origin: "*",
+    credentials: false,
     methods: ["POST", "PUT", "DELETE", "GET"],
     allowedHeaders: [
       "Content-type",

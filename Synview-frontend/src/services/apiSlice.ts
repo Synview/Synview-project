@@ -92,7 +92,7 @@ export const apiSlice = createApi({
         await connect(wsurl);
         await cacheDataLoaded;
         const state = (state: RootState) => state.user;
-        let currUser = state(getState() as RootState);
+      let currUser = state(getState() as RootState);
 
         while (true) {
           currUser = state(getState() as RootState);
