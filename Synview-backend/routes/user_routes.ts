@@ -121,9 +121,6 @@ userRouter
       };
 
       const access_token = await createToken(getPayloadFromBody(userPayload));
-      context.response.body = {
-        token: access_token,
-      };
 
       console.log("proto", context.request.headers.get("x-forwarded-proto"));
       // Check if we're in a secure context (HTTPS or behind a proxy)
@@ -138,6 +135,10 @@ userRouter
         httpOnly: true,
         path: "/",
       });
+      context.response.status = 200;
+      context.response.body = {
+        token: access_token,
+      };
     } catch (e) {
       context.response.status = 500;
       context.response.body = {

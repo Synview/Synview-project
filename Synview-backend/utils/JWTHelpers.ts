@@ -32,18 +32,18 @@ export async function verifyGetPayload(token: string, key: CryptoKey) {
 export function getToken(auth: string) {
   const authorization = auth;
   if (!authorization) {
-    rootLogger.warn("No authorization in GetToken");
+    rootLogger.warn("No authorization in GetToken")
     return null;
   }
 
   const [method, token] = authorization.split(" ");
-  rootLogger.info(authorization);
+  rootLogger.info(authorization)
   if (method !== "Bearer") {
-    rootLogger.warn("No bearer");
+    rootLogger.warn("No bearer")
     return null;
   }
   if (!token) {
-    rootLogger.warn("undefined token");
+    rootLogger.warn("undefined token")
     return null;
   }
 
@@ -54,13 +54,14 @@ export async function getPayloadFromToken(context: Context<AppState>) {
   try {
     const auth = await context.cookies.get("Authorization");
     if (!auth) {
-      rootLogger.error("No auth token at all");
+      return null;
+    }
+    const token = getToken(String(auth));
+    if (!token) {
       return null;
     }
 
-    rootLogger.info(auth)
-
-    const [a, payload, b] = decode(auth); // need to import all three because if not i dont get payload correctly
+    const [a, payload, b] = decode(token); // need to import all three because if not i dont get payload correctly
     if (!payload) {
       throw new Error("Couldn't get payload");
     }
