@@ -84,6 +84,7 @@ function cleanupSocket(socket: WebSocket) {
       if (subscribers.get(channel)?.size === 0) {
         subscribers.delete(channel);
       }
+      broadcastPresence(channel);
     }
     socketChannels.delete(socket);
   }

@@ -5,18 +5,21 @@ import {
   useGetPayloadQuery,
   useGetUpdateQuestionsQuery,
   usePostQuestionMutation,
-  useGetFilesQuery,
+  useGetCommitDataQuery,
   useGetProjectByIdQuery,
   useGetUpdateByIdQuery,
 } from "../services/apiSlice.ts";
 import Loading from "./HelperComponents/Loading.tsx";
 import { useParams } from "react-router-dom";
+import NotFound from "./NotFound.tsx";
 export default function UpdateModalContent() {
   const { id: project_id } = useParams();
   const id = useAppSelector((state) => state.questionModal.commit_id);
-
+  if (!project_id) {
+    return <NotFound />;
+  }
   const { data: projectData, isLoading: isProjectByIdLoading } =
-    useGetProjectByIdQuery(project_id ?? skipToken);
+    useGetProjectByIdQuery(parseInt(project_id) ?? skipToken);
   const [textUpdate, setTextUpdate] = useState("");
   const [postQuestion] = usePostQuestionMutation();
 
@@ -41,14 +44,15 @@ export default function UpdateModalContent() {
         }
       : skipToken;
 
-  const { data: fileData, isLoading: isFilesLoading } = useGetFilesQuery(args);
+  const { data: commitData, isLoading: isCommitDataLoading } =
+    useGetCommitDataQuery(args);
 
   if (
     isQuestionsLoading ||
     isUserLoading ||
     isProjectByIdLoading ||
     isUpdateByIdLoading ||
-    isFilesLoading
+    isCommitDataLoading
   ) {
     return <Loading />;
   }
@@ -71,23 +75,15 @@ export default function UpdateModalContent() {
       throw new Error("Couldn't create an Update" + error);
     }
   };
-
   return (
     <div className="flex text-white flex-row justify-between w-full min-h-screen bg-neutral-800 ">
       <div className="p-4 flex-1/2">
         <div className="mockup-code h-full w-full">
           <pre data-prefix="$">
-            {fileData ? (
-              fileData.map((data) => {
-                return (
-                  <code
-                    className="break-all whitespace-break-spaces"
-                    key={data.content}
-                  >
-                    {data.content}
-                  </code>
-                );
-              })
+            {commitData ? (
+              <code className="break-all whitespace-break-spaces">
+                {commitData.diffs}
+              </code>
             ) : (
               <code>No code found</code>
             )}
