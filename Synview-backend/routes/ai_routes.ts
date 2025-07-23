@@ -3,7 +3,7 @@ import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
-import { recentCodeAnalisis, commitAnalisis } from "../AI/geminiHandler.ts";
+import { recentCodeAnalysis, commitAnalysis } from "../AI/geminiHandler.ts";
 import diffExtracter from "../utils/diffExtracter.ts";
 import { rootLogger } from "../../common/Logger.ts";
 type AppState = {
@@ -52,7 +52,7 @@ aiRouter
         })
       );
 
-      const response = await recentCodeAnalisis(commitString.join(" "));
+      const response = await recentCodeAnalysis(commitString.join(" "));
 
       await prisma.projects.update({
         where: {
@@ -93,7 +93,7 @@ aiRouter
         commit?.sha
       );
 
-      const response = await commitAnalisis(commitString);
+      const response = await commitAnalysis(commitString);
 
       await prisma.updates.update({
         where: { update_id: commit.update_id },
