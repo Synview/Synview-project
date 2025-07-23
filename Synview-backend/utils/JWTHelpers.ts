@@ -52,10 +52,16 @@ export function getToken(auth: string) {
 
 export async function getPayloadFromToken(context: Context<AppState>) {
   try {
-    const auth = await context.cookies.get("Authorization");
+    let auth = await context.cookies.get("Authorization");
     if (!auth) {
-      rootLogger.warn("null auth (didnt get Authorization correctly)");
-      return null;
+      rootLogger.warn("null auth (cookie) (didnt get Authorization correctly)");
+      auth = context.request.headers.get("Authorization");
+      if (!auth) {
+        rootLogger.warn(
+          "null auth (header) (didnt get Authorization correctly)"
+        );
+        return null;
+      }
     }
     const token = getToken(String(auth));
     if (!token) {
