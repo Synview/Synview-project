@@ -1,5 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
+import { rootLogger } from "../../common/Logger.ts";
 const googleKey = Deno.env.get("GEMINI_API_KEY");
+if (!googleKey) {
+  rootLogger.error(
+    "Environment variable GEMINI_API_KEY is required but not defined."
+  );
+  throw new Error(
+    "Environment variable GEMINI_API_KEY is required but not defined."
+  );
+}
 const ai = new GoogleGenAI({ apiKey: googleKey });
 
 export async function recentCodeAnalysis(code: string) {
