@@ -50,7 +50,10 @@ githubRouter
 
       await prisma.projects.update({
         where: { project_id: githubInfo.project_id },
-        data: { repo_url: githubInfo.repo_name },
+        data: {
+          repo_url: githubInfo.repo_name,
+          project_git_name: githubInfo.github_user,
+        },
       });
 
       await prisma.updates.createMany({
@@ -84,11 +87,7 @@ githubRouter
         ref: commit_sha,
       });
 
-      const diffs = await diffExtracter(
-        github_user,
-        repo_name,
-        commit_sha
-      );
+      const diffs = await diffExtracter(github_user, repo_name, commit_sha);
 
       const commitFiles = response.data.files;
       if (commitFiles) {

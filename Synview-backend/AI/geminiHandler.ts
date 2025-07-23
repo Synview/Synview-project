@@ -17,7 +17,7 @@ export async function recentCodeAnalysis(code: string) {
   You will be given commit messages and the code diffs from those commits. 
   Your job is to perform a troughtful review that is useful for both developers doing and reviewing the commits and to non-technical team members.
   Please analyze the changes and respond with the following sections, using clear and respectful and friendly language. 
-  Think of it as a summary for someone who is trying to grasp the project idea quickly
+  Think of it as a summary for someone who is trying to grasp the project idea quickly and treat the response as a formal document without talking to someone, just describe the project
 
 
   - What changes were made 
@@ -56,7 +56,7 @@ export async function commitAnalysis(code: string) {
   You will be given a commit message and the code diff. 
   Your job is to perform a troughtful review that is useful for both developers doing and reviewing the commit and to non-technical team members.
   Please analyze the changes and respond with the following sections, using clear and respectful and friendly language. 
-    Think of it as a summary for someone who is trying to grasp the changes quickly
+  Think of it as a summary for someone who is trying to grasp the project idea quickly and treat the response as a formal document without talking to someone, just describe the project
 
 
   - What changes were made 

@@ -3,6 +3,7 @@ type Listener = (data: unknown) => void;
 import { createLogger, LogLevel } from "../../../common/Logger.ts";
 import { MessageSchema } from "../../../common/schemas.ts";
 import type { UserData } from "../../../common/types.ts";
+import sleep from "../utils/sleep.ts";
 const subscribers = new Map<string, Set<Listener>>();
 
 const logger = createLogger("Frontend [WS]", LogLevel.INFO);
@@ -33,12 +34,15 @@ export function connect(url: string): Promise<void> {
       }
     };
 
-    socket.onclose = () => {
-      logger.info("[WS] Closing");
-      socket = null;
+    socket.onclose = async () => {
+      logger.warn("[WS] Closing - reconnecting");
+      await sleep(100);
+      connect(url);
     };
-    socket.onerror = (err) => {
-      logger.error("[WS] Error : " + err);
+    socket.onerror = async (err) => {
+      logger.warn("[WS] Error - reconnecting : " + err);
+      await sleep(100);
+      connect(url);
     };
   });
 }
