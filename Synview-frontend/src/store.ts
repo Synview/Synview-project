@@ -3,6 +3,7 @@ import { apiSlice } from "./services/apiSlice.ts";
 import questionModalReducer from "./slices/questionModalSlice.ts";
 import githubModalReducer from "./slices/syncGithubModalSlice.ts";
 import inviteMentorReducer from "./slices/inviteMentorModalSlice.ts";
+import userReducer from "./slices/userSlice.ts";
 import drawerReducer from "./slices/drawerSlice.ts";
 import { setupListeners } from "@reduxjs/toolkit/query";
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     githubModal: githubModalReducer,
     inviteMentorModal: inviteMentorReducer,
     drawer: drawerReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
