@@ -75,8 +75,6 @@ export default function UpdateModalContent() {
       throw new Error("Couldn't create an Update" + error);
     }
   };
-  console.log(commitData);
-  commitData;
   return (
     <div className="flex text-white flex-row justify-between w-full min-h-screen bg-neutral-800 ">
       <div className="p-4 flex-1/2">
