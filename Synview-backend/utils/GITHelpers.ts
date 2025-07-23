@@ -1,11 +1,12 @@
 import { Octokit } from "npm:@octokit/rest";
+import { createLogger } from "../../common/Logger.ts";
 const env = Deno.env.toObject();
 
 const GitHubToken = env.GITHUB_TOKEN;
 const octokit = new Octokit({
   auth: GitHubToken,
 });
-
+const logger = createLogger("GITHelpers");
 export default async function diffExtracter(
   owner: string,
   repo: string,
@@ -25,6 +26,7 @@ export default async function diffExtracter(
     );
     return String(diffs);
   } catch {
+    logger.error("Error in diffExtracter");
     return "";
   }
 }
@@ -45,6 +47,7 @@ export async function GetMetadata(
     );
     return JSON.stringify(result.data.commit);
   } catch {
+    logger.error("Error in GetMetadata");
     return "";
   }
 }
@@ -81,6 +84,8 @@ export async function FileSearch(
     );
     return JSON.stringify(result.data);
   } catch {
+    logger.error("Error in FileSearch");
+
     return "";
   }
 }
