@@ -207,7 +207,7 @@ export async function commitExplainer(code: string): Promise<string> {
   const systemPrompt = `
   You are an expert software reviewer trained in all programming languages and development best practices. 
   You will be given code diff. 
-  Your task is to produce a concise, clear, and insightful review with markdown format
+  Your task is to produce a concise, clear, and insightful review in markdown format
   `;
   if (code) {
     const response = await ai.models.generateContent({
