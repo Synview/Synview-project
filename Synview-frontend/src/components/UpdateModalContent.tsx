@@ -1,10 +1,6 @@
-import { useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useAppSelector } from "../hooks.ts";
 import {
-  useGetPayloadQuery,
-  useGetUpdateQuestionsQuery,
-  usePostQuestionMutation,
   useGetCommitDataQuery,
   useGetProjectByIdQuery,
   useGetUpdateByIdQuery,

@@ -38,17 +38,6 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: url,
     credentials: "include",
-    prepareHeaders: (headers, { getState }) => {
-      // Get token from state or localStorage
-      const state = getState() as RootState;
-      const token = state.user?.token || localStorage.getItem("authToken");
-      
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      
-      return headers;
-    },
   }),
   tagTypes: [
     "Projects",
@@ -114,20 +103,18 @@ export const apiSlice = createApi({
     }),
     getLocalUserById: builder.query<User, number>({
       query: (id) => `getUser/${id}`,
-      async onQueryStarted(_id , { dispatch, queryFulfilled }) {
-          try {
-            const { data } = await queryFulfilled;
-            dispatch(setUser(data));
-          } catch {
-            logger.error("Couldn't get user data");
-          }
-        },
+      async onQueryStarted(_id, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setUser(data));
+        } catch {
+          logger.error("Couldn't get user data");
+        }
       },
-    ),
+    }),
     getUserById: builder.query<User, number>({
       query: (id) => `getUser/${id}`,
-      },
-    ),
+    }),
     register: builder.mutation<void, EmailRegisterRequestSchema>({
       query: (newUser: EmailRegisterRequestSchema) => ({
         url: "register",
@@ -313,5 +300,5 @@ export const {
   useCommitReviewMutation,
   useGetHasAccessQuery,
   useGetReviewingProjectsQuery,
-  useGetLocalUserByIdQuery
+  useGetLocalUserByIdQuery,
 } = apiSlice;

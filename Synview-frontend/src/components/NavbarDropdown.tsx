@@ -1,4 +1,3 @@
-import React from "react";
 import { Menu, Button } from "@mantine/core";
 import { Kbd } from "@mantine/core";
 import { useLogoutMutation } from "../services/apiSlice.ts";
