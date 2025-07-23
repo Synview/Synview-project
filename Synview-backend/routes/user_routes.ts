@@ -136,6 +136,7 @@ userRouter
         sameSite: isSecure ? "none" : "lax",
         secure: isSecure,
         httpOnly: true,
+        path: "/",
       });
     } catch (e) {
       context.response.status = 500;
