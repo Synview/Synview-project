@@ -6,14 +6,23 @@ import diffExtracter, {
   GetMetadata,
 } from "../utils/GITHelpers.ts";
 import { AiToolMessageSchema } from "../../common/schemas.ts";
+import { rootLogger } from "../../common/Logger.ts";
 const googleKey = Deno.env.get("GEMINI_API_KEY");
+if (!googleKey) {
+  rootLogger.error(
+    "Environment variable GEMINI_API_KEY is required but not defined."
+  );
+  throw new Error(
+    "Environment variable GEMINI_API_KEY is required but not defined."
+  );
+}
 const ai = new GoogleGenAI({ apiKey: googleKey });
 
 const logger = createLogger("AI [API]", LogLevel.INFO);
 
 const MAX_ITERATIONS = 4;
 
-export async function recentCodeAnalisis(
+export async function recentCodeAnalysis(
   projectGitName: string,
   projectRepoName: string,
   code: string
@@ -189,5 +198,5 @@ async function CommitExplainer(
     });
     return response.text;
   }
-  return "Error finding commit";
+  return "Error finding commit, please try again";
 }
