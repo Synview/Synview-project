@@ -34,10 +34,14 @@ aiRouter
 
       if (!project?.project_git_name) {
         rootLogger.error("Missing project_git_name");
+        context.response.status = 400;
+        context.response.body = { error: "Missing project_git_name" };
         return;
       }
       if (!project?.repo_url) {
-        rootLogger.error("Missing repor url ");
+        rootLogger.error("Missing repo url ");
+        context.response.status = 400;
+        context.response.body = { error: "Missing repo_url" };
         return;
       }
 
@@ -85,6 +89,10 @@ aiRouter
       });
       if (!commit?.sha) {
         rootLogger.warn("No commit sha registered");
+        context.response.status = 400;
+        context.response.body = {
+          error: "Missing commit SHA. Please provide a valid commit ID.",
+        };
         return;
       }
       const commitString = await diffExtracter(
