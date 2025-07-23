@@ -31,6 +31,7 @@ app.use(
       "Content-type",
       "Authorization",
       "Access-Control-Allow-Origin",
+      "X-Debug", 
     ],
     exposedHeaders: ["Authorization", "Set-Cookie"],
   })
@@ -62,7 +63,6 @@ app.use(aiRouter.allowedMethods());
 
 app.use(webhookRouter.routes());
 app.use(webhookRouter.allowedMethods());
-
 
 app.use(mainRouter.routes());
 app.use(mainRouter.allowedMethods());
