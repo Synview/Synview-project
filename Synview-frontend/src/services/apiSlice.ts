@@ -48,6 +48,7 @@ export const apiSlice = createApi({
       headers.set("...", `this works`);
 
       logger.warn("no token stored in local");
+      return headers;
     },
   }),
   tagTypes: [
