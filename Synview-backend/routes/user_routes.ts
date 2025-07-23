@@ -126,11 +126,16 @@ userRouter
       };
 
       console.log("proto", context.request.headers.get("x-forwarded-proto"));
+      // Check if we're in a secure context (HTTPS or behind a proxy)
+      const isSecure =
+        context.request.secure ||
+        context.request.headers.get("x-forwarded-proto") === "https";
+
       await context.cookies.set("Authorization", `Bearer ${access_token}`, {
         expires: new Date(Date.now() + 168 * 60 * 60 * 1000),
-        sameSite: "none",
-        secure: context.request.secure,
-        httpOnly : true,
+        sameSite: isSecure ? "none" : "lax",
+        secure: isSecure,
+        httpOnly: true,
       });
     } catch (e) {
       context.response.status = 500;
