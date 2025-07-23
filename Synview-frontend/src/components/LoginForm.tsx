@@ -1,4 +1,4 @@
-import React, { type ChangeEvent, type FormEvent, useState } from "react";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../services/apiSlice.ts";
 export default function LoginForm() {
