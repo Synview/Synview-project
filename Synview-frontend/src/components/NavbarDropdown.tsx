@@ -1,4 +1,4 @@
- 
+import React from "react";
 import { Menu, Button } from "@mantine/core";
 import { Kbd } from "@mantine/core";
 import { useLogoutMutation } from "../services/apiSlice.ts";
@@ -9,6 +9,8 @@ export default function NavbarDropdown() {
   const navigate = useNavigate();
   const logout = async () => {
     await logoutUser();
+    // Clear the auth token from localStorage
+    localStorage.removeItem("authToken");
     navigate("/");
   };
 

@@ -1,6 +1,5 @@
-import { type ChangeEvent, type FormEvent } from "react";
+import React, { type ChangeEvent, type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useLoginMutation } from "../services/apiSlice.ts";
 export default function LoginForm() {
 
@@ -21,6 +20,8 @@ export default function LoginForm() {
         password: password,
       }).unwrap();
       if (res.token) {
+        // Store the token in localStorage for cross-domain authentication
+        localStorage.setItem("authToken", res.token);
         navigate("/dashboard");
       }
     } catch{

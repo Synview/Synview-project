@@ -20,10 +20,21 @@ export default async function AuthMiddleware(
   next: () => Promise<unknown>
 ) {
   try {
-    const auth = await context.cookies.get("Authorization");
+    // Check for token in Authorization header first
+    let auth = context.request.headers.get("Authorization");
+    
+    // If not in header, check cookie
     if (!auth) {
-      throw new Error("No auth header");
+      const cookieAuth = await context.cookies.get("Authorization");
+      if (cookieAuth) {
+        auth = cookieAuth;
+      }
     }
+    
+    if (!auth) {
+      throw new Error("No auth token found in header or cookie");
+    }
+    
     const token = getToken(String(auth));
     if (!token) {
       throw new Error("Couldn't obtain authorization token");
@@ -36,6 +47,6 @@ export default async function AuthMiddleware(
     context.response.headers.set("Authorization", `${auth}`);
     await next();
   } catch (err) {
-    context.throw(401, "Unauthorized" + err);
+    context.throw(401, "Unauthorized: " + err);
   }
 }
