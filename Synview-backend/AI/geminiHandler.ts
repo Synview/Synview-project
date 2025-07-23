@@ -77,7 +77,7 @@ Make sure the response is markdown compatible and is clearly readable with heade
     const text = response.text.trim();
     logger.info(`Iteration:  ${iteration}`);
 
-    if (iteration == 9) {
+    if (iteration === 9) {
       await AIchat.sendMessage({
         message:
           "This is the last iteration possible, next one HAS to be RESULT",
