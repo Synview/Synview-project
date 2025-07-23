@@ -8,6 +8,9 @@ type AppState = {
   session: Session;
 };
 import { PostProjectSchema } from "../../common/schemas.ts";
+import {
+  broadcastPresence,
+} from "../websocket/websocket_server.ts";
 const projectRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
 
@@ -22,6 +25,7 @@ projectRouter
           project_id: parseInt(id),
         },
       });
+      broadcastPresence(`Presence:${id}`);
       context.response.body = Project;
     } catch (e) {
       context.response.body = {
@@ -102,9 +106,9 @@ projectRouter
     const id = context.params.id;
     try {
       const mentors = await prisma.users.findMany({
-        select : {
+        select: {
           user_id: true,
-          username : true,
+          username: true,
           email: true,
         },
         where: {
@@ -114,7 +118,6 @@ projectRouter
               role: "REVIEWER",
             },
           },
-
         },
       });
       context.response.body = mentors;
