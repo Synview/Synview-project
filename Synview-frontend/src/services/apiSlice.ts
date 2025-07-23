@@ -39,12 +39,14 @@ export const apiSlice = createApi({
     baseUrl: url,
     credentials: "include",
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token")
-      if(token)
-      {
-        headers.set("Authorization", `${token}`)
+      const token = localStorage.getItem("token");
+      if (token) {
+        logger.info(token);
+
+        headers.set("Authorization", `${token}`);
       }
-    }
+      logger.warn("no token stored in local");
+    },
   }),
   tagTypes: [
     "Projects",
