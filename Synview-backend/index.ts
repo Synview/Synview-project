@@ -35,7 +35,6 @@ app.use(
     allowedHeaders: [
       "Content-type",
       "Authorization",
-      "Access-Control-Allow-Origin",
       "X-Debug",
     ],
   })
