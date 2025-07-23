@@ -137,6 +137,12 @@ userRouter
     try {
       const user = await prisma.users.findUnique({
         where: { user_id: parseInt(id) },
+        select: {
+          user_id: true,
+          username: true,
+          email: true,
+          role: true,
+        },
       });
       context.response.body = user;
     } catch (error) {
