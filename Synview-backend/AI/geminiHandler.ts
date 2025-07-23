@@ -18,8 +18,9 @@ export async function recentCodeAnalisis(
   projectRepoName: string,
   code: string
 ) {
-  let finalResponse = "";
-  const systemPrompt = `
+  try {
+    let finalResponse = "";
+    const systemPrompt = `
 You are an expert software review agent.
 Your job is to mainly analyze the comits given to you in the first message and other code diffs you can explore, then summarize them for both developers and non-technical stakeholders.
 Only the FINAL response may include natural language and should be clearly formatted with headers.
@@ -75,107 +76,112 @@ FINAL must have markdown style **ON the value**
 You only have 9 iterations to get what you want, **10th one needs to be "FINAL"**
 `;
 
-  const AIchat = ai.chats.create({
-    model: "gemini-2.5-flash",
-    history: [
-      {
-        role: "user",
-        parts: [{ text: code }],
+    const AIchat = ai.chats.create({
+      model: "gemini-2.5-flash",
+      history: [
+        {
+          role: "user",
+          parts: [{ text: code }],
+        },
+      ],
+      config: {
+        systemInstruction: systemPrompt,
       },
-    ],
-    config: {
-      systemInstruction: systemPrompt,
-    },
-  });
-
-  let isRunning = true;
-  let iteration = 0;
-
-  while (isRunning && iteration < MAX_ITERATIONS) {
-    iteration++;
-    const response = await AIchat.sendMessage({
-      message: "Start",
     });
-    try {
-      logger.info(response.text.trim());
-      const text = AiToolMessageSchema.parse(JSON.parse(response.text.trim()));
 
-      logger.info(`Iteration:  ${iteration}`);
+    let isRunning = true;
+    let iteration = 0;
 
-      if (text["tool"] === "DirectorySearch") {
-        logger.info(`Tool request Directory search:`);
-        const toolResult = await DirectorySearch(
-          projectGitName,
-          projectRepoName
-        );
-        logger.info(`Result : ${toolResult}`);
-        await AIchat.sendMessage({
-          message: toolResult + `You are on iteration :${iteration}`,
-        });
-      } else if (text["tool"] === "FileSearch") {
-        const search = text["value"];
-        logger.info(`Tool request FileSearch:${search}`);
-
-        const toolResult = await FileSearch(
-          projectGitName,
-          projectRepoName,
-          search
-        );
-        logger.info(`Result : ${toolResult}`);
-
-        await AIchat.sendMessage({
-          message: toolResult + `You are on iteration :${iteration}`,
-        });
-      } else if (text["tool"] === "GetMetadata") {
-        const search = text["value"];
-        logger.info(`Tool request Metadata :${search}`);
-
-        const toolResult = await GetMetadata(
-          projectGitName,
-          projectRepoName,
-          search
-        );
-        logger.info(`Result : ${toolResult}`);
-        await AIchat.sendMessage({
-          message: toolResult + `You are on iteration :${iteration}`,
-        });
-      } else if (text["tool"] === "CommitExplainer") {
-        const search = text["value"];
-        logger.info(`Tool request CommitExplainer :${search}`);
-
-        const code = await diffExtracter(
-          projectGitName,
-          projectRepoName,
-          search
+    while (isRunning && iteration < MAX_ITERATIONS) {
+      iteration++;
+      const response = await AIchat.sendMessage({
+        message: "Start",
+      });
+      try {
+        logger.info(response.text.trim());
+        const text = AiToolMessageSchema.parse(
+          JSON.parse(response.text.trim())
         );
 
-        const toolResult = await commitExplainer(code);
-        logger.info(`Result : ${toolResult}`);
+        logger.info(`Iteration:  ${iteration}`);
 
+        if (text["tool"] === "DirectorySearch") {
+          logger.info(`Tool request Directory search:`);
+          const toolResult = await DirectorySearch(
+            projectGitName,
+            projectRepoName
+          );
+          logger.info(`Result : ${toolResult}`);
+          await AIchat.sendMessage({
+            message: toolResult + `You are on iteration :${iteration}`,
+          });
+        } else if (text["tool"] === "FileSearch") {
+          const search = text["value"];
+          logger.info(`Tool request FileSearch:${search}`);
+
+          const toolResult = await FileSearch(
+            projectGitName,
+            projectRepoName,
+            search
+          );
+          logger.info(`Result : ${toolResult}`);
+
+          await AIchat.sendMessage({
+            message: toolResult + `You are on iteration :${iteration}`,
+          });
+        } else if (text["tool"] === "GetMetadata") {
+          const search = text["value"];
+          logger.info(`Tool request Metadata :${search}`);
+
+          const toolResult = await GetMetadata(
+            projectGitName,
+            projectRepoName,
+            search
+          );
+          logger.info(`Result : ${toolResult}`);
+          await AIchat.sendMessage({
+            message: toolResult + `You are on iteration :${iteration}`,
+          });
+        } else if (text["tool"] === "CommitExplainer") {
+          const search = text["value"];
+          logger.info(`Tool request CommitExplainer :${search}`);
+
+          const code = await diffExtracter(
+            projectGitName,
+            projectRepoName,
+            search
+          );
+
+          const toolResult = await commitExplainer(code);
+          logger.info(`Result : ${toolResult}`);
+
+          await AIchat.sendMessage({
+            message: toolResult + `You are on iteration :${iteration}`,
+          });
+        } else if (text["tool"] === "FINAL") {
+          logger.info(`Ai final answer :${text.value}`);
+          finalResponse = text.value;
+          isRunning = false;
+        } else {
+          logger.error("Tool requested non existing :", text);
+          await AIchat.sendMessage({
+            message: `NOT A VALID RESPONSE, Iteration : ${iteration}`,
+          });
+        }
+      } catch (error) {
+        logger.error(`Ai returned an invalid response : ${error}`);
         await AIchat.sendMessage({
-          message: toolResult + `You are on iteration :${iteration}`,
-        });
-      } else if (text["tool"] === "FINAL") {
-        logger.info(`Ai final answer :${text.value}`);
-        finalResponse = text.value;
-        isRunning = false;
-      } else {
-        logger.error("Tool requested non existing :", text);
-        await AIchat.sendMessage({
-          message: `NOT A VALID RESPONSE, Iteration : ${iteration}`,
-        });
-      }
-    } catch (error) {
-      logger.error(`Ai returned an invalid response : ${error}`);
-      await AIchat.sendMessage({
-        message: `NOT A VALID RESPONSE RETURN WITH THIS FORMAT {
+          message: `NOT A VALID RESPONSE RETURN WITH THIS FORMAT {
   "tool" : "<toolSelected>",
   "value": "<valueSelected>" 
 } Iteration${iteration}`,
-      });
+        });
+      }
     }
+    return finalResponse;
+  } catch (error) {
+    console.error(error);
   }
-  return finalResponse;
 }
 
 export async function commitExplainer(code: string): Promise<string> {
