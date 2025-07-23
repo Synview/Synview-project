@@ -16,6 +16,13 @@ export const UserDataSchema = z.object({
   role: ProjectRolesSchema,
 });
 
+export const UserModelSchema = z.object({
+  created_at: z.date(),
+  user_id: z.number(),
+  username: z.string(),
+  email: z.string(),
+});
+
 export const GithubInfoSchema = z.object({
   github_user: z.string(),
   repo_name: z.string(),

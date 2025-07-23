@@ -132,6 +132,31 @@ userRouter
 userRouter.use(AuthMiddleware);
 
 userRouter
+  .get("/getUser/:id", async (context) => {
+    const id = context.params.id;
+    try {
+      const user = await prisma.users.findUnique({
+        where: { user_id: Number(id) },
+        select: {
+          user_id: true,
+          username: true,
+          email: true,
+          role: true,
+        },
+      });
+      if (user === null) {
+        context.response.status = 404;
+        context.response.body = { error: "User not found" };
+      } else {
+        context.response.body = user;
+      }
+    } catch (error) {
+      context.response.status = 500;
+      context.response.body = {
+        error: "Error getting user by id: " + error,
+      };
+    }
+  })
   .get("/getPayload", async (context) => {
     const payload = await getPayloadFromToken(context);
     context.response.body = payload;
@@ -176,7 +201,7 @@ userRouter
         where: {
           project_invitation_id: Invite.project_invitation_id,
         },
-        data: { status: "COMPLETE" },
+        data: { status: "COMPLETE", accepted_at: new Date() },
       });
       await prisma.user_projects.create({
         data: {
