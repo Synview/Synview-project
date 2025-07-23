@@ -11,7 +11,7 @@ const ai = new GoogleGenAI({ apiKey: googleKey });
 
 const logger = createLogger("AI [API]", LogLevel.INFO);
 
-const MAX_ITERATIONS = 4;
+const MAX_ITERATIONS = 10;
 
 export async function recentCodeAnalisis(
   projectGitName: string,
@@ -68,13 +68,12 @@ FINAL must begin with "Summary:" and contain two parts:
 
 "Technical summary"
 
-You must respond with FINAL within 4 iterations.
+You must respond with FINAL within 9 iterations.
 
 FINAL must reflect your own insight from the original code — do not copy tool output.
 FINAL must have markdown style **ON the value** 
-You only have 3 iterations to get what you want, **4th one needs to be "FINAL"**
-`
-
+You only have 9 iterations to get what you want, **10th one needs to be "FINAL"**
+`;
 
   const AIchat = ai.chats.create({
     model: "gemini-2.5-flash",
@@ -110,7 +109,9 @@ You only have 3 iterations to get what you want, **4th one needs to be "FINAL"**
           projectRepoName
         );
         logger.info(`Result : ${toolResult}`);
-        await AIchat.sendMessage({ message: toolResult });
+        await AIchat.sendMessage({
+          message: toolResult + `You are on iteration :${iteration}`,
+        });
       } else if (text["tool"] === "FileSearch") {
         const search = text["value"];
         logger.info(`Tool request FileSearch:${search}`);
@@ -122,7 +123,9 @@ You only have 3 iterations to get what you want, **4th one needs to be "FINAL"**
         );
         logger.info(`Result : ${toolResult}`);
 
-        await AIchat.sendMessage({ message: toolResult });
+        await AIchat.sendMessage({
+          message: toolResult + `You are on iteration :${iteration}`,
+        });
       } else if (text["tool"] === "GetMetadata") {
         const search = text["value"];
         logger.info(`Tool request Metadata :${search}`);
@@ -133,7 +136,9 @@ You only have 3 iterations to get what you want, **4th one needs to be "FINAL"**
           search
         );
         logger.info(`Result : ${toolResult}`);
-        await AIchat.sendMessage({ message: toolResult });
+        await AIchat.sendMessage({
+          message: toolResult + `You are on iteration :${iteration}`,
+        });
       } else if (text["tool"] === "CommitExplainer") {
         const search = text["value"];
         logger.info(`Tool request CommitExplainer :${search}`);
@@ -147,14 +152,18 @@ You only have 3 iterations to get what you want, **4th one needs to be "FINAL"**
         const toolResult = await commitExplainer(code);
         logger.info(`Result : ${toolResult}`);
 
-        await AIchat.sendMessage({ message: toolResult });
+        await AIchat.sendMessage({
+          message: toolResult + `You are on iteration :${iteration}`,
+        });
       } else if (text["tool"] === "FINAL") {
         logger.info(`Ai final answer :${text.value}`);
         finalResponse = text.value;
         isRunning = false;
       } else {
         logger.error("Tool requested non existing :", text);
-        await AIchat.sendMessage({ message: "NOT A VALID RESPONSE" });
+        await AIchat.sendMessage({
+          message: `NOT A VALID RESPONSE, Iteration : ${iteration}`,
+        });
       }
     } catch (error) {
       logger.error(`Ai returned an invalid response : ${error}`);
@@ -162,7 +171,7 @@ You only have 3 iterations to get what you want, **4th one needs to be "FINAL"**
         message: `NOT A VALID RESPONSE RETURN WITH THIS FORMAT {
   "tool" : "<toolSelected>",
   "value": "<valueSelected>" 
-}`,
+} Iteration${iteration}`,
       });
     }
   }
