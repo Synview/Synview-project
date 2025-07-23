@@ -4,6 +4,11 @@ export const invitation_status = ["PENDING", "COMPLETE"] as const;
 export const ProjectRolesSchema = z.enum(project_roles);
 export const InvitationStatusSchema = z.enum(invitation_status);
 
+export const MessageSchema = z.object({
+  channel: z.string(),
+  data: z.object({}),
+});
+
 export const UserDataSchema = z.object({
   email: z.string(),
   user_id: z.number(),

@@ -18,10 +18,7 @@ import {
   type Invitation,
   type User,
 } from "../../../common/types.ts";
-import {
-  PostQuestionSchema,
-  PostUpdateSchema,
-} from "../../../common/schemas.ts";
+
 import {
   connect,
   sendIsGone,
@@ -63,11 +60,10 @@ export const apiSlice = createApi({
       ) {
         await connect(wsurl);
         await cacheDataLoaded;
-        const state = (state: RootState) => state.user;
-        let currUser = state(getState() as RootState);
+        let currUser = (getState() as RootState).user;
 
         while (true) {
-          currUser = state(getState() as RootState);
+          currUser = (getState() as RootState).user;
           if (currUser.user_id !== 0) break;
           await sleep(100);
         }
@@ -117,6 +113,7 @@ export const apiSlice = createApi({
         url: `logout`,
         method: "POST",
       }),
+      invalidatesTags: ["User"],
     }),
     getMyProjects: builder.query<Projects, number>({
       query: (id) => `getMyProjects/${id}`,
@@ -134,7 +131,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Projects"],
     }),
-    getMyUpdates: builder.query<Updates, string>({
+    getMyUpdates: builder.query<Updates[], string>({
       query: (id) => `getMyUpdates/${id}`,
       async onCacheEntryAdded(
         id,
