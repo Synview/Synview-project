@@ -37,7 +37,7 @@ export const apiSlice = createApi({
   reducerPath: "apiSlice",
   baseQuery: fetchBaseQuery({
     baseUrl: url,
- //   credentials: "include",
+   credentials: "omit",
     prepareHeaders: (headers) => {
       console.log("PREPARE HEADERS RUNNING");
       const token = localStorage.getItem("token");
