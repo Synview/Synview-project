@@ -124,9 +124,7 @@ userRouter
       const access_token = await createToken(getPayloadFromBody(userPayload));
 
       // Check if we're in a secure context (HTTPS or behind a proxy)
-      const isSecure =
-        context.request.secure ||
-        context.request.headers.get("x-forwarded-proto") === "https";
+      const isSecure = true;
       rootLogger.info(context.request.headers.get("x-forwarded-proto"));
       await context.cookies.set("Authorization", `Bearer ${access_token}`, {
         expires: new Date(Date.now() + 168 * 60 * 60 * 1000),

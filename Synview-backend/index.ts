@@ -30,7 +30,7 @@ app.use(
       }
       return "";
     },
-    credentials: false,
+    credentials: true,
     methods: ["POST", "PUT", "DELETE", "GET"],
     allowedHeaders: [
       "Content-type",

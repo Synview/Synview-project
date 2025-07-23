@@ -37,7 +37,7 @@ export const apiSlice = createApi({
   reducerPath: "apiSlice",
   baseQuery: fetchBaseQuery({
     baseUrl: url,
-   credentials: "omit",
+    credentials: "include",
     prepareHeaders: (headers) => {
       console.log("PREPARE HEADERS RUNNING");
       const token = localStorage.getItem("token");
@@ -92,7 +92,7 @@ export const apiSlice = createApi({
         await connect(wsurl);
         await cacheDataLoaded;
         const state = (state: RootState) => state.user;
-      let currUser = state(getState() as RootState);
+        let currUser = state(getState() as RootState);
 
         while (true) {
           currUser = state(getState() as RootState);
