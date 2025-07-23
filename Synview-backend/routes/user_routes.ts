@@ -124,9 +124,7 @@ userRouter
       const access_token = await createToken(getPayloadFromBody(userPayload));
 
       rootLogger.info(context.request.headers.get("x-forwarded-proto"));
-      const isDenoDeploy = Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
       const isSecure =
-        isDenoDeploy ||
         context.request.headers.get("x-forwarded-proto") === "https";
 
       await context.cookies.set("Authorization", `Bearer ${access_token}`, {
