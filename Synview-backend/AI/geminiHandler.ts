@@ -172,11 +172,13 @@ You only have 3 iterations to get what you want, 4th needs to be "FINAL"
         const search = text["value"];
         logger.info(`Tool request CommitExplainer :${search}`);
 
-        const toolResult = await CommitExplainer(
+        const code = await diffExtracter(
           projectGitName,
           projectRepoName,
           search
         );
+
+        const toolResult = await commitExplainer(code);
         logger.info(`Result : ${toolResult}`);
 
         await AIchat.sendMessage({ message: toolResult });
@@ -201,18 +203,12 @@ You only have 3 iterations to get what you want, 4th needs to be "FINAL"
   return finalResponse;
 }
 
-async function CommitExplainer(
-  owner: string,
-  repo: string,
-  sha: string
-): Promise<string> {
+export async function commitExplainer(code: string): Promise<string> {
   const systemPrompt = `
   You are an expert software reviewer trained in all programming languages and development best practices. 
   You will be given code diff. 
-  Your task is to produce a concise, clear, and insightful review to another LLM
+  Your task is to produce a concise, clear, and insightful review in markdown format
   `;
-
-  const code = await diffExtracter(owner, repo, sha);
   if (code) {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",

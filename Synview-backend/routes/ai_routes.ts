@@ -3,7 +3,7 @@ import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
-import { recentCodeAnalysis } from "../AI/geminiHandler.ts";
+import { recentCodeAnalysis , commitExplainer} from "../AI/geminiHandler.ts";
 import diffExtracter from "../utils/GITHelpers.ts";
 import { createLogger, LogLevel, rootLogger } from "../../common/Logger.ts";
 type AppState = {
@@ -112,7 +112,7 @@ aiRouter
         commit?.sha
       );
 
-      const response = await commitAnalysis(commitString);
+      const response = await commitExplainer(commitString);
 
       await prisma.updates.update({
         where: { update_id: commit.update_id },
