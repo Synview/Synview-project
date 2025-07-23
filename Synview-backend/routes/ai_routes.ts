@@ -3,7 +3,7 @@ import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
-import { recentCodeAnalisis, commitAnalisis } from "../AI/geminiHandler.ts";
+import { recentCodeAnalysis, commitAnalysis } from "../AI/geminiHandler.ts";
 import diffExtracter from "../utils/diffExtracter.ts";
 import { rootLogger } from "../../common/Logger.ts";
 type AppState = {
@@ -34,10 +34,14 @@ aiRouter
 
       if (!project?.project_git_name) {
         rootLogger.error("Missing project_git_name");
+        context.response.status = 400;
+        context.response.body = { error: "Missing project_git_name" };
         return;
       }
       if (!project?.repo_url) {
-        rootLogger.error("Missing repor url ");
+        rootLogger.error("Missing repo url ");
+        context.response.status = 400;
+        context.response.body = { error: "Missing repo_url" };
         return;
       }
 
@@ -52,7 +56,7 @@ aiRouter
         })
       );
 
-      const response = await recentCodeAnalisis(commitString.join(" "));
+      const response = await recentCodeAnalysis(commitString.join(" "));
 
       await prisma.projects.update({
         where: {
@@ -72,9 +76,9 @@ aiRouter
       };
     }
   })
-  .post("/commitAiReview", async (context) => {
+  .post("/commitAiReview/:id", async (context) => {
     try {
-      const id = await context.request.body.json();
+      const id = context.params.id;
 
       const commit = await prisma.updates.findUnique({
         where: { update_id: parseInt(id) },
@@ -85,6 +89,10 @@ aiRouter
       });
       if (!commit?.sha) {
         rootLogger.warn("No commit sha registered");
+        context.response.status = 400;
+        context.response.body = {
+          error: "Missing commit SHA. Please provide a valid commit ID.",
+        };
         return;
       }
       const commitString = await diffExtracter(
@@ -93,7 +101,7 @@ aiRouter
         commit?.sha
       );
 
-      const response = await commitAnalisis(commitString);
+      const response = await commitAnalysis(commitString);
 
       await prisma.updates.update({
         where: { update_id: commit.update_id },

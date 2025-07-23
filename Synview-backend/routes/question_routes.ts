@@ -6,7 +6,7 @@ import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { PostQuestionSchema } from "../../common/schemas.ts";
 import {
   sendToAllServers,
-  sendtoChannel,
+  sendToChannel,
 } from "../websocket/websocket_server.ts";
 type AppState = {
   session: Session;
@@ -40,7 +40,7 @@ questionRouter
       const result = await prisma.questions.create({
         data: newUpdate,
       });
-      sendtoChannel(`UpdateQuestions:${result.update_id}`, result);
+      sendToChannel(`UpdateQuestions:${newUpdate.update_id}`, newUpdate);
       sendToAllServers(`UpdateQuestions:${result.update_id}`, result);
       context.response.status = 201;
       context.response.body = {
