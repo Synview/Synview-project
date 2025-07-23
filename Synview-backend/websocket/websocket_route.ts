@@ -11,7 +11,6 @@ type AppState = {
 
 const wsRouter = new Router<AppState>();
 
-wsRouter.use(AuthMiddleware);
 
 wsRouter.get("/ws", async (context) => {
   if (!context.isUpgradable) {
