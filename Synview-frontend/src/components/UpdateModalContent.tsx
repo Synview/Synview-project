@@ -56,7 +56,7 @@ export default function UpdateModalContent() {
   ) {
     return <Loading />;
   }
-  const sortedQuestions = [...questions!].sort((a, b) => {
+  const sortedQuestions = [...(questions ?? [])].sort((a, b) => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
 
@@ -75,8 +75,6 @@ export default function UpdateModalContent() {
       throw new Error("Couldn't create an Update" + error);
     }
   };
-  console.log(commitData);
-  commitData;
   return (
     <div className="flex text-white flex-row justify-between w-full min-h-screen bg-neutral-800 ">
       <div className="p-4 flex-1/2">

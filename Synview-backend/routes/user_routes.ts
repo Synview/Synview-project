@@ -19,7 +19,7 @@ type AppState = {
 };
 const userRouter = new Router<AppState>();
 const prisma = new PrismaClient().$extends(withAccelerate());
-
+const ONE_WEEK_MS = 168 * 60 * 60 * 1000;
 userRouter
   .post("/register", async (context) => {
     const body = await context.request.body.json();
@@ -118,7 +118,7 @@ userRouter
         token: access_token,
       };
       context.cookies.set("Authorization", `Bearer ${access_token}`, {
-        expires: new Date(Date.now() + 168 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + ONE_WEEK_MS),
       });
     } catch (e) {
       context.response.status = 500;
@@ -136,14 +136,20 @@ userRouter
     const id = context.params.id;
     try {
       const user = await prisma.users.findUnique({
-        where: { user_id: parseInt(id) },
+        where: { user_id: Number(id) },
         select: {
           user_id: true,
           username: true,
           email: true,
+          role: true,
         },
       });
-      context.response.body = user;
+      if (user === null) {
+        context.response.status = 404;
+        context.response.body = { error: "User not found" };
+      } else {
+        context.response.body = user;
+      }
     } catch (error) {
       context.response.status = 500;
       context.response.body = {
