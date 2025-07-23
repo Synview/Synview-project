@@ -2,20 +2,12 @@ const sockets = new Set<WebSocket>();
 const subscribers = new Map<string, Set<WebSocket>>();
 const socketChannels = new Map<WebSocket, Set<string>>();
 const socketUserData = new Map<WebSocket, UserData>();
+const broadcastChannels = new Map<string, BroadcastChannel>();
 
 import { createLogger, LogLevel } from "../../common/Logger.ts";
 import type { UserData } from "../../common/types.ts";
 
 const logger = createLogger("Backend [WS]", LogLevel.ERROR);
-const bc = new BroadcastChannel("across-server-updates");
-
-export function sendToAllServers(channel: string, payload: any) {
-  bc.postMessage({ channel, payload });
-}
-
-bc.onmessage = (event: MessageEvent<{ channel: string; payload: any }>) => {
-  sendtoChannel(event.data.channel, event.data.payload);
-};
 
 export function EntrySocket(socket: WebSocket): void {
   sockets.add(socket);
@@ -54,6 +46,21 @@ export function EntrySocket(socket: WebSocket): void {
   return;
 }
 
+function createBroadcastChannel(channel: string) {
+  if (!broadcastChannels.has(channel)) {
+    const bc = new BroadcastChannel(channel);
+    bc.onmessage = (msg) => {
+      const subs = subscribers.get(channel);
+      if (subs) {
+        for (const sub of subs) {
+          sub.send(msg.data);
+        }
+      }
+    };
+    broadcastChannels.set(channel, bc);
+  }
+}
+
 function joinProject(socket: WebSocket, channel: string, userData: UserData) {
   socketUserData.set(socket, userData);
 
@@ -73,6 +80,8 @@ function leaveProject(socket: WebSocket, channel: string) {
 
   subscribers.get(channel)?.delete(socket);
   if (subscribers.get(channel)?.size === 0) {
+    cleanupBroadcast(channel);
+
     subscribers.delete(channel);
   }
 
@@ -91,6 +100,8 @@ function cleanupSocket(socket: WebSocket) {
     for (const channel of channels) {
       subscribers.get(channel)?.delete(socket);
       if (subscribers.get(channel)?.size === 0) {
+        cleanupBroadcast(channel);
+
         subscribers.delete(channel);
       }
       broadcastPresence(channel);
@@ -99,7 +110,13 @@ function cleanupSocket(socket: WebSocket) {
   }
 }
 
+function cleanupBroadcast(channel: string) {
+  broadcastChannels.delete(channel);
+}
+
 function subscribeToChannel(socket: WebSocket, channel: string) {
+  createBroadcastChannel(channel);
+
   if (!subscribers.has(channel)) {
     subscribers.set(channel, new Set());
   }
@@ -111,8 +128,13 @@ function subscribeToChannel(socket: WebSocket, channel: string) {
   socketChannels.get(socket)!.add(channel);
 }
 function unsubscribeFromChannel(socket: WebSocket, channel: string) {
-  if (subscribers.get(channel)) {
-    subscribers.get(channel)!.delete(socket);
+  const subs = subscribers.get(channel);
+  if (subs) {
+    subs.delete(socket);
+    if (subs.size === 0) {
+      cleanupBroadcast(channel);
+      subscribers.delete(channel);
+    }
   }
   if (socketChannels.get(socket)) {
     socketChannels.get(socket)!.delete(channel);
@@ -140,6 +162,7 @@ export function broadcastPresence(channel: string) {
 export function sendToChannel(channel: string, payload: any) {
   const jsonData = JSON.stringify({ channel, data: payload });
   const channelSubscribers = subscribers.get(channel);
+  broadcastChannels.get(channel)?.postMessage(jsonData);
   if (channelSubscribers) {
     for (const subscriber of channelSubscribers) {
       try {
