@@ -1,8 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
+import { rootLogger } from "../../common/Logger.ts";
 const googleKey = Deno.env.get("GEMINI_API_KEY");
+if (!googleKey) {
+  rootLogger.error(
+    "Environment variable GEMINI_API_KEY is required but not defined."
+  );
+  throw new Error(
+    "Environment variable GEMINI_API_KEY is required but not defined."
+  );
+}
 const ai = new GoogleGenAI({ apiKey: googleKey });
 
-export async function recentCodeAnalisis(code: string) {
+export async function recentCodeAnalysis(code: string) {
   const systemPrompt = `
   You are an expert software reviewer trained in all programming languages and development best practices. 
   You will be given commit messages and the code diffs from those commits. 
@@ -41,7 +50,7 @@ export async function recentCodeAnalisis(code: string) {
   return response.text;
 }
 
-export async function commitAnalisis(code: string) {
+export async function commitAnalysis(code: string) {
   const systemPrompt = `
   You are an expert software reviewer trained in all programming languages and development best practices. 
   You will be given a commit message and the code diff. 

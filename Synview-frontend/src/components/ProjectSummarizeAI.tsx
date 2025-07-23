@@ -16,7 +16,7 @@ export default function ProjectSummarizeAI() {
         label="AI summarize"
         variant="light"
         radius="lg"
-        placeholder={projectData?.doc_url}
+        placeholder={projectData?.ai_summary}
         disabled
         className="flex-1 "
       />

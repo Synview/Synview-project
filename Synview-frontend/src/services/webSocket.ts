@@ -1,7 +1,8 @@
 let socket: WebSocket | null = null;
-type Listener = (data: any) => void;
+type Listener = (data: unknown) => void;
 import { createLogger, LogLevel } from "../../../common/Logger.ts";
-import type { User, UserData } from "../../../common/types.ts";
+import { MessageSchema } from "../../../common/schemas.ts";
+import type { UserData } from "../../../common/types.ts";
 import sleep from "../utils/sleep.ts";
 const subscribers = new Map<string, Set<Listener>>();
 
@@ -19,12 +20,17 @@ export function connect(url: string): Promise<void> {
     };
 
     socket.onmessage = (event) => {
-      const messages = JSON.parse(event.data);
-      const channelListeners = subscribers.get(messages.channel);
-      if (channelListeners) {
-        for (const listener of channelListeners) {
-          listener(messages.data);
+      try {
+        const json = JSON.parse(event.data);
+        const messages = MessageSchema.parse(json);
+        const channelListeners = subscribers.get(messages.channel);
+        if (channelListeners) {
+          for (const listener of channelListeners) {
+            listener(messages.data);
+          }
         }
+      } catch {
+        logger.error("Could not parse socket message");
       }
     };
 

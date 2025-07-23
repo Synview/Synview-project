@@ -1,15 +1,19 @@
 import React from "react";
 import { Menu, Button, Text } from "@mantine/core";
 import { Kbd } from "@mantine/core";
-import { useLogoutMutation } from "../services/apiSlice.ts";
+import { useLogoutMutation } from "../services/apiSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function NavbarDropdown() {
   const [logoutUser, { error, isLoading }] = useLogoutMutation();
   const navigate = useNavigate();
   const logout = async () => {
-    await logoutUser();
-    navigate("/");
+    try {
+      await logoutUser().unwrap();
+      navigate("/");
+    } catch {
+      alert(`error : ${error?.message}`);
+    }
   };
 
   return (
@@ -25,7 +29,7 @@ export default function NavbarDropdown() {
         <Menu.Divider />
 
         <Menu.Label>Danger zone</Menu.Label>
-        <Menu.Item onClick={logout} color="red" leftSection={<Kbd>⌘</Kbd>}>
+        <Menu.Item onClick={logout} color="red" disabled={isLoading} leftSection={<Kbd>⌘</Kbd>}>
           Log out
         </Menu.Item>
       </Menu.Dropdown>
