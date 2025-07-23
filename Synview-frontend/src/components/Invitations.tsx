@@ -40,6 +40,10 @@ export default function Invitations({
     return <NotFound/>
   }
 
+  if(projectError || invitingUserError) {
+    return <div>Error getting the data</div>
+  }
+
   const acceptInvitation = async () => {
     await acceptInv ({
       role : role,
