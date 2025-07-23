@@ -151,5 +151,5 @@ async function CommitExplainer(
     });
     return response.text;
   }
-  return "Error finding commit";
+  return "Error finding commit, please try again";
 }
