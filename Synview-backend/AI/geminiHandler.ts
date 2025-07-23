@@ -7,6 +7,7 @@ import diffExtracter, {
 } from "../utils/GITHelpers.ts";
 import { AiToolMessageSchema } from "../../common/schemas.ts";
 import { rootLogger } from "../../common/Logger.ts";
+import { parse } from "node:path";
 const googleKey = Deno.env.get("GEMINI_API_KEY");
 if (!googleKey) {
   rootLogger.error(
@@ -82,8 +83,7 @@ You must respond with FINAL within 6 iterations.
 FINAL must reflect your own insight from the original code — do not copy tool output.
 FINAL must have markdown style
 You only have 3 iterations to get what you want, 4th needs to be "FINAL"
-`
-
+`;
 
   const AIchat = ai.chats.create({
     model: "gemini-2.5-flash",
@@ -106,10 +106,35 @@ You only have 3 iterations to get what you want, 4th needs to be "FINAL"
     const response = await AIchat.sendMessage({
       message: "Start",
     });
+    let parsedResponse;
     try {
       logger.info(response.text.trim());
-      const text = AiToolMessageSchema.parse(JSON.parse(response.text.trim()));
+      try {
+        parsedResponse = JSON.parse(response.text.trim());
+      } catch (jsonError) {
+        logger.error(`JSON parsing failed: ${jsonError.message}`);
+        await AIchat.sendMessage({
+          message: `NOT A VALID RESPONSE RETURN WITH THIS FORMAT {
+  "tool" : "<toolSelected>",
+  "value": "<valueSelected>" 
+}`,
+        });
+        continue;
+      }
+      let text; 
+      try {
+        text = AiToolMessageSchema.parse(parsedResponse);
 
+      }catch(schemaError){
+         logger.error(`Schema validation failed: ${schemaError.message}`);
+        await AIchat.sendMessage({
+          message: `NOT A VALID RESPONSE RETURN WITH THIS FORMAT {
+  "tool" : "<toolSelected>",
+  "value": "<valueSelected>" 
+}`,
+        });
+        continue;
+      }
       logger.info(`Iteration:  ${iteration}`);
 
       if (text["tool"] === "DirectorySearch") {
