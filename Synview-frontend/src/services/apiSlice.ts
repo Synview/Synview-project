@@ -40,12 +40,10 @@ export const apiSlice = createApi({
     credentials: "include",
     prepareHeaders: (headers) => {
       console.log("PREPARE HEADERS RUNNING");
-
       const token = localStorage.getItem("token");
       if (token) {
         logger.info(token);
-
-        headers.set("Authorization", `${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
         console.log(`TOKEN : ${token} SET`);
       } else {
         headers.set("Authorization", `noauthfoundinlocalstorage`);

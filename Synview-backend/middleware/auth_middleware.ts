@@ -3,6 +3,7 @@ import { UserPayloadSchema } from "../../common/schemas.ts";
 import { UserPayload } from "../../common/types.ts";
 import { Context } from "@oak/oak";
 import { Session } from "https://deno.land/x/oak_sessions@v9.0.0/mod.ts";
+import { rootLogger } from "../../common/Logger.ts";
 let key: CryptoKey;
 type AppState = {
   session: Session;
@@ -24,9 +25,11 @@ export default async function AuthMiddleware(
     let auth = context.request.headers.get("Authorization");
     
     // If not in header, check cookie
+    
     if (!auth) {
       const cookieAuth = await context.cookies.get("Authorization");
       if (cookieAuth) {
+        rootLogger.info("Got auth from cookie")
         auth = cookieAuth;
       }
     }
