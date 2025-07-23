@@ -10,8 +10,14 @@ const logger = createLogger("Frontend [WS]", LogLevel.INFO);
 
 export function connect(url: string): Promise<void> {
   return new Promise((resolve) => {
-    if (socket && socket.readyState === WebSocket.OPEN) return resolve();
-
+    if (socket) {
+      if (socket.readyState === WebSocket.OPEN) {
+        return resolve();
+      } else if (socket.readyState === WebSocket.CONNECTING) {
+        socket.addEventListener("open", () => resolve(), { once: true });
+        return;
+      }
+    }
     socket = new WebSocket(url);
 
     socket.onopen = () => {

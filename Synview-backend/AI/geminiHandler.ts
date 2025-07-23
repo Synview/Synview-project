@@ -50,6 +50,7 @@ You have access to these tools. **Use only ONE per message**, formatted **exactl
 
 ### Important: 
 You **must** include the insight from the initial code given in your FINAL review, NO tool results, remember to follow the instructions one by one.
+Make sure the response is markdown compatible and is clearly readable with headers
  `;
   const AIchat = ai.chats.create({
     model: "gemini-2.5-pro",
@@ -75,6 +76,13 @@ You **must** include the insight from the initial code given in your FINAL revie
 
     const text = response.text.trim();
     logger.info(`Iteration:  ${iteration}`);
+
+    if (iteration === 9) {
+      await AIchat.sendMessage({
+        message:
+          "This is the last iteration possible, next one HAS to be RESULT",
+      });
+    }
 
     if (text.startsWith("TOOL:DirectorySearch")) {
       const tool = text.replace("TOOL:DirectorySearch", "").trim();
@@ -119,10 +127,12 @@ You **must** include the insight from the initial code given in your FINAL revie
       logger.info(`Result : ${toolResult}`);
 
       await AIchat.sendMessage({ message: toolResult });
-    } else {
+    } else if (text.startsWith("RESULT:")) {
       logger.info(`Ai final answer :${text}`);
       finalResponse = text;
       isRunning = false;
+    } else {
+      await AIchat.sendMessage({ message: "NOT A VALID RESPONSE" });
     }
   }
 
