@@ -15,6 +15,7 @@ import {
   type PostInvitaion,
   type UserData,
   type Update,
+  type Invitation,
 } from "../../../common/types.ts";
 import { connect, subscribe } from "../services/webSocket.ts";
 
@@ -26,7 +27,14 @@ export const apiSlice = createApi({
     baseUrl: url,
     credentials: "include",
   }),
-  tagTypes: ["Projects", "User", "Updates", "Questions", "Mentors"],
+  tagTypes: [
+    "Projects",
+    "User",
+    "Updates",
+    "Questions",
+    "Mentors",
+    "Invitations",
+  ],
   endpoints: (builder) => ({
     register: builder.mutation<void, EmailRegisterRequestSchema>({
       query: (newUser: EmailRegisterRequestSchema) => ({
@@ -153,10 +161,15 @@ export const apiSlice = createApi({
         method: "POST",
         body: InvitationInfo,
       }),
+      invalidatesTags: ["Invitations"],
     }),
     getMentors: builder.query<UserData[], number>({
       query: (id) => `getMentors/${id}`,
       providesTags: ["Mentors"],
+    }),
+    getInvitations: builder.query<Invitation[], number>({
+      query: (id) => `getInvitations/${id}`,
+      providesTags: ["Invitations"],
     }),
   }),
 });
@@ -178,4 +191,5 @@ export const {
   useGetFilesQuery,
   useGetUpdateByIdQuery,
   useLogoutMutation,
+  useGetInvitationsQuery,
 } = apiSlice;
