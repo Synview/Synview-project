@@ -91,15 +91,15 @@ You only have 9 iterations to get what you want, **10th one needs to be "FINAL"*
 
     let isRunning = true;
     let iteration = 0;
-
+    const response = await AIchat.sendMessage({
+      message: "Start",
+    });
     while (isRunning && iteration < MAX_ITERATIONS) {
       iteration++;
-      const response = await AIchat.sendMessage({
-        message: "Start",
-      });
+
       try {
         logger.info(response.text.trim());
-        const text = AiToolMessageSchema.parse(
+          const text = AiToolMessageSchema.parse(
           JSON.parse(response.text.trim())
         );
 
