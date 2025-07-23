@@ -45,7 +45,8 @@ export const apiSlice = createApi({
 
         headers.set("Authorization", `${token}`);
       }
-      headers.set("...", `this works`);
+      headers.set("X-Debug", `this works`);
+      headers.set("Authorization", `noauthfoundinlocalstorage`);
 
       logger.warn("no token stored in local");
       return headers;
