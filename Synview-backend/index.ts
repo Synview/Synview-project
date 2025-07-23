@@ -17,7 +17,7 @@ type AppState = {
 };
 
 const mainRouter = new Router();
-const app = new Application<AppState>();
+const app = new Application<AppState>({ proxy: true });
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
 

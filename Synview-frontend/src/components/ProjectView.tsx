@@ -46,9 +46,9 @@ export default function ProjectView() {
       <Modal
         opened={open}
         onClose={() => dispatch(closeQuestionModal())}
-        title=""
         centered
         fullScreen
+        withCloseButton={false}
         transitionProps={{ transition: "fade", duration: 200 }}
         styles={{
           body: {
@@ -56,7 +56,8 @@ export default function ProjectView() {
             scrollbarWidth: "none",
           },
           header : {
-            backgroundColor : "black"
+            backgroundColor : "black",
+            color: "white"
           }
         }}
       >

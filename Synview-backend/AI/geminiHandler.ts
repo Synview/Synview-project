@@ -47,7 +47,7 @@ Example of FINAL:
 
 {
 "tool": "FINAL",
-"value": "Summary: ..."
+"value": "Summary: ..." **MARKDOWN HERE**
 }
 
 Rules you must follow:
