@@ -47,6 +47,8 @@ export const apiSlice = createApi({
     "Questions",
     "Mentors",
     "Invitations",
+    "CommitReview",
+    "ProjectReview",
   ],
   endpoints: (builder) => ({
     getPresence: builder.query<UserData[], string>({
@@ -119,6 +121,7 @@ export const apiSlice = createApi({
     }),
     getProjectById: builder.query<Project, number>({
       query: (id) => `getProject/${id}`,
+      providesTags: ["ProjectReview"],
     }),
     postProject: builder.mutation<void, PostProject>({
       query: (Project: PostProject) => ({
@@ -150,7 +153,7 @@ export const apiSlice = createApi({
     }),
     getUpdateById: builder.query<Update, number>({
       query: (id) => `getUpdateById/${id}`,
-      providesTags: ["Updates"],
+      providesTags: ["Updates", "CommitReview"],
     }),
     postUpdate: builder.mutation<void, PostUpdate>({
       query: (Update: PostUpdate) => ({
@@ -236,6 +239,17 @@ export const apiSlice = createApi({
         body: Invite,
       }),
     }),
+    projectReview: builder.mutation<string, number>({
+      query: (id: number) => ({ url: `projectAiReview/${id}`, method: "POST" }),
+      invalidatesTags: ["ProjectReview"],
+    }),
+    commitReview: builder.mutation<string, number>({
+      query: (id: number) => ({
+        url: `commitAiReview/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["CommitReview"],
+    }),
   }),
 });
 
@@ -260,4 +274,6 @@ export const {
   useGetUserByIdQuery,
   useAcceptInvitationMutation,
   useGetPresenceQuery,
+  useProjectReviewMutation,
+  useCommitReviewMutation,
 } = apiSlice;

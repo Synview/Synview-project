@@ -76,9 +76,9 @@ aiRouter
       };
     }
   })
-  .post("/commitAiReview", async (context) => {
+  .post("/commitAiReview/:id", async (context) => {
     try {
-      const { id } = await context.request.body.json();
+      const id = context.params.id;
 
       const commit = await prisma.updates.findUnique({
         where: { update_id: parseInt(id) },

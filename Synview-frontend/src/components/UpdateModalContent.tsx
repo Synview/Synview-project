@@ -8,10 +8,15 @@ import {
   useGetCommitDataQuery,
   useGetProjectByIdQuery,
   useGetUpdateByIdQuery,
+  useCommitReviewMutation,
+  useProjectReviewMutation,
 } from "../services/apiSlice.ts";
 import Loading from "./HelperComponents/Loading.tsx";
 import { useParams } from "react-router-dom";
 import NotFound from "./NotFound.tsx";
+import SummarizeAI from "./SummarizeAI.tsx";
+import { Button } from "@mantine/core";
+import { rootLogger } from "../../../common/Logger.ts";
 export default function UpdateModalContent() {
   const { id: project_id } = useParams();
   const id = useAppSelector((state) => state.questionModal.commit_id);
@@ -47,6 +52,9 @@ export default function UpdateModalContent() {
   const { data: commitData, isLoading: isCommitDataLoading } =
     useGetCommitDataQuery(args);
 
+  const [commitReview, { data: reviewData, isLoading: isCommitReviewLoading }] =
+    useCommitReviewMutation();
+
   if (
     isQuestionsLoading ||
     isUserLoading ||
@@ -75,6 +83,14 @@ export default function UpdateModalContent() {
       throw new Error("Couldn't create an Update" + error);
     }
   };
+
+  const summarizeAI = async () => {
+    if (!updateData?.update_id) {
+      rootLogger.error("No update id");
+      return;
+    }
+    await commitReview(updateData.update_id!);
+  };
   return (
     <div className="flex text-white flex-row justify-between w-full min-h-screen bg-neutral-800 ">
       <div className="p-4 flex-1/2">
@@ -92,9 +108,14 @@ export default function UpdateModalContent() {
       </div>
       <div className="flex flex-1/3 flex-col p-4">
         <div className="">
-          <h1>Code review</h1>
-          <div className="border h-96 p-1">
-            <p>Get a summry with AI!</p>
+          <div className="flex flex-row gap-10 items-center">
+            <h1>Code review</h1>
+            <Button onClick={summarizeAI} loading={isCommitReviewLoading}>
+              Summarize
+            </Button>
+          </div>
+          <div className="">
+            <SummarizeAI />
           </div>
         </div>
         <div className="flex flex-col mt-8 h-[50%]">
