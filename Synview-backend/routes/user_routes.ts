@@ -126,7 +126,8 @@ userRouter
       };
       await context.cookies.set("Authorization", `Bearer ${access_token}`, {
         expires: new Date(Date.now() + 168 * 60 * 60 * 1000),
-        sameSite: "lax",
+        sameSite: "none",
+        secure: true,
         httpOnly : true,
       });
     } catch (e) {
