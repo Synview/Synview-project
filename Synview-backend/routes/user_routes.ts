@@ -136,7 +136,7 @@ userRouter
     const id = context.params.id;
     try {
       const user = await prisma.users.findUnique({
-        where: { user_id: parseInt(id) },
+        where: { user_id: Number(id) },
         select: {
           user_id: true,
           username: true,
