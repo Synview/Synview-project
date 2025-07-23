@@ -10,7 +10,7 @@ export default function SummarizeAI() {
   const id = useAppSelector((state) => state.questionModal.commit_id);
   const { data: updateData } = useGetUpdateByIdQuery(id ?? skipToken);
   return (
-    <Paper className="p-2 text-start !text-black">
+    <Paper className="p-2 text-start " style={{ color: "black" }}>
       <ReactMarkdown>{updateData?.summary}</ReactMarkdown>
     </Paper>
   );

@@ -132,7 +132,9 @@ export function broadcastPresence(channel: string) {
   const subs = subscribers.get(channel);
   if (!subs) return;
 
-  const present = Array.from(subs).map((sub) => socketUserData.get(sub));
+  const present = Array.from(subs)
+    .map((sub) => socketUserData.get(sub))
+    .filter((userData) => userData !== undefined);
 
   const data = JSON.stringify({ channel, data: { present } });
   for (const sub of subs) {
@@ -144,7 +146,7 @@ export function broadcastPresence(channel: string) {
   }
 }
 
-export function sendtoChannel(channel: string, payload: any) {
+export function sendToChannel(channel: string, payload: any) {
   const jsonData = JSON.stringify({ channel, data: payload });
   const channelSubscribers = subscribers.get(channel);
   broadcastChannels.get(channel)?.postMessage(jsonData);

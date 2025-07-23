@@ -31,10 +31,11 @@ export default function UserDrawer() {
 
   const data = [
     {
-      value: "a",
+      value: "",
       label: <Button variant="default">Invitations</Button>,
       children: [
         {
+          value: "stack",
           label: (
             <Stack
               className="pt-4"
@@ -45,7 +46,10 @@ export default function UserDrawer() {
               gap="md"
             >
               {invitations?.map((invitation) => (
-                <Invitations {...invitation} />
+                <Invitations
+                  key={invitation.project_invitation_id}
+                  {...invitation}
+                />
               ))}
             </Stack>
           ),
