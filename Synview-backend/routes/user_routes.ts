@@ -144,7 +144,12 @@ userRouter
           role: true,
         },
       });
-      context.response.body = user;
+      if (user === null) {
+        context.response.status = 404;
+        context.response.body = { error: "User not found" };
+      } else {
+        context.response.body = user;
+      }
     } catch (error) {
       context.response.status = 500;
       context.response.body = {
