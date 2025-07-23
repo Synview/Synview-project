@@ -20,18 +20,23 @@ const mainRouter = new Router();
 const app = new Application<AppState>({ proxy: true });
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
-
+const allowedOrigins = [env.DEVURL, env.PRODURL];
 rootLogger.info(env.PRODURL);
 app.use(
   oakCors({
-    origin: "*",
+    origin: (reqOrigin) => {
+      if (allowedOrigins.includes(reqOrigin)) {
+        return reqOrigin;
+      }
+      return "";
+    },
     credentials: false,
     methods: ["POST", "PUT", "DELETE", "GET"],
     allowedHeaders: [
       "Content-type",
       "Authorization",
       "Access-Control-Allow-Origin",
-      "X-Debug", 
+      "X-Debug",
     ],
     exposedHeaders: ["Authorization", "Set-Cookie"],
   })
