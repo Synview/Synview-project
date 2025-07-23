@@ -64,7 +64,7 @@ export const ProjectSchema = z.object({
   description: z.string(),
   owner_id: z.number(),
   repo_url: z.string().optional(),
-  doc_url: z.string().optional(),
+  ai_summary: z.string().optional(),
   created_at: z.date(),
 });
 
