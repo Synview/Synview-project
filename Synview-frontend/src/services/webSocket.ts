@@ -1,6 +1,7 @@
 let socket: WebSocket | null = null;
-type Listener = (data: any) => void;
+type Listener = (data: unknown) => void;
 import { createLogger, LogLevel } from "../../../common/Logger.ts";
+import { MessageSchema } from "../../../common/schemas.ts";
 const subscribers = new Map<string, Set<Listener>>();
 
 const logger = createLogger("Frontend [WS]", LogLevel.INFO);
@@ -11,25 +12,30 @@ export function connect(url: string) {
   socket = new WebSocket(url);
 
   socket.onopen = () => {
-    logger.info("[WS] is open")
+    logger.info("[WS] is open");
   };
 
   socket.onmessage = (event) => {
-    const messages = JSON.parse(event.data);
-    const channelListeners = subscribers.get(messages.channel);
-    if (channelListeners) {
-      for (const listener of channelListeners) {
-        listener(messages.data);
+    try {
+      const json = JSON.parse(event.data);
+      const messages = MessageSchema.parse(json);
+      const channelListeners = subscribers.get(messages.channel);
+      if (channelListeners) {
+        for (const listener of channelListeners) {
+          listener(messages.data);
+        }
       }
+    } catch {
+      logger.error("Could not parse socket message");
     }
   };
 
   socket.onclose = () => {
-    logger.warn("[WS] Closing")
+    logger.info("[WS] Closing");
     socket = null;
   };
   socket.onerror = (err) => {
-    logger.warn("[WS] Error : " + err)
+    logger.error("[WS] Error : " + err);
   };
 }
 
@@ -46,7 +52,7 @@ function sendUnsubscribe(channel: string) {
 export function subscribe(channel: string, listener: Listener) {
   if (!subscribers.has(channel)) {
     subscribers.set(channel, new Set());
-    sendSubscribe(channel)
+    sendSubscribe(channel);
   }
 
   subscribers.get(channel)!.add(listener);

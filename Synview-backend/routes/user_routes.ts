@@ -136,14 +136,20 @@ userRouter
     const id = context.params.id;
     try {
       const user = await prisma.users.findUnique({
-        where: { user_id: parseInt(id) },
+        where: { user_id: Number(id) },
         select: {
           user_id: true,
           username: true,
           email: true,
+          role: true,
         },
       });
-      context.response.body = user;
+      if (user === null) {
+        context.response.status = 404;
+        context.response.body = { error: "User not found" };
+      } else {
+        context.response.body = user;
+      }
     } catch (error) {
       context.response.status = 500;
       context.response.body = {

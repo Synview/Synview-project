@@ -126,7 +126,7 @@ export function broadcastPresence(channel: string) {
   }
 }
 
-export function sendtoChannel(channel: string, payload: any) {
+export function sendToChannel(channel: string, payload: any) {
   const jsonData = JSON.stringify({ channel, data: payload });
   const channelSubscribers = subscribers.get(channel);
   if (channelSubscribers) {

@@ -18,14 +18,7 @@ import {
   type Invitation,
   type User,
 } from "../../../common/types.ts";
-import {
-  PostQuestionSchema,
-  PostUpdateSchema,
-} from "../../../common/schemas.ts";
 import { connect, subscribe } from "../services/webSocket.ts";
-import { LogLevel, createLogger } from "../../../common/Logger.ts";
-
-const logger = createLogger("[Api Slice]", LogLevel.ERROR);
 
 const url = import.meta.env.VITE_URL;
 const wsurl = import.meta.env.VITE_WS_URL;
@@ -66,6 +59,7 @@ export const apiSlice = createApi({
         url: `logout`,
         method: "POST",
       }),
+      invalidatesTags: ["User"],
     }),
     getMyProjects: builder.query<Projects, number>({
       query: (id) => `getMyProjects/${id}`,
@@ -82,7 +76,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Projects"],
     }),
-    getMyUpdates: builder.query<Updates, string>({
+    getMyUpdates: builder.query<Updates[], string>({
       query: (id) => `getMyUpdates/${id}`,
       async onCacheEntryAdded(
         id,
@@ -210,5 +204,5 @@ export const {
   useLogoutMutation,
   useGetInvitationsQuery,
   useGetUserByIdQuery,
-  useAcceptInvitationMutation
+  useAcceptInvitationMutation,
 } = apiSlice;
