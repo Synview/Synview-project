@@ -5,7 +5,9 @@ import diffExtracter, {
   FileSearch,
   GetMetadata,
 } from "../utils/GITHelpers.ts";
+import { AiToolMessageSchema } from "../../common/schemas.ts";
 import { rootLogger } from "../../common/Logger.ts";
+import { parse } from "node:path";
 const googleKey = Deno.env.get("GEMINI_API_KEY");
 if (!googleKey) {
   rootLogger.error(
@@ -19,6 +21,8 @@ const ai = new GoogleGenAI({ apiKey: googleKey });
 
 const logger = createLogger("AI [API]", LogLevel.INFO);
 
+const MAX_ITERATIONS = 4;
+
 export async function recentCodeAnalysis(
   projectGitName: string,
   projectRepoName: string,
@@ -26,34 +30,63 @@ export async function recentCodeAnalysis(
 ) {
   let finalResponse = "";
   const systemPrompt = `
-  You are an expert software review agent with autonomous reasoning.
+You are an expert software review agent.
+Your job is to mainly analyze the comits given to you in the first message and other code diffs you can explore, then summarize them for both developers and non-technical stakeholders.
+Only the FINAL response may include natural language and should be clearly formatted with headers.
 
-Your job is to analyze commit messages and code diffs, and produce a helpful, clear summary for both developers and non-technical stakeholders.
+You can use these tools:
 
-You have access to these tools. **Use only ONE per message**, formatted **exactly** as shown:
+DirectorySearch
 
-- TOOL:DirectorySearch
-- TOOL:FileSearch <filepath>
-- TOOL:GetMetadata <commitSha>
-- TOOL:CommitExplainer <commitSha>
-- FINAL:<your completed review>
+FileSearch <filepath>
 
-### Rules (you must follow these strictly):
+GetMetadata <commitSha>
 
-1. Only respond with ONE tool call or the FINAL review per message.
-2. DO NOT ask questions or give explanations outside tool usage.
-3. DO NOT repeat tool calls in the same message or combine multiple tool calls.
-4. You must use each tool **at least once** before responding with FINAL.
-5. If tool output fails, ignore the error or blank and move on.
-6. Final review must begin with Summary: — that’s the only place where full natural language is allowed.
-7. Final review will have 2 sections, 1st: For non technical people labeled as : "Non-Technical summary" and 2nd one, labeled as: "Technical summary"
+CommitExplainer <commitSha>
 
-### Important: 
-You **must** include the insight from the initial code given in your FINAL review, NO tool results, remember to follow the instructions one by one.
-Make sure the response is markdown compatible and is clearly readable with headers
- `;
+FINAL <your-completed-review>
+
+Use only ONE tool per message. Format responses exactly like this, with nothing else:
+
+{
+"tool": "<ToolName>",
+"value": "<ValueHere>"
+}
+
+Example of FINAL:
+
+{
+"tool": "FINAL",
+"value": "Summary: ..."
+}
+
+Rules you must follow:
+
+One tool per message only.
+
+No explanations, reasoning, or markdown outside of FINAL.
+
+Do not combine or repeat tool calls.
+
+Use each tool at least once before FINAL.
+
+If a tool result fails or is empty, continue anyway.
+
+FINAL must begin with "Summary:" and contain two parts:
+
+"Non-Technical summary"
+
+"Technical summary"
+
+You must respond with FINAL within 6 iterations.
+
+FINAL must reflect your own insight from the original code — do not copy tool output.
+FINAL must have markdown style
+You only have 3 iterations to get what you want, 4th needs to be "FINAL"
+`;
+
   const AIchat = ai.chats.create({
-    model: "gemini-2.5-pro",
+    model: "gemini-2.5-flash",
     history: [
       {
         role: "user",
@@ -68,74 +101,103 @@ Make sure the response is markdown compatible and is clearly readable with heade
   let isRunning = true;
   let iteration = 0;
 
-  while (isRunning && iteration < 10) {
+  while (isRunning && iteration < MAX_ITERATIONS) {
     iteration++;
     const response = await AIchat.sendMessage({
       message: "Start",
     });
+    let parsedResponse;
+    try {
+      logger.info(response.text.trim());
+      try {
+        parsedResponse = JSON.parse(response.text.trim());
+      } catch (jsonError) {
+        logger.error(`JSON parsing failed: ${jsonError.message}`);
+        await AIchat.sendMessage({
+          message: `NOT A VALID RESPONSE RETURN WITH THIS FORMAT {
+  "tool" : "<toolSelected>",
+  "value": "<valueSelected>" 
+}`,
+        });
+        continue;
+      }
+      let text; 
+      try {
+        text = AiToolMessageSchema.parse(parsedResponse);
 
-    const text = response.text.trim();
-    logger.info(`Iteration:  ${iteration}`);
+      }catch(schemaError){
+         logger.error(`Schema validation failed: ${schemaError.message}`);
+        await AIchat.sendMessage({
+          message: `NOT A VALID RESPONSE RETURN WITH THIS FORMAT {
+  "tool" : "<toolSelected>",
+  "value": "<valueSelected>" 
+}`,
+        });
+        continue;
+      }
+      logger.info(`Iteration:  ${iteration}`);
 
-    if (iteration === 9) {
+      if (text["tool"] === "DirectorySearch") {
+        logger.info(`Tool request Directory search:`);
+        const toolResult = await DirectorySearch(
+          projectGitName,
+          projectRepoName
+        );
+        logger.info(`Result : ${toolResult}`);
+        await AIchat.sendMessage({ message: toolResult });
+      } else if (text["tool"] === "FileSearch") {
+        const search = text["value"];
+        logger.info(`Tool request FileSearch:${search}`);
+
+        const toolResult = await FileSearch(
+          projectGitName,
+          projectRepoName,
+          search
+        );
+        logger.info(`Result : ${toolResult}`);
+
+        await AIchat.sendMessage({ message: toolResult });
+      } else if (text["tool"] === "GetMetadata") {
+        const search = text["value"];
+        logger.info(`Tool request Metadata :${search}`);
+
+        const toolResult = await GetMetadata(
+          projectGitName,
+          projectRepoName,
+          search
+        );
+        logger.info(`Result : ${toolResult}`);
+        await AIchat.sendMessage({ message: toolResult });
+      } else if (text["tool"] === "CommitExplainer") {
+        const search = text["value"];
+        logger.info(`Tool request CommitExplainer :${search}`);
+
+        const toolResult = await CommitExplainer(
+          projectGitName,
+          projectRepoName,
+          search
+        );
+        logger.info(`Result : ${toolResult}`);
+
+        await AIchat.sendMessage({ message: toolResult });
+      } else if (text["tool"] === "FINAL") {
+        logger.info(`Ai final answer :${text.value}`);
+        finalResponse = text.value;
+        isRunning = false;
+      } else {
+        logger.error("Tool requested non existing :", text);
+        await AIchat.sendMessage({ message: "NOT A VALID RESPONSE" });
+      }
+    } catch (error) {
+      logger.error(`Ai returned an invalid response : ${error}`);
       await AIchat.sendMessage({
-        message:
-          "This is the last iteration possible, next one HAS to be RESULT",
+        message: `NOT A VALID RESPONSE RETURN WITH THIS FORMAT {
+  "tool" : "<toolSelected>",
+  "value": "<valueSelected>" 
+}`,
       });
     }
-
-    if (text.startsWith("TOOL:DirectorySearch")) {
-      const tool = text.replace("TOOL:DirectorySearch", "").trim();
-      logger.info(`Tool request Directory search:${tool}`);
-
-      const toolResult = await DirectorySearch(projectGitName, projectRepoName);
-      logger.info(`Result : ${toolResult}`);
-
-      await AIchat.sendMessage({ message: toolResult });
-    } else if (text.startsWith("TOOL:FileSearch")) {
-      const tool = text.replace("TOOL:FileSearch", "").trim();
-      logger.info(`Tool request FileSearch:${tool}`);
-
-      const toolResult = await FileSearch(
-        projectGitName,
-        projectRepoName,
-        tool
-      );
-      logger.info(`Result : ${toolResult}`);
-
-      await AIchat.sendMessage({ message: toolResult });
-    } else if (text.startsWith("TOOL:GetMetadata")) {
-      const tool = text.replace("TOOL:GetMetadata", "").trim();
-      logger.info(`Tool request Metadata :${tool}`);
-
-      const toolResult = await GetMetadata(
-        projectGitName,
-        projectRepoName,
-        tool
-      );
-      logger.info(`Result : ${toolResult}`);
-      await AIchat.sendMessage({ message: toolResult });
-    } else if (text.startsWith("TOOL:CommitExplainer")) {
-      const tool = text.replace("TOOL:CommitExplainer", "").trim();
-      logger.info(`Tool request CommitExplainer :${tool}`);
-
-      const toolResult = await CommitExplainer(
-        projectGitName,
-        projectRepoName,
-        tool
-      );
-      logger.info(`Result : ${toolResult}`);
-
-      await AIchat.sendMessage({ message: toolResult });
-    } else if (text.startsWith("RESULT:")) {
-      logger.info(`Ai final answer :${text}`);
-      finalResponse = text;
-      isRunning = false;
-    } else {
-      await AIchat.sendMessage({ message: "NOT A VALID RESPONSE" });
-    }
   }
-
   return finalResponse;
 }
 
@@ -153,7 +215,7 @@ async function CommitExplainer(
   const code = await diffExtracter(owner, repo, sha);
   if (code) {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-pro",
+      model: "gemini-2.5-flash",
       contents: code,
       config: {
         systemInstruction: systemPrompt,

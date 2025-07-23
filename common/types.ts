@@ -15,9 +15,12 @@ import {
   GithubInfoSchema,
   UserDataSchema,
   UserModelSchema,
+  AiToolMessageSchema,
   MessageSchema,
 } from "./schemas.ts";
 import { z } from "npm:zod";
+
+export type AiTool = z.infer<typeof AiToolMessageSchema>;
 
 export type AppState = { session: Session };
 export type Projects = Project[];

@@ -27,7 +27,7 @@ aiRouter
       const commits = await prisma.updates.findMany({
         where: {
           project_id: parseInt(id),
-          summary: {
+          sha: {
             not: null,
           },
         },
