@@ -30,7 +30,6 @@ export function EntrySocket(socket: WebSocket): void {
     }
 
     if (message.action === "subscribe") {
-
       subscribeToChannel(socket, message.channel);
     }
     if (message.action === "unsubscribe") {
@@ -114,7 +113,9 @@ export function broadcastPresence(channel: string) {
   const subs = subscribers.get(channel);
   if (!subs) return;
 
-  const present = Array.from(subs).map((sub) => socketUserData.get(sub));
+  const present = Array.from(subs)
+    .map((sub) => socketUserData.get(sub))
+    .filter((userData) => userData !== undefined);
 
   const data = JSON.stringify({ channel, data: { present } });
   for (const sub of subs) {
