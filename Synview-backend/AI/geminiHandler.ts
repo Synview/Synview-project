@@ -18,6 +18,8 @@ export async function recentCodeAnalisis(
   projectRepoName: string,
   code: string
 ) {
+  const toolCalls = new Map<string, string>();
+
   try {
     let finalResponse = "";
     const systemPrompt = `
@@ -59,7 +61,7 @@ No explanations, reasoning, or markdown outside of FINAL.
 
 Do not combine or repeat tool calls.
 
-Use each tool at least once before FINAL.
+Do not call the same tool multiple time with the same value
 
 If a tool result fails or is empty, continue anyway.
 
@@ -91,7 +93,7 @@ You only have 9 iterations to get what you want, **10th one needs to be "FINAL"*
 
     let isRunning = true;
     let iteration = 0;
-    const response = await AIchat.sendMessage({
+    let response = await AIchat.sendMessage({
       message: "Start",
     });
     while (isRunning && iteration < MAX_ITERATIONS) {
@@ -99,11 +101,26 @@ You only have 9 iterations to get what you want, **10th one needs to be "FINAL"*
 
       try {
         logger.info(response.text.trim());
-          const text = AiToolMessageSchema.parse(
+        const text = AiToolMessageSchema.parse(
           JSON.parse(response.text.trim())
         );
 
         logger.info(`Iteration:  ${iteration}`);
+
+        if (text["tool"] !== undefined && text["value"] !== undefined) {
+          if (
+            toolCalls.has(text["tool"]) &&
+            text["value"] === toolCalls.get(text["tool"])
+          ) {
+            logger.info(`Ai repeated`);
+            await AIchat.sendMessage({
+              message: `You have already used the tool ${text["tool"]} for the value ${text["value"]}`,
+            });
+            continue;
+          }
+        }
+
+        toolCalls.set(text["tool"], text["value"]);
 
         if (text["tool"] === "DirectorySearch") {
           logger.info(`Tool request Directory search:`);
@@ -112,7 +129,7 @@ You only have 9 iterations to get what you want, **10th one needs to be "FINAL"*
             projectRepoName
           );
           logger.info(`Result : ${toolResult}`);
-          await AIchat.sendMessage({
+          response = await AIchat.sendMessage({
             message: toolResult + `You are on iteration :${iteration}`,
           });
         } else if (text["tool"] === "FileSearch") {
@@ -126,7 +143,7 @@ You only have 9 iterations to get what you want, **10th one needs to be "FINAL"*
           );
           logger.info(`Result : ${toolResult}`);
 
-          await AIchat.sendMessage({
+          response = await AIchat.sendMessage({
             message: toolResult + `You are on iteration :${iteration}`,
           });
         } else if (text["tool"] === "GetMetadata") {
@@ -139,7 +156,7 @@ You only have 9 iterations to get what you want, **10th one needs to be "FINAL"*
             search
           );
           logger.info(`Result : ${toolResult}`);
-          await AIchat.sendMessage({
+          response = await AIchat.sendMessage({
             message: toolResult + `You are on iteration :${iteration}`,
           });
         } else if (text["tool"] === "CommitExplainer") {
@@ -155,7 +172,7 @@ You only have 9 iterations to get what you want, **10th one needs to be "FINAL"*
           const toolResult = await commitExplainer(code);
           logger.info(`Result : ${toolResult}`);
 
-          await AIchat.sendMessage({
+          response = await AIchat.sendMessage({
             message: toolResult + `You are on iteration :${iteration}`,
           });
         } else if (text["tool"] === "FINAL") {
@@ -164,13 +181,13 @@ You only have 9 iterations to get what you want, **10th one needs to be "FINAL"*
           isRunning = false;
         } else {
           logger.error("Tool requested non existing :", text);
-          await AIchat.sendMessage({
+          response = await AIchat.sendMessage({
             message: `NOT A VALID RESPONSE, Iteration : ${iteration}`,
           });
         }
       } catch (error) {
         logger.error(`Ai returned an invalid response : ${error}`);
-        await AIchat.sendMessage({
+        response = await AIchat.sendMessage({
           message: `NOT A VALID RESPONSE RETURN WITH THIS FORMAT {
   "tool" : "<toolSelected>",
   "value": "<valueSelected>" 
