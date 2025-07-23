@@ -28,7 +28,7 @@ app.use(
       if (allowedOrigins.includes(reqOrigin)) {
         return reqOrigin;
       }
-      return "";
+      return undefined;
     },
     credentials: true,
     methods: ["POST", "PUT", "DELETE", "GET"],
@@ -38,7 +38,6 @@ app.use(
       "Access-Control-Allow-Origin",
       "X-Debug",
     ],
-    exposedHeaders: ["Authorization", "Set-Cookie"],
   })
 );
 
