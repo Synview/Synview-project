@@ -5,7 +5,10 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { PrismaClient } from "../generated/prisma/client.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
-import { sendToChannel } from "../websocket/websocket_server.ts";
+import {
+  sendToAllServers,
+  sendToChannel,
+} from "../websocket/websocket_server.ts";
 type AppState = {
   session: Session;
 };
@@ -57,6 +60,7 @@ updateRouter
       });
 
       sendToChannel(`Updates:${newUpdate.project_id}`, newUpdate);
+      sendToAllServers(`Updates:${result.update_id}`, result);
 
       context.response.status = 201;
       context.response.body = {

@@ -4,8 +4,7 @@
     "jsr:@denosaurs/plug@^1.0.6": "1.1.0",
     "jsr:@felix/bcrypt@^1.0.5": "1.0.5",
     "jsr:@oak/commons@1": "1.0.1",
-    "jsr:@oak/oak@*": "17.1.4",
-    "jsr:@oak/oak@17": "17.1.4",
+    "jsr:@oak/oak@^17.1.5": "17.1.5",
     "jsr:@std/assert@1": "1.0.13",
     "jsr:@std/bytes@1": "1.0.6",
     "jsr:@std/crypto@1": "1.0.5",
@@ -26,6 +25,7 @@
     "npm:@prisma/client@^6.10.1": "6.11.0",
     "npm:@prisma/extension-accelerate@*": "2.0.1_@prisma+client@6.11.0",
     "npm:@prisma/extension-accelerate@^2.0.1": "2.0.1_@prisma+client@6.11.0",
+    "npm:@types/node@*": "22.15.15",
     "npm:dotenv-cli@8": "8.0.0",
     "npm:dotenv-cli@8.0.0": "8.0.0",
     "npm:path-to-regexp@^6.3.0": "6.3.0",
@@ -60,8 +60,8 @@
         "jsr:@std/media-types"
       ]
     },
-    "@oak/oak@17.1.4": {
-      "integrity": "60530b582bf276ff741e39cc664026781aa08dd5f2bc5134d756cc427bf2c13e",
+    "@oak/oak@17.1.5": {
+      "integrity": "676263340dcfd069fb422b4274b4f75f7048a68e605dece6a2897ccfe669e7cc",
       "dependencies": [
         "jsr:@oak/commons",
         "jsr:@std/assert",
@@ -269,6 +269,12 @@
         "@prisma/debug"
       ]
     },
+    "@types/node@22.15.15": {
+      "integrity": "sha512-R5muMcZob3/Jjchn5LcO8jdKwSCbzqmPB6ruBxMcf9kbxtniZHP327s6C37iOfuw8mbKK3cAQa7sEl7afLrQ8A==",
+      "dependencies": [
+        "undici-types"
+      ]
+    },
     "agent-base@7.1.4": {
       "integrity": "sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ=="
     },
@@ -444,6 +450,9 @@
     },
     "tr46@0.0.3": {
       "integrity": "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw=="
+    },
+    "undici-types@6.21.0": {
+      "integrity": "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="
     },
     "universal-user-agent@7.0.3": {
       "integrity": "sha512-TmnEAEAsBJVZM/AADELsK76llnwcf9vMKuPz8JflO1frO8Lchitr0fNaN9d+Ap0BjKtqWqd/J17qeDnXh8CL2A=="
@@ -1114,7 +1123,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@felix/bcrypt@^1.0.5",
-      "jsr:@oak/oak@*",
+      "jsr:@oak/oak@^17.1.5",
       "jsr:@std/assert@1",
       "jsr:@zaubrik/djwt@^3.0.2",
       "npm:@google/genai@^1.9.0",

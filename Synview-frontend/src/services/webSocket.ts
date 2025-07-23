@@ -36,12 +36,12 @@ export function connect(url: string): Promise<void> {
 
     socket.onclose = async () => {
       logger.warn("[WS] Closing - reconnecting");
-      await sleep(100);
+      await sleep(1000);
       connect(url);
     };
     socket.onerror = async (err) => {
-      logger.warn("[WS] Error - reconnecting : " + err);
-      await sleep(100);
+      logger.warn(`[WS] Error - reconnecting : ${err}`);
+      await sleep(1000);
       connect(url);
     };
   });
