@@ -125,7 +125,7 @@ export default function ProjectViewInfo() {
           <Button
             className="mb-6"
             onClick={summarizeProjectAI}
-            loading={aiReviewQueryData?.status === "complete"}
+            loading={aiReviewQueryData?.status === "started"}
           >
             Summarize
           </Button>
