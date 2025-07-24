@@ -3,6 +3,8 @@ import { recentCodeAnalysis } from "../AI/geminiHandler.ts";
 const kv = await Deno.openKv();
 const logger = createLogger("KV_JOB");
 
+logger.info("Starting queue listener")
+
 type jobMessage = {
   type: string;
   aiJobId: string;
