@@ -57,6 +57,8 @@ Rules you must follow:
 
 One tool per message only.
 
+Your response must always be valid JSON, you should escape new lines with \\n , also remember to escape strings , etc. 
+
 No explanations, reasoning, or markdown outside of FINAL.
 
 Do not combine or repeat tool calls.
