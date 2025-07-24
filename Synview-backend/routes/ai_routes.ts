@@ -29,7 +29,7 @@ aiRouter
   .post("/projectAiReview/:id", async (context) => {
     const id = context.params.id;
     const aiJobId = crypto.randomUUID();
-    logger.info("Starting review with KV jobs")
+    logger.info("Starting review with KV jobs");
     try {
       const project = await prisma.projects.findUnique({
         where: { project_id: parseInt(id) },
@@ -78,7 +78,7 @@ aiRouter
         project_id: project.project_id,
       });
 
-      await kv.enqueue({
+      const result = await kv.enqueue({
         type: "projectAnalysis",
         aiJobId,
         project_id: project.project_id,
@@ -86,7 +86,26 @@ aiRouter
         project_repo_url: project.repo_url,
         project_git_name: project.project_git_name,
       });
-
+      if (result.ok) {
+        logger.info(`enqueue for job ${aiJobId} sent`);
+      } else {
+        logger.error(`Enqueue failed for ${aiJobId}`);
+        await kv.set(
+          ["jobs", aiJobId],
+          {
+            status: "failed",
+            response: "failed",
+            project_id: project.project_id,
+          },
+          { expireIn: 1000 * 60 * 60 * 24 }
+        );
+        context.response.status = 500;
+        context.response.body = {
+          aiJobId,
+          status: "failed",
+        };
+        return;
+      }
       context.response.status = 202;
       context.response.body = {
         aiJobId,
@@ -102,8 +121,6 @@ aiRouter
   .post("/commitAiReview/:id", async (context) => {
     try {
       const id = context.params.id;
-
-      
 
       const commit = await prisma.updates.findUnique({
         where: { update_id: parseInt(id) },
