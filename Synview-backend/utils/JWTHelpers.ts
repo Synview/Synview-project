@@ -65,7 +65,7 @@ export async function getPayloadFromToken(context: Context<AppState>) {
     }
     const token = getToken(String(auth));
     if (!token) {
-      rootLogger.warn("didnt parse authroization correctly");
+      rootLogger.warn("didnt parse authorization correctly");
 
       return null;
     }
