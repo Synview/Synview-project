@@ -7,10 +7,14 @@ export default function NavbarDropdown() {
   const [logoutUser] = useLogoutMutation();
   const navigate = useNavigate();
   const logout = async () => {
-    await logoutUser();
+    try {
+      await logoutUser().unwrap();
     // Clear the auth token from localStorage
     localStorage.removeItem("authToken");
-    navigate("/");
+      navigate("/");
+    } catch (error){
+      alert(`error : ${error?.message}`);
+    }
   };
 
   return (
@@ -26,7 +30,7 @@ export default function NavbarDropdown() {
         <Menu.Divider />
 
         <Menu.Label>Danger zone</Menu.Label>
-        <Menu.Item onClick={logout} color="red" leftSection={<Kbd>⌘</Kbd>}>
+        <Menu.Item onClick={logout} color="red" disabled={isLoading} leftSection={<Kbd>⌘</Kbd>}>
           Log out
         </Menu.Item>
       </Menu.Dropdown>

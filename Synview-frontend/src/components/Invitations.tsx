@@ -37,6 +37,10 @@ export default function Invitations({
     return <NotFound/>;
   }
 
+  if(projectError || invitingUserError) {
+    return <div>Error getting the data</div>
+  }
+
   const acceptInvitation = async () => {
     await acceptInv({
       role: role,
@@ -64,7 +68,7 @@ export default function Invitations({
             {status}
           </Text>
           <Text fz="sm" fw={500}>
-            {invited_at && new Date(invited_at).getTime()}
+            {invited_at && new Date(invited_at).toLocaleDateString()}
           </Text>
         </div>
         <div>

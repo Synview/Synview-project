@@ -6,7 +6,7 @@ import { PrismaClient } from "../generated/prisma/client.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import {
-  sendtoChannel,
+  sendToChannel,
 } from "../websocket/websocket_server.ts";
 type AppState = {
   session: Session;
@@ -35,7 +35,7 @@ updateRouter
       context.response.body = MyUpdates;
     } catch (e) {
       context.response.body = {
-        error: "Error fetching updates" + e,
+        error: `Error fetching updates: ${e}`,
       };
     }
   })
@@ -51,7 +51,7 @@ updateRouter
     } catch (e) {
       context.response.status = 402;
       context.response.body = {
-        error: "Error fetching update" + e,
+        error: `Error fetching update: ${e}`,
       };
     }
   })
@@ -64,7 +64,7 @@ updateRouter
         data: newUpdate,
       });
 
-      sendtoChannel(`Updates:${result.project_id}`, result);
+      sendToChannel(`Updates:${newUpdate.project_id}`, newUpdate);
 
       context.response.status = 201;
       context.response.body = {
@@ -73,7 +73,7 @@ updateRouter
     } catch (error) {
       context.response.status = 500;
       context.response.body = {
-        error: "Error creating update: " + error,
+        error: `Error creating update: ${error}`,
       };
     }
   });

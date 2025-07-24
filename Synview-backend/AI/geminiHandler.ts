@@ -6,14 +6,24 @@ import diffExtracter, {
   GetMetadata,
 } from "../utils/GITHelpers.ts";
 import { AiToolMessageSchema } from "../../common/schemas.ts";
+import { rootLogger } from "../../common/Logger.ts";
+import { parse } from "node:path";
 const googleKey = Deno.env.get("GEMINI_API_KEY");
+if (!googleKey) {
+  rootLogger.error(
+    "Environment variable GEMINI_API_KEY is required but not defined."
+  );
+  throw new Error(
+    "Environment variable GEMINI_API_KEY is required but not defined."
+  );
+}
 const ai = new GoogleGenAI({ apiKey: googleKey });
 
 const logger = createLogger("AI [API]", LogLevel.INFO);
 
 const MAX_ITERATIONS = 10;
 
-export async function recentCodeAnalisis(
+export async function recentCodeAnalysis(
   projectGitName: string,
   projectRepoName: string,
   code: string
@@ -207,7 +217,7 @@ export async function commitExplainer(code: string): Promise<string> {
   const systemPrompt = `
   You are an expert software reviewer trained in all programming languages and development best practices. 
   You will be given code diff. 
-  Your task is to produce a concise, clear, and insightful review with markdown format
+  Your task is to produce a concise, clear, and insightful review in markdown format
   `;
   if (code) {
     const response = await ai.models.generateContent({
@@ -219,5 +229,5 @@ export async function commitExplainer(code: string): Promise<string> {
     });
     return response.text;
   }
-  return "Error finding commit";
+  return "Error finding commit, please try again";
 }
