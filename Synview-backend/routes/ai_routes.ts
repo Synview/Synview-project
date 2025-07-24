@@ -161,7 +161,7 @@ aiRouter
   })
   .get("/projectAiReview/job/:aiJobId", async (context) => {
     const aiJobId = context.params.aiJobId;
-
+    logger.info(`Currently pooling for : ${aiJobId}`);
     try {
       const kv = await Deno.openKv();
       const aiJob = await kv.get(["jobs", aiJobId]);

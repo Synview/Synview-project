@@ -68,7 +68,7 @@ export const apiSlice = createApi({
       { status: string; response: string; project_id: number },
       string
     >({
-      query: (aiJobId) => `/projectAiReview/job/${aiJobId}`,
+      query: (aiJobId) => `projectAiReview/job/${aiJobId}`,
     }),
     getReviewingProjects: builder.query<Projects, number>({
       query: (id) => `reviewingProjects/${id}`,
