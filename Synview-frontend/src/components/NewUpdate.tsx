@@ -1,10 +1,10 @@
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
+import  { useState, type ChangeEvent, type FormEvent } from "react";
 import { useGetPayloadQuery, usePostUpdateMutation } from "../services/apiSlice.ts";
 import { useParams } from "react-router-dom";
 export default function NewUpdate() {
   const [textUpdate, setTextUpdate] = useState("");
   const [postUpdate] = usePostUpdateMutation();
-  const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
+  const { data: UserData } = useGetPayloadQuery(
     undefined,
     {
       refetchOnMountOrArgChange: true,

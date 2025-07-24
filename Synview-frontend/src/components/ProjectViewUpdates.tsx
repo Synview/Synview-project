@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import NewUpdate from "./NewUpdate.tsx";
 import Timeline from "./Timeline.tsx";
 export default function ProjectViewUpdates() {

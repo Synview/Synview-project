@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import Form from "./RegisterForm.tsx";
 export default function FormSection() {
   return (

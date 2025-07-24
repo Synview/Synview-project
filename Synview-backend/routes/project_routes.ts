@@ -11,12 +11,49 @@ import { PostProjectSchema } from "../../common/schemas.ts";
 import {
   broadcastPresence,
 } from "../websocket/websocket_server.ts";
+import { rootLogger } from "../../common/Logger.ts";
 const projectRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 
 projectRouter.use(AuthMiddleware);
 
 projectRouter
+  .get("/getProjectWithAccess", async (context) => {
+    try {
+      const url = context.request.url;
+      const project_id = url.searchParams.get("project_id");
+      const user_id = url.searchParams.get("user_id");
+      rootLogger.info(`${user_id}`);
+      rootLogger.info(`${project_id}`);
+
+      const projects = await prisma.user_projects.findMany({
+        where: {
+          project_id: parseInt(project_id),
+          user_id: parseInt(user_id),
+          role: {
+            in: ["CREATOR", "REVIEWER"],
+          },
+        },
+      });
+      rootLogger.info(`${projects}`);
+      const hasAccess = projects.some(
+        (project) => project.role === "CREATOR" || project.role === "REVIEWER"
+      );
+      rootLogger.info(`${hasAccess}`);
+      context.response.body = hasAccess;
+    } catch (e) {
+      rootLogger.error("Error fetching projects with access");
+      context.response.body = {
+        error: `Error fetching projects with access` + e,
+      };
+    }
+  })
   .get("/getProject/:id", async (context) => {
     const id = context.params.id;
     try {

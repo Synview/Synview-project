@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetProjectByIdQuery } from "../services/apiSlice.ts";
 import Loading from "./HelperComponents/Loading.tsx";
@@ -10,6 +9,7 @@ import { useAppSelector, useAppDispatch } from "../hooks.ts";
 import { closeQuestionModal } from "../slices/questionModalSlice.ts";
 import UpdateModalContent from "./UpdateModalContent.tsx";
 import NotFound from "./NotFound.tsx";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 export default function ProjectView() {
   const { id } = useParams();
@@ -19,11 +19,8 @@ export default function ProjectView() {
   if (!id) {
     return <NotFound/>;
   }
-  const { data, error, isLoading } = useGetProjectByIdQuery(
-    parseInt(id) ?? "",
-    {
-      skip: !id,
-    }
+  const { data, isLoading } = useGetProjectByIdQuery(
+    parseInt(id) ?? skipToken
   );
 
 
@@ -58,6 +55,9 @@ export default function ProjectView() {
             padding: 0,
             scrollbarWidth: "none",
           },
+          header : {
+            backgroundColor : "black"
+          }
         }}
       >
         <UpdateModalContent />

@@ -3,7 +3,7 @@ import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
-import { recentCodeAnalysis , commitExplainer} from "../AI/geminiHandler.ts";
+import { recentCodeAnalysis, commitExplainer } from "../AI/geminiHandler.ts";
 import diffExtracter from "../utils/GITHelpers.ts";
 import { createLogger, LogLevel, rootLogger } from "../../common/Logger.ts";
 type AppState = {
@@ -13,7 +13,13 @@ type AppState = {
 const logger = createLogger("AI [API]", LogLevel.INFO);
 
 const aiRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 
 aiRouter.use(AuthMiddleware);
 

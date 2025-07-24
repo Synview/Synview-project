@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import Update from "./Update.tsx";
 import NotFound from "./NotFound.tsx";
 import { useParams } from "react-router-dom";
@@ -10,7 +10,6 @@ export default function Timeline() {
 
   const {
     data: updates,
-    error,
     isLoading,
   } = useGetMyUpdatesQuery(id ?? skipToken);
 

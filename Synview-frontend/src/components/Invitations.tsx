@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import { Group, Avatar, Text, Button } from "@mantine/core";
 import type { Invitation } from "../../../common/types.ts";
 import {
@@ -23,21 +23,18 @@ export default function Invitations({
 
   const {
     data: invitingUser,
-    error: invitingUserError,
     isLoading: isInvitingUserLoading,
   } = useGetUserByIdQuery(inviting_user_id ?? skipToken);
   const {
     data: project,
-    error: projectError,
     isLoading: isProjectLoading,
   } = useGetProjectByIdQuery(invited_project_id ?? skipToken);
-  
   if (isInvitingUserLoading || isProjectLoading) {
     return <Loading />;
   }
 
-  if(!project?.project_id){
-    return <NotFound/>
+  if(!project?.project_id) {
+    return <NotFound/>;
   }
 
   if(projectError || invitingUserError) {
@@ -45,13 +42,13 @@ export default function Invitations({
   }
 
   const acceptInvitation = async () => {
-    await acceptInv ({
-      role : role,
-      invited_user_id : invited_user_id,
+    await acceptInv({
+      role: role,
+      invited_user_id: invited_user_id,
       inviting_user_id: inviting_user_id,
-      invited_project_id : project?.project_id,
-      project_invitation_id : project_invitation_id
-    })
+      invited_project_id: project?.project_id,
+      project_invitation_id: project_invitation_id,
+    });
   };
 
   return (
@@ -75,7 +72,11 @@ export default function Invitations({
           </Text>
         </div>
         <div>
-          <Button variant="default" onClick={acceptInvitation}>Accept</Button>
+          {status === "PENDING" && (
+            <Button variant="default" onClick={acceptInvitation}>
+              Accept
+            </Button>
+          )}
         </div>
       </Group>
     </div>

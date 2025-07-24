@@ -1,7 +1,8 @@
-import React from "react";
+ 
 
 import { useAppDispatch, useAppSelector } from "../hooks.ts";
-import { Button, Drawer, Stack, Tree } from "@mantine/core";
+import { Button, Drawer, Stack, Tree, Indicator } from "@mantine/core";
+import { Burger } from "@mantine/core";
 
 import { Link } from "react-router-dom";
 import { closeDrawer, openDrawer } from "../slices/drawerSlice.ts";
@@ -29,10 +30,23 @@ export default function UserDrawer() {
     return <Loading />;
   }
 
+  const pending = invitations?.filter((inv) => inv.status === "PENDING") || [];
+
   const data = [
     {
       value: "",
-      label: <Button variant="default">Invitations</Button>,
+      label: (
+        <Indicator
+          withBorder
+          size={22}
+          label={`${pending.length > 0 ? pending?.length : 0}`}
+          processing={pending.length > 0 ? pending?.length > 0 : false}
+        >
+          <Button variant="default" fullWidth>
+            Invitations
+          </Button>
+        </Indicator>
+      ),
       children: [
         {
           value: "stack",
@@ -42,7 +56,7 @@ export default function UserDrawer() {
               h={100}
               bg="var(--mantine-color-body)"
               align="stretch"
-              justify="flex-start"
+              justify="flex-stretch"
               gap="md"
             >
               {invitations?.map((invitation) => (
@@ -83,14 +97,13 @@ export default function UserDrawer() {
         </Stack>
       </Drawer>
 
-      <Button
-        variant="default"
+      <Burger
+        color="#ffffff"
+        opened={opened}
         onClick={() => {
           dispatch(openDrawer());
         }}
-      >
-        Open Drawer
-      </Button>
+      />
     </>
   );
 }

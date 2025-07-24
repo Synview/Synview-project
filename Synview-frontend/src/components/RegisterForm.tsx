@@ -1,7 +1,8 @@
-import React, { type ChangeEvent, type FormEvent } from "react";
+import { type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRegisterMutation } from "../services/apiSlice.ts";
+import { rootLogger } from "../../../common/Logger.ts";
 
 export default function LoginForm() {
   const [register] = useRegisterMutation();
@@ -21,8 +22,8 @@ export default function LoginForm() {
         password: password,
       }).unwrap();
       navigate("/login");
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      rootLogger.error(`${error}`);
     }
   };
 

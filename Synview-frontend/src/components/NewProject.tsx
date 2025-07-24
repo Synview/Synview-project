@@ -1,4 +1,4 @@
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
+import  { useState, type ChangeEvent, type FormEvent } from "react";
 import {
   useGetPayloadQuery,
   usePostProjectMutation,
@@ -6,7 +6,7 @@ import {
 export default function NewProject() {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-  const { data: UserData, isLoading: isUserLoading } = useGetPayloadQuery(
+  const { data: UserData } = useGetPayloadQuery(
     undefined,
     {
       refetchOnMountOrArgChange: true,

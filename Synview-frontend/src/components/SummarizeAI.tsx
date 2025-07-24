@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import { useGetUpdateByIdQuery } from "../services/apiSlice.ts";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useAppSelector } from "../hooks.ts";
@@ -10,7 +10,7 @@ export default function SummarizeAI() {
   const id = useAppSelector((state) => state.questionModal.commit_id);
   const { data: updateData } = useGetUpdateByIdQuery(id ?? skipToken);
   return (
-    <Paper className="p-2 text-start " style={{ color: "black" }}>
+    <Paper className="p-2 text-start  " style={{ color: "black whitespace-normal  break-all overflow-x-scroll prose prose-sm" }}>
       <ReactMarkdown>{updateData?.summary}</ReactMarkdown>
     </Paper>
   );

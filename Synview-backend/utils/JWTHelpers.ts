@@ -1,8 +1,12 @@
 import { Context } from "@oak/oak";
 import { create, verify } from "@zaubrik/djwt";
 
-import { AppState } from "../../common/types.ts";
+type AppState = {
+  session: Session;
+};
 import { decode } from "@zaubrik/djwt";
+import { Session } from "https://deno.land/x/oak_sessions@v9.0.0/mod.ts";
+import { rootLogger } from "../../common/Logger.ts";
 
 let key: CryptoKey;
 
@@ -22,21 +26,24 @@ export async function createToken(payload: any): Promise<string> {
   key = await getKey();
   return create({ alg: "HS512", typ: "JWT" }, payload, key);
 }
-export async function verifyGetPayload(token: string, key : CryptoKey) {
+export async function verifyGetPayload(token: string, key: CryptoKey) {
   return await verify(token, key);
 }
 export function getToken(auth: string) {
   const authorization = auth;
   if (!authorization) {
+    rootLogger.warn("No authorization in GetToken")
     return null;
   }
 
   const [method, token] = authorization.split(" ");
-
+  rootLogger.info(authorization)
   if (method !== "Bearer") {
+    rootLogger.warn("No bearer")
     return null;
   }
   if (!token) {
+    rootLogger.warn("undefined token")
     return null;
   }
 

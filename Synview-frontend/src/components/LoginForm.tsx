@@ -1,4 +1,4 @@
-import React, { type ChangeEvent, type FormEvent } from "react";
+import { type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useLoginMutation } from "../services/apiSlice.ts";
@@ -23,9 +23,8 @@ export default function LoginForm() {
       if (res.token) {
         navigate("/dashboard");
       }
-    } catch (error) {
+    } catch{
       setTryAgain(true);
-      console.error(error);
     }
   };
 

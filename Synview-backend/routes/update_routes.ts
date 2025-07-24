@@ -12,7 +12,13 @@ type AppState = {
   session: Session;
 };
 const updateRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 
 updateRouter.use(AuthMiddleware);
 

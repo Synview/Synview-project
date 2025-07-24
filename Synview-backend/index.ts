@@ -9,6 +9,7 @@ import { wsRouter } from "./websocket/websocket_route.ts";
 import { invitationRouter } from "./routes/invitation_routes.ts";
 import { aiRouter } from "./routes/ai_routes.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
+import { rootLogger } from "../common/Logger.ts";
 
 type AppState = {
   session: Session;
@@ -18,9 +19,12 @@ const mainRouter = new Router();
 const app = new Application<AppState>();
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
+
+
+rootLogger.info(env.PRODURL);
 app.use(
   oakCors({
-    origin: env.DEVURL,
+    origin: [env.DEVURL, env.PRODURL],
     credentials: true,
     methods: ["POST", "PUT", "DELETE", "GET"],
     allowedHeaders: [
@@ -28,10 +32,10 @@ app.use(
       "Authorization",
       "Access-Control-Allow-Origin",
     ],
-    exposedHeaders: ["Authorization"],
+    exposedHeaders: ["Authorization", "Set-Cookie"],
   })
 );
-app.use(Session.initMiddleware());
+
 
 app.use(userRouter.routes());
 app.use(userRouter.allowedMethods());

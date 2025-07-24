@@ -1,7 +1,7 @@
 import { Router } from "@oak/oak";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { PrismaClient } from "../generated/prisma/client.ts";
-import { hash, verify as bycryptVerify } from "@felix/bcrypt";
+import bcrypt from "bcryptjs";
 import { getPayloadFromBody } from "../middleware/auth_middleware.ts";
 import { getPayloadFromToken } from "../utils/JWTHelpers.ts";
 import { createToken } from "../utils/JWTHelpers.ts";
@@ -14,11 +14,19 @@ import {
 } from "../../common/schemas.ts";
 import { PostInvitationSchema } from "../../common/schemas.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
+import { rootLogger } from "../../common/Logger.ts";
 type AppState = {
   session: Session;
 };
+
 const userRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 const ONE_WEEK_MS = 168 * 60 * 60 * 1000;
 userRouter
   .post("/register", async (context) => {
@@ -61,7 +69,7 @@ userRouter
       return;
     }
 
-    const hashedPassword = await hash(password);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.users.create({
       data: { username: username, email: email, passwordHash: hashedPassword },
@@ -97,7 +105,7 @@ userRouter
         return;
       }
 
-      const isValidPassowrd = await bycryptVerify(password, user.passwordHash);
+      const isValidPassowrd = await bcrypt.compare(password, user.passwordHash);
 
       if (!isValidPassowrd) {
         context.response.status = 400;
@@ -117,8 +125,10 @@ userRouter
       context.response.body = {
         token: access_token,
       };
-      context.cookies.set("Authorization", `Bearer ${access_token}`, {
+      await context.cookies.set("Authorization", `Bearer ${access_token}`, {
         expires: new Date(Date.now() + ONE_WEEK_MS),
+        sameSite: "lax",
+        httpOnly: true,
       });
     } catch (e) {
       context.response.status = 500;
@@ -180,13 +190,31 @@ userRouter
       const Invite = PostInvitationSchema.parse(
         await context.request.body.json()
       );
-      await prisma.project_invitation.create({
-        data: Invite,
+
+      const invitedUser = await prisma.users.findFirst({
+        where: { username: Invite.invited_username },
       });
-      context.response.status = 201;
-      context.response.body = {
-        messae: "Invited user succesfully!",
-      };
+      if (invitedUser) {
+        await prisma.project_invitation.create({
+          data: {
+            invited_user_id: invitedUser.user_id,
+            inviting_user_id: Invite.inviting_user_id,
+            invited_project_id: Invite.invited_project_id,
+            role: Invite.role,
+          },
+        });
+        context.response.status = 201;
+        context.response.body = {
+          messae: "Invited user succesfully!",
+        };
+      } else {
+        rootLogger.error(
+          `Couldn't find invites user for id ${Invite.invited_project_id}, name : ${Invite.invited_username}`
+        );
+        throw new Error(
+          `Couldn't find invited user : ${Invite.invited_username}`
+        );
+      }
     } catch (error) {
       context.response.status = 500;
       context.response.body = {
