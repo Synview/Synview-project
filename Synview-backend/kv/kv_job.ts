@@ -23,6 +23,7 @@ kv.listenQueue(async (msg: jobMessage) => {
 
   const { aiJobId, project_id, commits, project_repo_url, project_git_name } =
     msg;
+    logger.info(`Job : ${aiJobId} started!`)
   try {
     logger.info("Started code analisis");
     const response = await recentCodeAnalysis(

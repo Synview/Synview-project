@@ -29,7 +29,7 @@ aiRouter
   .post("/projectAiReview/:id", async (context) => {
     const id = context.params.id;
     const aiJobId = crypto.randomUUID();
-
+    logger.info("Starting review with KV jobs")
     try {
       const project = await prisma.projects.findUnique({
         where: { project_id: parseInt(id) },
@@ -75,7 +75,7 @@ aiRouter
       await kv.set(["jobs", aiJobId], {
         status: "started",
         response: "",
-        project_id: 0,
+        project_id: project.project_id,
       });
 
       await kv.enqueue({
@@ -102,6 +102,8 @@ aiRouter
   .post("/commitAiReview/:id", async (context) => {
     try {
       const id = context.params.id;
+
+      
 
       const commit = await prisma.updates.findUnique({
         where: { update_id: parseInt(id) },
