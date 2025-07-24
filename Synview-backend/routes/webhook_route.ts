@@ -23,39 +23,43 @@ webhookRouter.post("/github/webhook", async (context) => {
     const body = context.request.body;
     const payload = await body.json();
     const pushedCommits = payload.commits;
-    const repoName = payload.repository.name;
-    const userGitHubName = payload.repository.owner.name;
+    const repoUrl = payload.repository.name;
 
     const project = await prisma.projects.findFirst({
       where: {
-        repo_url: repoName,
+        repo_url: repoUrl,
       },
     });
 
-    const commitUpdates = pushedCommits.map((commit) => {
-      return {
-        description: commit.message,
-        sha: commit.id,
-        created_at: commit.timestamp,
-        project_id: project.project_id,
-        user_id: project.owner_id,
+    if (project) {
+      const commitUpdates = pushedCommits.map((commit) => {
+        return {
+          description: commit.message,
+          sha: commit.id,
+          created_at: commit.timestamp,
+          project_id: project.project_id,
+          user_id: project.owner_id,
+        };
+      });
+
+      await prisma.updates.createMany({
+        data: commitUpdates,
+        skipDuplicates: true,
+      });
+
+      context.response.status = 200;
+      context.response.body = {
+        message: "Successful sync!",
       };
-    });
-
-    await prisma.updates.createMany({
-      data: commitUpdates,
-      skipDuplicates: true,
-    });
-
-    context.response.status = 200;
-    context.response.body = {
-      message: "Successfull sync!",
-    };
+    } else {
+      logger.error("Coulndt find the project");
+      throw new Error("Couldnt find the project");
+    }
   } catch (error) {
     logger.error(error);
     context.response.status = 500;
     context.response.body = {
-      message: "Unsuccessfull sync!",
+      message: "Unsuccessful sync!",
     };
   }
 });
