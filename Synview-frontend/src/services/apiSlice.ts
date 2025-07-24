@@ -7,7 +7,6 @@ import {
   type Projects,
   type PostProject,
   type Project,
-  type Updates,
   type PostUpdate,
   type Question,
   type PostQuestion,
