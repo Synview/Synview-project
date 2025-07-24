@@ -62,7 +62,7 @@ export default function ProjectViewInfo() {
   const { data: aiReviewQueryData } = useGetAiReviewJobQuery(
     projectReviewData?.aiJobId ?? skipToken,
     {
-      pollingInterval: 20000,
+      pollingInterval: 10000,
     }
   );
 
