@@ -23,10 +23,7 @@ export default function WithRole({ children }: Props) {
   );
 
   const { data: projectData, isLoading: isProjectLoading } =
-    useGetProjectByIdQuery(parseInt(id!) ?? "", {
-      skip: !id,
-    });
-
+    useGetProjectByIdQuery(!isNaN(parseInt(id!)) ? parseInt(id!) : skipToken)
   const args =
     userData?.id && projectData?.owner_id
       ? {

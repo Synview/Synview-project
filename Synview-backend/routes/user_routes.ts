@@ -14,6 +14,7 @@ import {
 } from "../../common/schemas.ts";
 import { PostInvitationSchema } from "../../common/schemas.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
+import { rootLogger } from "../../common/Logger.ts";
 type AppState = {
   session: Session;
 };
@@ -26,7 +27,7 @@ const prisma = new PrismaClient({
     },
   },
 }).$extends(withAccelerate());
-
+const ONE_WEEK_MS = 168 * 60 * 60 * 1000;
 userRouter
   .post("/register", async (context) => {
     const body = await context.request.body.json();
@@ -125,9 +126,9 @@ userRouter
         token: access_token,
       };
       await context.cookies.set("Authorization", `Bearer ${access_token}`, {
-        expires: new Date(Date.now() + 168 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + ONE_WEEK_MS),
         sameSite: "lax",
-        httpOnly : true,
+        httpOnly: true,
       });
     } catch (e) {
       context.response.status = 500;
@@ -145,14 +146,20 @@ userRouter
     const id = context.params.id;
     try {
       const user = await prisma.users.findUnique({
-        where: { user_id: parseInt(id) },
+        where: { user_id: Number(id) },
         select: {
           user_id: true,
           username: true,
           email: true,
+          role: true,
         },
       });
-      context.response.body = user;
+      if (user === null) {
+        context.response.status = 404;
+        context.response.body = { error: "User not found" };
+      } else {
+        context.response.body = user;
+      }
     } catch (error) {
       context.response.status = 500;
       context.response.body = {
@@ -187,19 +194,27 @@ userRouter
       const invitedUser = await prisma.users.findFirst({
         where: { username: Invite.invited_username },
       });
-
-      await prisma.project_invitation.create({
-        data: {
-          invited_user_id: invitedUser.user_id,
-          inviting_user_id: Invite.inviting_user_id,
-          invited_project_id: Invite.invited_project_id,
-          role: Invite.role,
-        },
-      });
-      context.response.status = 201;
-      context.response.body = {
-        messae: "Invited user succesfully!",
-      };
+      if (invitedUser) {
+        await prisma.project_invitation.create({
+          data: {
+            invited_user_id: invitedUser.user_id,
+            inviting_user_id: Invite.inviting_user_id,
+            invited_project_id: Invite.invited_project_id,
+            role: Invite.role,
+          },
+        });
+        context.response.status = 201;
+        context.response.body = {
+          messae: "Invited user succesfully!",
+        };
+      } else {
+        rootLogger.error(
+          `Couldn't find invites user for id ${Invite.invited_project_id}, name : ${Invite.invited_username}`
+        );
+        throw new Error(
+          `Couldn't find invited user : ${Invite.invited_username}`
+        );
+      }
     } catch (error) {
       context.response.status = 500;
       context.response.body = {

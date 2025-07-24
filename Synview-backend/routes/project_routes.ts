@@ -10,7 +10,6 @@ type AppState = {
 import { PostProjectSchema } from "../../common/schemas.ts";
 import {
   broadcastPresence,
-  sendtoChannel,
 } from "../websocket/websocket_server.ts";
 import { rootLogger } from "../../common/Logger.ts";
 const projectRouter = new Router<AppState>();
@@ -51,7 +50,7 @@ projectRouter
     } catch (e) {
       rootLogger.error("Error fetching projects with access");
       context.response.body = {
-        error: `Error fetching projects access to  ${id}` + e,
+        error: `Error fetching projects with access` + e,
       };
     }
   })
