@@ -10,7 +10,7 @@ export default function NavbarDropdown() {
     try {
       await logoutUser().unwrap();
     // Clear the auth token from localStorage
-    localStorage.removeItem("authToken");
+    localStorage.removeItem("token");
       navigate("/");
     } catch (error){
       alert(`error : ${error?.message}`);
