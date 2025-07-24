@@ -166,7 +166,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Projects"],
     }),
-    getMyUpdates: builder.query<Updates[], string>({
+    getMyUpdates: builder.query<Update[], string>({
       query: (id) => `getMyUpdates/${id}`,
       async onCacheEntryAdded(
         id,

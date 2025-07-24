@@ -17,7 +17,7 @@ export default function Timeline() {
     return <Loading />;
   }
 
-  const sortedUpdates = [...updates!].sort((a, b) => {
+  const sortedUpdates = [...updates ?? []].sort((a, b) => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
 

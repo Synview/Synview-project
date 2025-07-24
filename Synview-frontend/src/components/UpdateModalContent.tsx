@@ -47,10 +47,7 @@ export default function UpdateModalContent() {
   ) {
     return <Loading />;
   }
-  const sortedQuestions = [...(questions ?? [])].sort((a, b) => {
-    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-  });
-
+  
   let parsedFile: string[] = [];
   let parsedLines: string[] = [];
 
