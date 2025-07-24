@@ -17,22 +17,26 @@ type AppState = {
 };
 
 const mainRouter = new Router();
-const app = new Application<AppState>();
+const app = new Application<AppState>({ proxy: true });
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
-
+const allowedOrigins = [env.DEVURL, env.PRODURL];
 rootLogger.info(env.PRODURL);
 app.use(
   oakCors({
-    origin: [env.DEVURL, env.PRODURL],
+    origin: (reqOrigin) => {
+      if (allowedOrigins.includes(reqOrigin)) {
+        return reqOrigin;
+      }
+      return undefined;
+    },
     credentials: true,
     methods: ["POST", "PUT", "DELETE", "GET"],
     allowedHeaders: [
       "Content-type",
       "Authorization",
-      "Access-Control-Allow-Origin",
+      "X-Debug",
     ],
-    exposedHeaders: ["Authorization", "Set-Cookie"],
   })
 );
 
@@ -62,7 +66,6 @@ app.use(aiRouter.allowedMethods());
 
 app.use(webhookRouter.routes());
 app.use(webhookRouter.allowedMethods());
-
 
 app.use(mainRouter.routes());
 app.use(mainRouter.allowedMethods());

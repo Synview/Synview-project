@@ -10,7 +10,7 @@ export default function SummarizeAI() {
   const id = useAppSelector((state) => state.questionModal.commit_id);
   const { data: updateData } = useGetUpdateByIdQuery(id ?? skipToken);
   return (
-    <Paper className="p-2 text-start  " style={{ color: "black whitespace-normal  break-all overflow-x-scroll prose prose-sm" }}>
+    <Paper className="p-2 text-start text-[11px] " style={{ color: "black whitespace-normal  break-all overflow-x-scroll prose prose-sm" }}>
       <ReactMarkdown>{updateData?.summary}</ReactMarkdown>
     </Paper>
   );

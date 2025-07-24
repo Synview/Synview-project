@@ -1,4 +1,3 @@
- 
 import { Menu, Button } from "@mantine/core";
 import { Kbd } from "@mantine/core";
 import { useLogoutMutation } from "../services/apiSlice.ts";
@@ -10,6 +9,8 @@ export default function NavbarDropdown() {
   const logout = async () => {
     try {
       await logoutUser().unwrap();
+    // Clear the auth token from localStorage
+    localStorage.removeItem("token");
       navigate("/");
     } catch (error){
       alert(`error : ${error?.message}`);

@@ -1,9 +1,9 @@
 name: Deploy
 on:
   push:
-    branches: FrontendUpgrades
+    branches: FixProjects
   pull_request:
-    branches: FrontendUpgrades
+    branches: FixProjects
 
 jobs:
   deploy:

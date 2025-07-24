@@ -46,7 +46,7 @@ export const InvitationSchema = z.object({
 });
 
 export const PostInvitationSchema = z.object({
-  invited_username : z.string(),
+  invited_username: z.string(),
   invited_project_id: z.number(),
   inviting_user_id: z.number(),
   role: ProjectRolesSchema,
@@ -71,6 +71,7 @@ export const ProjectSchema = z.object({
   repo_url: z.string().optional(),
   ai_summary: z.string().optional(),
   created_at: z.date(),
+  project_git_name: z.string().optional(),
 });
 
 export const PostUpdateSchema = z.object({
