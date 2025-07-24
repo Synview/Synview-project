@@ -185,17 +185,18 @@ aiRouter
             message: "job not yet done",
           };
           return;
+        } else if (jobResult.status === "complete") {
+          await prisma.projects.update({
+            where: { project_id: jobResult.project_id },
+            data: { ai_summary: jobResult.response },
+          });
+          context.response.status = 200;
+          context.response.body = {
+            status: "complete",
+            response: jobResult.response,
+            project_id: jobResult.project_id,
+          };
         }
-        await prisma.projects.update({
-          where: { project_id: jobResult.project_id },
-          data: { ai_summary: jobResult.response },
-        });
-        context.response.status = 200;
-        context.response.body = {
-          status: "complete",
-          response: jobResult.response,
-          project_id: jobResult.project_id,
-        };
       }
     } catch (error) {
       context.response.status = 500;
