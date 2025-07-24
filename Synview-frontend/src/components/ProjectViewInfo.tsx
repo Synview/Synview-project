@@ -49,22 +49,20 @@ export default function ProjectViewInfo() {
     projectReview,
     { data: projectReviewData, isLoading: isProjectReviewLoading },
   ] = useProjectReviewMutation();
+  const { data: aiReviewQueryData, isLoading: isAiReviewQueryLoading } =
+    useGetAiReviewJobQuery(projectReviewData?.aiJobId ?? skipToken, {
+      pollingInterval: 10000,
+    });
 
   if (
     isUserPayloadLoading ||
     isProjectDataLoading ||
     isProjectOwnerLoading ||
-    isProjectReviewLoading
+    isProjectReviewLoading ||
+    isAiReviewQueryLoading
   ) {
     return <Loading />;
   }
-
-  const { data: aiReviewQueryData } = useGetAiReviewJobQuery(
-    projectReviewData?.aiJobId ?? skipToken,
-    {
-      pollingInterval: 10000,
-    }
-  );
 
   const summarizeProjectAI = async () => {
     if (!id) {
