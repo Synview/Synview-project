@@ -50,7 +50,7 @@ projectRouter
     } catch (e) {
       rootLogger.error("Error fetching projects with access");
       context.response.body = {
-        error: `Error fetching projects access to  ${id}` + e,
+        error: `Error fetching projects with access` + e,
       };
     }
   })

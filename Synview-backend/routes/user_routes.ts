@@ -14,6 +14,7 @@ import {
 } from "../../common/schemas.ts";
 import { PostInvitationSchema } from "../../common/schemas.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
+import { rootLogger } from "../../common/Logger.ts";
 type AppState = {
   session: Session;
 };
@@ -127,7 +128,7 @@ userRouter
       await context.cookies.set("Authorization", `Bearer ${access_token}`, {
         expires: new Date(Date.now() + ONE_WEEK_MS),
         sameSite: "lax",
-        httpOnly : true,
+        httpOnly: true,
       });
     } catch (e) {
       context.response.status = 500;
@@ -193,19 +194,27 @@ userRouter
       const invitedUser = await prisma.users.findFirst({
         where: { username: Invite.invited_username },
       });
-
-      await prisma.project_invitation.create({
-        data: {
-          invited_user_id: invitedUser.user_id,
-          inviting_user_id: Invite.inviting_user_id,
-          invited_project_id: Invite.invited_project_id,
-          role: Invite.role,
-        },
-      });
-      context.response.status = 201;
-      context.response.body = {
-        messae: "Invited user succesfully!",
-      };
+      if (invitedUser) {
+        await prisma.project_invitation.create({
+          data: {
+            invited_user_id: invitedUser.user_id,
+            inviting_user_id: Invite.inviting_user_id,
+            invited_project_id: Invite.invited_project_id,
+            role: Invite.role,
+          },
+        });
+        context.response.status = 201;
+        context.response.body = {
+          messae: "Invited user succesfully!",
+        };
+      } else {
+        rootLogger.error(
+          `Couldn't find invites user for id ${Invite.invited_project_id}, name : ${Invite.invited_username}`
+        );
+        throw new Error(
+          `Couldn't find invited user : ${Invite.invited_username}`
+        );
+      }
     } catch (error) {
       context.response.status = 500;
       context.response.body = {

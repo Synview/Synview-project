@@ -30,7 +30,7 @@ export default function UserDrawer() {
     return <Loading />;
   }
 
-  const pending = invitations?.filter((inv) => inv.status === "PENDING") || 0;
+  const pending = invitations?.filter((inv) => inv.status === "PENDING") || [];
 
   const data = [
     {
@@ -39,8 +39,8 @@ export default function UserDrawer() {
         <Indicator
           withBorder
           size={22}
-          label={`${pending != 0 ? pending?.length : 0}`}
-          processing={pending != 0 ? pending?.length > 0 : false}
+          label={`${pending.length > 0 ? pending?.length : 0}`}
+          processing={pending.length > 0 ? pending?.length > 0 : false}
         >
           <Button variant="default" fullWidth>
             Invitations
@@ -49,7 +49,6 @@ export default function UserDrawer() {
       ),
       children: [
         {
-          value : "b",
           value: "stack",
           label: (
             <Stack

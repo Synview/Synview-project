@@ -67,8 +67,8 @@ export default function UpdateModalContent() {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
 
-  let parsedFile = [""];
-  let parsedLines = [""];
+  let parsedFile: string[] = [];
+  let parsedLines: string[] = [];
 
   if (commitData) {
     parsedFile = commitData.diffs.split("diff");
@@ -103,9 +103,7 @@ export default function UpdateModalContent() {
       <div className="p-4 flex-1/2 shrink-0 overflow-y-scroll max-h-screen [scrollbar-width:none] ">
         {parsedFile.length > 0 ? (
           parsedFile.map((diff, idx) => {
-            if (parsedFile) {
-              parsedLines = diff.split("\n");
-            }
+            parsedLines = diff.split("\n");
             return (
               <div
                 className="mockup-code overflow-x-auto w-full my-4 "
