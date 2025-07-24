@@ -17,15 +17,20 @@ type jobMessage = {
 try {
   kv.listenQueue(async (msg: jobMessage) => {
     logger.info(`Processing analysis job`);
-    if (msg.type !== "projectAnalysis") {
-      logger.warn("Incorrect type of message");
-      return;
-    }
 
-    const { aiJobId, project_id, commits, project_repo_url, project_git_name } =
-      msg;
-    logger.info(`Job : ${aiJobId} started!`);
     try {
+      if (msg.type !== "projectAnalysis") {
+        logger.warn("Incorrect type of message");
+        return;
+      }
+      const {
+        aiJobId,
+        project_id,
+        commits,
+        project_repo_url,
+        project_git_name,
+      } = msg;
+      logger.info(`Job : ${aiJobId} started!`);
       logger.info("Started code analisis");
       const response = await recentCodeAnalysis(
         project_git_name,
@@ -60,5 +65,5 @@ try {
     }
   });
 } catch (error) {
-    logger.error(`KV job couldnt recieve message with error: ${error}`)
+  logger.error(`KV job couldnt recieve message with error: ${error}`);
 }
