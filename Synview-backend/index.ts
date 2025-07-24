@@ -11,6 +11,7 @@ import { aiRouter } from "./routes/ai_routes.ts";
 import { webhookRouter } from "./routes/webhook_route.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { rootLogger } from "../common/Logger.ts";
+import "./utils/kv_job.ts";
 
 type AppState = {
   session: Session;
@@ -25,7 +26,7 @@ rootLogger.info(env.PRODURL);
 app.use(
   oakCors({
     origin: (reqOrigin) => {
-      if(!reqOrigin) return "*"
+      if (!reqOrigin) return "*";
       if (allowedOrigins.includes(reqOrigin)) {
         return reqOrigin;
       }
@@ -33,11 +34,7 @@ app.use(
     },
     credentials: true,
     methods: ["POST", "PUT", "DELETE", "GET"],
-    allowedHeaders: [
-      "Content-type",
-      "Authorization",
-      "X-Debug",
-    ],
+    allowedHeaders: ["Content-type", "Authorization", "X-Debug"],
   })
 );
 
