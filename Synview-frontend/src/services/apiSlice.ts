@@ -64,6 +64,12 @@ export const apiSlice = createApi({
     "ProjectReview",
   ],
   endpoints: (builder) => ({
+    getAiReviewJob: builder.query<
+      { status: string; response: string; project_id: number },
+      string
+    >({
+      query: (aiJobId) => `/projectAiReview/job/${aiJobId}`,
+    }),
     getReviewingProjects: builder.query<Projects, number>({
       query: (id) => `reviewingProjects/${id}`,
       providesTags: ["ReviewingProjects"],
@@ -273,7 +279,7 @@ export const apiSlice = createApi({
         body: Invite,
       }),
     }),
-    projectReview: builder.mutation<string, number>({
+    projectReview: builder.mutation<{aiJobId: string, status: string}, number>({
       query: (id: number) => ({ url: `projectAiReview/${id}`, method: "POST" }),
       invalidatesTags: ["ProjectReview"],
     }),
@@ -313,4 +319,5 @@ export const {
   useGetHasAccessQuery,
   useGetReviewingProjectsQuery,
   useGetLocalUserByIdQuery,
+  useGetAiReviewJobQuery
 } = apiSlice;

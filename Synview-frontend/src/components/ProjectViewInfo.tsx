@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import {
+  useGetAiReviewJobQuery,
   useGetPayloadQuery,
   useGetProjectByIdQuery,
   useGetUserByIdQuery,
@@ -44,12 +45,26 @@ export default function ProjectViewInfo() {
   const { data: projectOwner, isLoading: isProjectOwnerLoading } =
     useGetUserByIdQuery(projectData?.owner_id ?? skipToken);
 
-  const [projectReview, { isLoading: isProjectReviewLoading }] =
-    useProjectReviewMutation();
+  const [
+    projectReview,
+    { data: projectReviewData, isLoading: isProjectReviewLoading },
+  ] = useProjectReviewMutation();
 
-  if (isUserPayloadLoading || isProjectDataLoading || isProjectOwnerLoading) {
+  if (
+    isUserPayloadLoading ||
+    isProjectDataLoading ||
+    isProjectOwnerLoading ||
+    isProjectReviewLoading
+  ) {
     return <Loading />;
   }
+
+  const { data: aiReviewQueryData } = useGetAiReviewJobQuery(
+    projectReviewData?.aiJobId ?? skipToken,
+    {
+      pollingInterval: 20000,
+    }
+  );
 
   const summarizeProjectAI = async () => {
     if (!id) {
@@ -112,7 +127,7 @@ export default function ProjectViewInfo() {
           <Button
             className="mb-6"
             onClick={summarizeProjectAI}
-            loading={isProjectReviewLoading}
+            loading={aiReviewQueryData?.status === "complete"}
           >
             Summarize
           </Button>
