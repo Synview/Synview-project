@@ -25,6 +25,7 @@ rootLogger.info(env.PRODURL);
 app.use(
   oakCors({
     origin: (reqOrigin) => {
+      if(!reqOrigin) return "*"
       if (allowedOrigins.includes(reqOrigin)) {
         return reqOrigin;
       }
