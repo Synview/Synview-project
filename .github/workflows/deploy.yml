@@ -1,9 +1,9 @@
 name: Deploy
 on:
   push:
-    branches: DenoKV
+    branches: PollingAiUpdates
   pull_request:
-    branches: DenoKV
+    branches: PollingAiUpdates
 
 jobs:
   deploy:
