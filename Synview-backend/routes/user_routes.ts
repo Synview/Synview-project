@@ -15,7 +15,6 @@ import {
 import { PostInvitationSchema } from "../../common/schemas.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { rootLogger } from "../../common/Logger.ts";
-import { rootLogger } from "../../common/Logger.ts";
 type AppState = {
   session: Session;
 };
