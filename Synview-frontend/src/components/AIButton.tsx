@@ -1,7 +1,7 @@
 type buttonProps = {
   isLoading: boolean;
   error: boolean;
-  onClick: () => {};
+  onClick: () => void;
 };
 
 export default function AIButton({ isLoading, error, onClick }: buttonProps) {
