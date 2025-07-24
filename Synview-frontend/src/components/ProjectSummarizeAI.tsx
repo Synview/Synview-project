@@ -12,7 +12,7 @@ export default function ProjectSummarizeAI() {
   const { data: projectData } = useGetProjectByIdQuery(parseInt(id!) ?? skipToken)
   return (
     <Paper className="p-2 text-start !text-black">
-      <ReactMarkdown>{projectData?.doc_url}</ReactMarkdown>
+      <ReactMarkdown>{projectData?.ai_summary}</ReactMarkdown>
     </Paper>
   );
 }
