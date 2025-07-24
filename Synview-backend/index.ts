@@ -8,6 +8,7 @@ import { githubRouter } from "./routes/github_routes.ts";
 import { wsRouter } from "./websocket/websocket_route.ts";
 import { invitationRouter } from "./routes/invitation_routes.ts";
 import { aiRouter } from "./routes/ai_routes.ts";
+import { webhookRouter } from "./routes/webhook_route.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { rootLogger } from "../common/Logger.ts";
 
@@ -19,7 +20,6 @@ const mainRouter = new Router();
 const app = new Application<AppState>();
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
-
 
 rootLogger.info(env.PRODURL);
 app.use(
@@ -35,7 +35,6 @@ app.use(
     exposedHeaders: ["Authorization", "Set-Cookie"],
   })
 );
-
 
 app.use(userRouter.routes());
 app.use(userRouter.allowedMethods());
@@ -60,6 +59,10 @@ app.use(invitationRouter.allowedMethods());
 
 app.use(aiRouter.routes());
 app.use(aiRouter.allowedMethods());
+
+app.use(webhookRouter.routes());
+app.use(webhookRouter.allowedMethods());
+
 
 app.use(mainRouter.routes());
 app.use(mainRouter.allowedMethods());
