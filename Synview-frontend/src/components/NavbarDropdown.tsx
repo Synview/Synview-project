@@ -2,7 +2,7 @@ import { Menu, Button } from "@mantine/core";
 import { useLogoutMutation } from "../services/apiSlice.ts";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks.ts";
-import { apiSlice } from "../services/apiSlice.ts";
+import apiSlice from "../services/apiSlice.ts";
 export default function NavbarDropdown() {
   const [logoutUser, {isLoading : isLogoutLoading}] = useLogoutMutation();
   const navigate = useNavigate();
