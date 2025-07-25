@@ -278,8 +278,13 @@ export const apiSlice = createApi({
         method: "PUT",
         body: Invite,
       }),
+      invalidatesTags: ["Invitations", "ReviewingProjects"],
+
     }),
-    projectReview: builder.mutation<{aiJobId: string, status: string}, number>({
+    projectReview: builder.mutation<
+      { aiJobId: string; status: string },
+      number
+    >({
       query: (id: number) => ({ url: `projectAiReview/${id}`, method: "POST" }),
       invalidatesTags: ["ProjectReview"],
     }),

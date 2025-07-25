@@ -23,7 +23,7 @@ export default function Timeline() {
 
   return (
     <div>
-      <ul className="timeline timeline-vertical text-white">
+      <ul className="justify-center timeline timeline-vertical text-white">
         <li className="">
           <div className="timeline-start">Current</div>
           <div className="timeline-middle">

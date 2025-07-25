@@ -1,4 +1,4 @@
-import  { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import {
   useGetPayloadQuery,
   usePostProjectMutation,
@@ -6,13 +6,10 @@ import {
 export default function NewProject() {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-  const { data: UserData } = useGetPayloadQuery(
-    undefined,
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
-  const [postProject] = usePostProjectMutation();
+  const { data: UserData } = useGetPayloadQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const [postProject, { isLoading }] = usePostProjectMutation();
   const handleNewProject = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -49,9 +46,7 @@ export default function NewProject() {
       <div className="modal  text-black" role="dialog">
         <div className="modal-box bg-neutral-700 ">
           <form className=" flex flex-col gap-5" onSubmit={handleNewProject}>
-            <label className="text-whiteleucliduugrfjggrrubncbdfihthieih">
-              Create your project!
-            </label>
+            <label className="text-white">Create your project!</label>
             <input
               className="input w-full"
               typeof="text"
@@ -74,9 +69,13 @@ export default function NewProject() {
             ></textarea>
 
             <div className="flex justify-between items-center">
-              <button type="submit" className="btn w-fit mt-2">
-                Create
-              </button>
+              {!isLoading ? 
+                <button type="submit" className="btn w-fit mt-2">
+                  Create
+                </button> :  <button type="button" className="btn cursor-not-allowed w-fit mt-2" aria-label="Loading, please wait">
+                  Create
+                </button>
+              }
             </div>
           </form>
         </div>

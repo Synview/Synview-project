@@ -16,7 +16,7 @@ export default function Update({
       <hr />
       <div className="timeline-start ">
         <Text>
-          <TimeValue format="12h" value={new Date(createdAt)} />
+         {new Date(createdAt).toLocaleDateString()} at <TimeValue format="12h" value={new Date(createdAt)} /> 
         </Text>
       </div>
       <div className="timeline-middle">

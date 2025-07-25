@@ -1,10 +1,9 @@
 import { useParams } from "react-router-dom";
+
 import {
-  useGetAiReviewJobQuery,
   useGetPayloadQuery,
   useGetProjectByIdQuery,
   useGetUserByIdQuery,
-  useProjectReviewMutation,
 } from "../services/apiSlice.ts";
 import {
   closeGithubModal,
@@ -15,16 +14,16 @@ import {
   openInviteMentorModal,
 } from "../slices/inviteMentorModalSlice.ts";
 import { useAppDispatch, useAppSelector } from "../hooks.ts";
-import { Button, Modal } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import NotFound from "./NotFound.tsx";
 import SyncForm from "./SyncForm.tsx";
 import MentorInviteForm from "./MentorInviteForm.tsx";
 import Loading from "./HelperComponents/Loading.tsx";
 import ProjectUsersTable from "./ProjectUsersTable.tsx";
-import { rootLogger } from "../../../common/Logger.ts";
 import ProjectSummarizeAI from "./ProjectSummarizeAI.tsx";
 import { skipToken } from "@reduxjs/toolkit/query";
 import LinkHook from "./LinkHook.tsx";
+import AIButton from "./AIButton.tsx";
 export default function ProjectViewInfo() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
@@ -45,33 +44,18 @@ export default function ProjectViewInfo() {
   const { data: projectOwner, isLoading: isProjectOwnerLoading } =
     useGetUserByIdQuery(projectData?.owner_id ?? skipToken);
 
-  const [
-    projectReview,
-    { data: projectReviewData, isLoading: isProjectReviewLoading },
-  ] = useProjectReviewMutation();
-  const { data: aiReviewQueryData, isLoading: isAiReviewQueryLoading } =
-    useGetAiReviewJobQuery(projectReviewData?.aiJobId ?? skipToken, {
-      pollingInterval: 10000,
-    });
+ 
 
   if (
     isUserPayloadLoading ||
     isProjectDataLoading ||
-    isProjectOwnerLoading ||
-    isProjectReviewLoading ||
-    isAiReviewQueryLoading
+    isProjectOwnerLoading 
+
   ) {
     return <Loading />;
   }
 
-  const summarizeProjectAI = async () => {
-    if (!id) {
-      rootLogger.error("No project id");
-      return;
-    }
-    await projectReview(Number(id));
-  };
-
+ 
   return (
     <div className="flex flex-col p-10 bg-neutral-900 text-white">
       <div className="flex flex-row justify-between w-full gap-10">
@@ -122,13 +106,7 @@ export default function ProjectViewInfo() {
           <ProjectUsersTable />
         </div>
         <div className="flex w-full flex-col">
-          <Button
-            className="mb-6"
-            onClick={summarizeProjectAI}
-            loading={aiReviewQueryData?.status === "started"}
-          >
-            Summarize
-          </Button>
+          <AIButton />
           <ProjectSummarizeAI />
         </div>
       </div>

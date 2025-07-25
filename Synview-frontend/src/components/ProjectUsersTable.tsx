@@ -65,7 +65,6 @@ export default function ProjectUsersTable() {
           </div>
         </Group>
       </Table.Td>
-      <Table.Td>{mentor.user_id}</Table.Td>
       <Table.Td>
         {presentUsers?.some((u) => u.user_id === mentor.user_id) ? (
           <Badge fullWidth variant="light">
@@ -73,7 +72,7 @@ export default function ProjectUsersTable() {
           </Badge>
         ) : (
           <Badge color="gray" fullWidth variant="light">
-            Disabled
+            Offline
           </Badge>
         )}
       </Table.Td>
@@ -86,7 +85,6 @@ export default function ProjectUsersTable() {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>User</Table.Th>
-              <Table.Th>Id</Table.Th>
               <Table.Th>Active</Table.Th>
             </Table.Tr>
           </Table.Thead>

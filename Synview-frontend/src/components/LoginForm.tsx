@@ -22,7 +22,6 @@ export default function LoginForm() {
       }).unwrap();
       if (res.token) {
         // Store the token in localStorage for cross-domain authentication
-        rootLogger.info(res.token)
         localStorage.setItem("token", res.token);
         navigate("/dashboard");
       }
