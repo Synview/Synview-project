@@ -46,7 +46,7 @@ export default function Timeline() {
             return (
               <li className={`
                 ${idx === 0 ? "animation-fade" : ""}
-              `} key={idx}>
+              `} key={update.update_id}>
                 <Update {...update} />
               </li>
             );

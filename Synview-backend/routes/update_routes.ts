@@ -41,7 +41,7 @@ updateRouter
   })
   .get("/getUpdateById/:id", async (context) => {
     const id = context.params.id;
-    try {
+  try {
       const update = await prisma.updates.findUnique({
         where: {
           update_id: parseInt(id),
@@ -64,7 +64,7 @@ updateRouter
         data: newUpdate,
       });
 
-      sendToChannel(`Updates:${newUpdate.project_id}`, newUpdate);
+      sendToChannel(`Updates:${newUpdate.project_id}`, result);
 
       context.response.status = 201;
       context.response.body = {

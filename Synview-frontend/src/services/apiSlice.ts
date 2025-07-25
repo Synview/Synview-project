@@ -177,7 +177,7 @@ export const apiSlice = createApi({
         id,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
-        connect(wsurl);
+        await connect(wsurl);
         await cacheDataLoaded;
 
         const unsubscribe = subscribe(`Updates:${id}`, (newMessage: Update) => {
@@ -212,7 +212,7 @@ export const apiSlice = createApi({
         id,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
-        connect(wsurl);
+        await connect(wsurl);
         await cacheDataLoaded;
 
         const unsubscribe = subscribe(
