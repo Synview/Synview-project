@@ -3,7 +3,7 @@ import { useLogoutMutation } from "../services/apiSlice.ts";
 import { useNavigate } from "react-router-dom";
 
 export default function NavbarDropdown() {
-  const [logoutUser, { isLoading: isLogoutLodaing }] = useLogoutMutation();
+  const [logoutUser, {isLoading : isLogoutLoading}] = useLogoutMutation();
   const navigate = useNavigate();
   const logout = async () => {
     try {
@@ -11,8 +11,8 @@ export default function NavbarDropdown() {
       // Clear the auth token from localStorage
       localStorage.removeItem("token");
       navigate("/");
-    } catch (error) {
-      alert(`error : ${error}`);
+    } catch (error : any){
+      alert(`error : ${error?.message || "unknown error"}`);
     }
   };
 
@@ -31,7 +31,7 @@ export default function NavbarDropdown() {
         <Menu.Item
           onClick={logout}
           color="red"
-          disabled={isLogoutLodaing}
+          disabled={isLogoutLoading}
         >
           Log out
         </Menu.Item>
