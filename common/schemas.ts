@@ -11,7 +11,7 @@ export const AiToolMessageSchema = z.object({
 
 export const MessageSchema = z.object({
   channel: z.string(),
-  data: z.object({}),
+  data: z.any(),
 });
 
 export const UserDataSchema = z.object({
