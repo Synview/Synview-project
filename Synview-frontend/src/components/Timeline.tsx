@@ -1,25 +1,29 @@
-import React from "react";
+ 
 import Update from "./Update.tsx";
 import NotFound from "./NotFound.tsx";
 import { useParams } from "react-router-dom";
 import { useGetMyUpdatesQuery } from "../services/apiSlice.ts";
 import Loading from "../components/HelperComponents/Loading.tsx";
+import { skipToken } from "@reduxjs/toolkit/query";
 export default function Timeline() {
   const { id } = useParams();
 
-  if (!id) {
-    return <Loading />;
-  }
-
-  const { data: updates, error, isLoading } = useGetMyUpdatesQuery(id);
+  const {
+    data: updates,
+    isLoading,
+  } = useGetMyUpdatesQuery(id ?? skipToken);
 
   if (isLoading) {
     return <Loading />;
   }
 
+  const sortedUpdates = [...updates ?? []].sort((a, b) => {
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+
   return (
     <div>
-      <ul className="timeline timeline-vertical">
+      <ul className="justify-center timeline timeline-vertical text-white">
         <li className="">
           <div className="timeline-start">Current</div>
           <div className="timeline-middle">
@@ -37,10 +41,12 @@ export default function Timeline() {
             </svg>
           </div>
         </li>
-        {updates ? (
-          updates.map((update) => {
+        {sortedUpdates ? (
+          sortedUpdates.map((update, idx) => {
             return (
-              <li className="" key={update.update_id}>
+              <li className={`
+                ${idx === 0 ? "animation-fade" : ""}
+              `} key={idx}>
                 <Update {...update} />
               </li>
             );

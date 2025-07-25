@@ -1,10 +1,8 @@
-import React, { type ChangeEvent, type FormEvent } from "react";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useLoginMutation } from "../services/apiSlice.ts";
 export default function LoginForm() {
-
-  const [login] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
 
   const navigate = useNavigate();
 
@@ -21,15 +19,15 @@ export default function LoginForm() {
         password: password,
       }).unwrap();
       if (res.token) {
+        // Store the token in localStorage for cross-domain authentication
+        localStorage.setItem("token", res.token);
         navigate("/dashboard");
       }
-    } catch (error) {
+    } catch {
       setTryAgain(true);
-      console.error(error);
     }
   };
 
- 
   return (
     <div className="w-[70%] max-h-[50%] flex justify-center border-1 border-neutral-600 bg-neutral-950 rounded-box p-4">
       <fieldset className="fieldset border-1 p-4 rounded-box border-neutral-600 bg-neutral-800">
@@ -59,15 +57,29 @@ export default function LoginForm() {
               }}
             ></input>
             <div className="flex justify-center items-center flex-col">
-              <button
-                type="submit"
-                className={`btn  ${
-                  tryAgain ? " tooltip tooltip-open tooltip-bottom" : ""
-                } w-fit mt-2`}
-                data-tip="Try again"
-              >
-                Login
-              </button>
+              {!isLoading ? (
+                <button
+                  type="submit"
+                  className={`btn  ${
+                    tryAgain ? " tooltip tooltip-open tooltip-bottom" : ""
+                  } w-fit mt-2`}
+                  data-tip="Try again"
+                >
+                  Login
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className={`btn  ${
+                    tryAgain
+                      ? " tooltip tooltip-open tooltip-bottom"
+                      : "cursor-not-allowed "
+                  } w-fit mt-2`}
+                  data-tip="Try again"
+                >
+                  Login
+                </button>
+              )}
             </div>
           </form>
         </div>

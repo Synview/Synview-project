@@ -7,30 +7,36 @@ import { questionRouter } from "./routes/question_routes.ts";
 import { githubRouter } from "./routes/github_routes.ts";
 import { wsRouter } from "./websocket/websocket_route.ts";
 import { invitationRouter } from "./routes/invitation_routes.ts";
+import { aiRouter } from "./routes/ai_routes.ts";
+import { webhookRouter } from "./routes/webhook_route.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
+import { rootLogger } from "../common/Logger.ts";
+import "./utils/kv_job.ts";
 
 type AppState = {
   session: Session;
 };
 
 const mainRouter = new Router();
-const app = new Application<AppState>();
+const app = new Application<AppState>({ proxy: true });
 const env = Deno.env.toObject();
 const PORT = env.PORT || 3000;
+const allowedOrigins = [env.DEVURL, env.PRODURL];
+rootLogger.info(env.PRODURL);
 app.use(
   oakCors({
-    origin: env.DEVURL,
+    origin: (reqOrigin) => {
+      if (!reqOrigin) return "*";
+      if (allowedOrigins.includes(reqOrigin)) {
+        return reqOrigin;
+      }
+      return undefined;
+    },
     credentials: true,
     methods: ["POST", "PUT", "DELETE", "GET"],
-    allowedHeaders: [
-      "Content-type",
-      "Authorization",
-      "Access-Control-Allow-Origin",
-    ],
-    exposedHeaders: ["Authorization"],
+    allowedHeaders: ["Content-type", "Authorization", "X-Debug"],
   })
 );
-app.use(Session.initMiddleware());
 
 app.use(userRouter.routes());
 app.use(userRouter.allowedMethods());
@@ -52,6 +58,12 @@ app.use(wsRouter.allowedMethods());
 
 app.use(invitationRouter.routes());
 app.use(invitationRouter.allowedMethods());
+
+app.use(aiRouter.routes());
+app.use(aiRouter.allowedMethods());
+
+app.use(webhookRouter.routes());
+app.use(webhookRouter.allowedMethods());
 
 app.use(mainRouter.routes());
 app.use(mainRouter.allowedMethods());

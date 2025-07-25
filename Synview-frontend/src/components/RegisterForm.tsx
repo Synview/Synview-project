@@ -1,7 +1,8 @@
-import React, { type ChangeEvent, type FormEvent } from "react";
+import { type ChangeEvent, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRegisterMutation } from "../services/apiSlice.ts";
+import { rootLogger } from "../../../common/Logger.ts";
 
 export default function LoginForm() {
   const [register] = useRegisterMutation();
@@ -21,14 +22,14 @@ export default function LoginForm() {
         password: password,
       }).unwrap();
       navigate("/login");
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      rootLogger.error(`${error}`);
     }
   };
 
   return (
     <div className="mr-44 mt-44 w-92 text-start bg-neutral-900 border-neutral-600 p-4 border-1 rounded-box">
-      <fieldset className="fieldset border-1 p-4 rounded-box border-neutral-600 bg-neutral-800">
+      <fieldset className="h-full fieldset border-1 p-4 rounded-box border-neutral-600 bg-neutral-800">
         <legend className="fieldset-legend text-white ">Register</legend>
         <div className="flex flex-col justify-center">
           <form onSubmit={handleRegister}>

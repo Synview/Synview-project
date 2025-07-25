@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import type { Project } from "../../../common/types.ts";
 import { Link } from "react-router-dom";
 

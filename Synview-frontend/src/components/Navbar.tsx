@@ -1,26 +1,17 @@
-import React from "react";
-import { useAppSelector } from "../hooks.ts";
-import {
-  useGetPayloadQuery,
-  useGetProjectByIdQuery,
-} from "../services/apiSlice.ts";
-import Drawer from "./Drawer.tsx";
-import { useParams } from "react-router-dom";
+import NavbarDropdown from "./NavbarDropdown.tsx";
+import { useGetPayloadQuery } from "../services/apiSlice.ts";
+import Drawer from "./UserDrawer.tsx";
 export default function Navbar() {
-  const { data, error, isLoading } = useGetPayloadQuery();
-  const { id } = useParams();
-
-  const { data: ProjectData } = useGetProjectByIdQuery(id ?? "", {
-    skip: !id,
-  });
+  const { data } = useGetPayloadQuery();
 
   return (
-    <div className="navbar z-1000 bg-neutral-800 p-4">
+    <div className="navbar bg-neutral-800 p-4">
       <div className="navbar-start">
         <Drawer />
       </div>
-      <div className="navbar-end">
+      <div className="navbar-end gap-10">
         <p>{data?.username}</p>
+        <NavbarDropdown />
       </div>
     </div>
   );

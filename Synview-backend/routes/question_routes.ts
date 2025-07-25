@@ -9,7 +9,13 @@ type AppState = {
   session: Session;
 };
 const questionRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 
 questionRouter.use(AuthMiddleware);
 
@@ -34,7 +40,7 @@ questionRouter
       const newUpdate = PostQuestionSchema.parse(
         await context.request.body.json()
       );
-      await prisma.questions.create({
+      const result = await prisma.questions.create({
         data: newUpdate,
       });
       sendToChannel(`UpdateQuestions:${newUpdate.update_id}`, newUpdate);

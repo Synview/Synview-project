@@ -1,7 +1,9 @@
-import React from "react";
 import { useParams } from "react-router-dom";
+
 import {
   useGetPayloadQuery,
+  useGetProjectByIdQuery,
+  useGetUserByIdQuery,
 } from "../services/apiSlice.ts";
 import {
   closeGithubModal,
@@ -18,44 +20,69 @@ import SyncForm from "./SyncForm.tsx";
 import MentorInviteForm from "./MentorInviteForm.tsx";
 import Loading from "./HelperComponents/Loading.tsx";
 import ProjectUsersTable from "./ProjectUsersTable.tsx";
+import ProjectSummarizeAI from "./ProjectSummarizeAI.tsx";
+import { skipToken } from "@reduxjs/toolkit/query";
+import LinkHook from "./LinkHook.tsx";
+import AIButton from "./AIButton.tsx";
 export default function ProjectViewInfo() {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const githubOpen = useAppSelector((state) => state.githubModal.isOpen);
   const inviteOpen = useAppSelector((state) => state.inviteMentorModal.isOpen);
+
   if (!id) {
     return <NotFound />;
   }
 
-  const { data: UserData, isLoading : isUserLoading } = useGetPayloadQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: projectData, isLoading: isProjectDataLoading } =
+    useGetProjectByIdQuery(parseInt(id));
+  const { data: userPayload, isLoading: isUserPayloadLoading } =
+    useGetPayloadQuery(undefined, {
+      refetchOnMountOrArgChange: true,
+    });
 
-  if (isUserLoading) {
+  const { data: projectOwner, isLoading: isProjectOwnerLoading } =
+    useGetUserByIdQuery(projectData?.owner_id ?? skipToken);
+
+ 
+
+  if (
+    isUserPayloadLoading ||
+    isProjectDataLoading ||
+    isProjectOwnerLoading 
+
+  ) {
     return <Loading />;
   }
 
+ 
   return (
-    <div className="flex flex-col p-10 bg-neutral-900">
-      <div className="flex flex-row justify-between w-full gap-10">
-        <h1>{UserData?.username}</h1>
+    <div className="flex flex-col p-10 bg-neutral-900 text-white">
+      <div className="flex flex-row justify-between w-full gap-8">
+        <h1>
+          {projectData?.title} - From: {projectOwner?.username}
+        </h1>
         <div className="flex items-center">
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              if (!UserData?.id) return;
-              dispatch(
-                openGithubModal({
-                  project_id: parseInt(id),
-                  user_id: UserData.id,
-                  isOpen: true,
-                })
-              );
-            }}
-          >
-            Sync commits
-          </button>
+          {!projectData?.repo_url ? (
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                if (!userPayload?.id) return;
+                dispatch(
+                  openGithubModal({
+                    project_id: parseInt(id),
+                    user_id: userPayload.id,
+                    isOpen: true,
+                  })
+                );
+              }}
+            >
+              Sync commits
+            </button>
+          ) : (
+            <LinkHook />
+          )}
         </div>
       </div>
       <div className="flex flex-col justify-between items-center gap-10">
@@ -64,11 +91,11 @@ export default function ProjectViewInfo() {
             type="button"
             className="btn"
             onClick={() => {
-              if(!UserData?.id) return
+              if (!userPayload?.id) return;
               dispatch(
                 openInviteMentorModal({
                   project_id: parseInt(id),
-                  user_id: UserData.id,
+                  user_id: userPayload.id,
                   isOpen: true,
                 })
               );
@@ -77,6 +104,10 @@ export default function ProjectViewInfo() {
             Invite a mentor
           </button>
           <ProjectUsersTable />
+        </div>
+        <div className="flex w-full flex-col">
+          <AIButton />
+          <ProjectSummarizeAI />
         </div>
       </div>
       <Modal

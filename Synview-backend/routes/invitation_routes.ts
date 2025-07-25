@@ -9,7 +9,13 @@ type AppState = {
   session: Session;
 };
 const invitationRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 
 invitationRouter.use(AuthMiddleware);
 

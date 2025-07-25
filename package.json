@@ -1,0 +1,24 @@
+{
+  "name": "synview-project",
+  "version": "1.0.0",
+  "description": "https://docs.google.com/document/d/10mrxYqC8RGYMQfKidVjIPO8f0TgDmWLyBCVpcjA8Mt0/edit?usp=sharing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Synview/Synview-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Synview/Synview-project/issues"
+  },
+  "homepage": "https://github.com/Synview/Synview-project#readme",
+  "dependencies": {
+    "zod": "^4.0.5"
+  }
+}

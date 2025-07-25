@@ -1,15 +1,31 @@
-import { z } from "npm:zod";
+import { z } from "zod";
 export const project_roles = ["CREATOR", "VIEWER", "REVIEWER"] as const;
 export const invitation_status = ["PENDING", "COMPLETE"] as const;
 export const ProjectRolesSchema = z.enum(project_roles);
 export const InvitationStatusSchema = z.enum(invitation_status);
 
+export const AiToolMessageSchema = z.object({
+  tool: z.string(),
+  value: z.string().optional(),
+});
+
+export const MessageSchema = z.object({
+  channel: z.string(),
+  data: z.any(),
+});
+
 export const UserDataSchema = z.object({
-  email : z.string(),
-  user_id : z.string(),
-  username : z.string(),
-  role : ProjectRolesSchema,
-})
+  email: z.string(),
+  user_id: z.number(),
+  username: z.string(),
+});
+
+export const UserModelSchema = z.object({
+  user_id: z.number(),
+  username: z.string(),
+  email: z.string(),
+  role: ProjectRolesSchema,
+});
 
 export const GithubInfoSchema = z.object({
   github_user: z.string(),
@@ -30,8 +46,8 @@ export const InvitationSchema = z.object({
 });
 
 export const PostInvitationSchema = z.object({
+  invited_username: z.string(),
   invited_project_id: z.number(),
-  invited_user_id: z.number(),
   inviting_user_id: z.number(),
   role: ProjectRolesSchema,
 });
@@ -53,8 +69,9 @@ export const ProjectSchema = z.object({
   description: z.string(),
   owner_id: z.number(),
   repo_url: z.string().optional(),
-  doc_url: z.string().optional(),
+  ai_summary: z.string().optional(),
   created_at: z.date(),
+  project_git_name: z.string().optional(),
 });
 
 export const PostUpdateSchema = z.object({

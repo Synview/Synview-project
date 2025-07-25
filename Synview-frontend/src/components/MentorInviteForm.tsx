@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { useInviteMentorMutation } from "../services/apiSlice.ts";
 import { useAppSelector } from "../hooks.ts";
 import { ProjectRolesSchema } from "../../../common/schemas.ts";
+import { rootLogger } from "../../../common/Logger.ts";
 export default function MentorInviteForm() {
-  const [invitedMentorId, setInvitedMentorId] = useState("");
+  const [invitedMentorUsername, setInvitedMentorUsername] = useState("");
 
   const projectId = useAppSelector(
     (state) => state.inviteMentorModal.project_id
@@ -15,15 +16,15 @@ export default function MentorInviteForm() {
     try {
       if (projectId && userId) {
         await inviteMentor({
-          role: ProjectRolesSchema.Enum.REVIEWER,
-          invited_user_id: parseInt(invitedMentorId),
+          role: ProjectRolesSchema.enum.REVIEWER,
+          invited_username: invitedMentorUsername,
           inviting_user_id: userId,
           invited_project_id: projectId,
         });
-        setInvitedMentorId("");
+        setInvitedMentorUsername("");
       }
     } catch (error) {
-      console.error(error);
+      rootLogger.error(`${error}`);
     }
   };
 
@@ -32,15 +33,15 @@ export default function MentorInviteForm() {
       <fieldset className="fieldset border-1 p-4 rounded-box border-neutral-600 bg-neutral-800">
         <div className="flex flex-col justify-center">
           <form onSubmit={handleInviteForm}>
-            <label>Id</label>
+            <label>Username</label>
             <input
               className="input bg-neutral-700 w-full"
               typeof="text"
-              placeholder="id"
+              placeholder="Write username here"
               id="Username"
-              value={invitedMentorId}
+              value={invitedMentorUsername}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setInvitedMentorId(e.target.value);
+                setInvitedMentorUsername(e.target.value);
               }}
             />
             <div className="flex justify-between items-center">

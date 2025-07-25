@@ -3,10 +3,9 @@ import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
 import { Router } from "@oak/oak";
-import {
-  GithubInfoSchema,
-} from "../../common/schemas.ts";
+import { GithubInfoSchema } from "../../common/schemas.ts";
 import { Octokit } from "npm:@octokit/rest";
+import diffExtracter from "../utils/GITHelpers.ts";
 const env = Deno.env.toObject();
 type AppState = {
   session: Session;
@@ -16,7 +15,13 @@ const octokit = new Octokit({
   auth: GitHubToken,
 });
 const githubRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 
 githubRouter.use(AuthMiddleware);
 
@@ -51,7 +56,10 @@ githubRouter
 
       await prisma.projects.update({
         where: { project_id: githubInfo.project_id },
-        data: { repo_url: githubInfo.repo_name },
+        data: {
+          repo_url: githubInfo.repo_name,
+          project_git_name: githubInfo.github_user,
+        },
       });
 
       await prisma.updates.createMany({
@@ -70,7 +78,7 @@ githubRouter
       };
     }
   })
-  .get("/getCommitFiles", async (context) => {
+  .get("/getCommitData", async (context) => {
     try {
       const url = context.request.url;
       const github_user = url.searchParams.get("user");
@@ -84,6 +92,9 @@ githubRouter
         repo: repo_name,
         ref: commit_sha,
       });
+
+      const diffs = await diffExtracter(github_user, repo_name, commit_sha);
+
       const commitFiles = response.data.files;
       if (commitFiles) {
         const files = await Promise.all(
@@ -99,7 +110,7 @@ githubRouter
         const decodedFiles = files.map((file) => {
           return { name: file.data.name, content: atob(file.data.content) };
         });
-        context.response.body = decodedFiles;
+        context.response.body = { files: decodedFiles, diffs: diffs };
       } else {
         context.response.status = 404;
         context.response.body = {

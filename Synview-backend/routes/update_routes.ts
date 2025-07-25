@@ -5,12 +5,20 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { PrismaClient } from "../generated/prisma/client.ts";
 import { Session } from "https://deno.land/x/oak_sessions/mod.ts";
 import AuthMiddleware from "../middleware/auth_middleware.ts";
-import { sendtoChannel } from "../websocket/websocket_server.ts";
+import {
+  sendToChannel,
+} from "../websocket/websocket_server.ts";
 type AppState = {
   session: Session;
 };
 const updateRouter = new Router<AppState>();
-const prisma = new PrismaClient().$extends(withAccelerate());
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: Deno.env.get("DATABASE_URL")!,
+    },
+  },
+}).$extends(withAccelerate());
 
 updateRouter.use(AuthMiddleware);
 
@@ -23,6 +31,7 @@ updateRouter
           project_id: parseInt(id),
         },
       });
+
       context.response.body = MyUpdates;
     } catch (e) {
       context.response.body = {
@@ -51,11 +60,11 @@ updateRouter
       const newUpdate = PostUpdateSchema.parse(
         await context.request.body.json()
       );
-      await prisma.updates.create({
+      const result = await prisma.updates.create({
         data: newUpdate,
       });
 
-      sendtoChannel(`Updates:${newUpdate.project_id}`, newUpdate);
+      sendToChannel(`Updates:${newUpdate.project_id}`, newUpdate);
 
       context.response.status = 201;
       context.response.body = {
