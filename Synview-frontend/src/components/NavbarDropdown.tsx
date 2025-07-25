@@ -4,7 +4,7 @@ import { useLogoutMutation } from "../services/apiSlice.ts";
 import {  useNavigate } from "react-router-dom";
 
 export default function NavbarDropdown() {
-  const [logoutUser, {isLoading : isLogoutLodaing}] = useLogoutMutation();
+  const [logoutUser, {isLoading : isLogoutLoading}] = useLogoutMutation();
   const navigate = useNavigate();
   const logout = async () => {
     try {
@@ -30,7 +30,7 @@ export default function NavbarDropdown() {
         <Menu.Divider />
 
         <Menu.Label>Danger zone</Menu.Label>
-        <Menu.Item onClick={logout} color="red" disabled={isLogoutLodaing} leftSection={<Kbd>⌘</Kbd>}>
+        <Menu.Item onClick={logout} color="red" disabled={isLogoutLoading} leftSection={<Kbd>⌘</Kbd>}>
           Log out
         </Menu.Item>
       </Menu.Dropdown>

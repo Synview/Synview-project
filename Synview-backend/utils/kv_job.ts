@@ -25,14 +25,14 @@ kv.listenQueue(async (msg: jobMessage) => {
     }
 
     logger.info(`Job : ${aiJobId} started!`);
-    logger.info("Started code analisis");
+    logger.info("Started code analysis");
     const response = await recentCodeAnalysis(
       project_git_name,
       project_repo_url,
       commits.join(" ")
     );
 
-    logger.info(`finished code analisis with response : ${response}`);
+    logger.info(`finished code analysis with response : ${response}`);
     await kv.set(
       ["jobs", aiJobId],
       {
@@ -42,10 +42,10 @@ kv.listenQueue(async (msg: jobMessage) => {
       },
       { expireIn: 1000 * 60 * 60 * 24 }
     );
-    logger.info("finished code analisis");
+    logger.info("finished code analysis");
   } catch (error) {
     logger.error(
-      `Couldnt process code analysis in KV job with error : ${error}`
+      `Couldn't process code analysis in KV job with error : ${error}`
     );
     await kv.set(
       ["jobs", aiJobId],
