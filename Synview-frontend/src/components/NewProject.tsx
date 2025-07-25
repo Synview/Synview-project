@@ -72,7 +72,7 @@ export default function NewProject() {
               {!isLoading ? 
                 <button type="submit" className="btn w-fit mt-2">
                   Create
-                </button> :  <button type="button" className="btn cursor-not-allowed w-fit mt-2">
+                </button> :  <button type="button" className="btn cursor-not-allowed w-fit mt-2" aria-label="Loading, please wait">
                   Create
                 </button>
               }
