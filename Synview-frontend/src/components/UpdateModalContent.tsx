@@ -40,14 +40,10 @@ export default function UpdateModalContent() {
   const [commitReview, { isLoading: isCommitReviewLoading }] =
     useCommitReviewMutation();
 
-  if (
-    isProjectByIdLoading ||
-    isUpdateByIdLoading ||
-    isCommitDataLoading
-  ) {
+  if (isProjectByIdLoading || isUpdateByIdLoading || isCommitDataLoading) {
     return <Loading />;
   }
-  
+
   let parsedFile: string[] = [];
   let parsedLines: string[] = [];
 
@@ -55,8 +51,6 @@ export default function UpdateModalContent() {
     parsedFile = commitData.diffs.split("diff");
     parsedFile.shift();
   }
-
-  
 
   const summarizeAI = async () => {
     if (!updateData?.update_id) {
@@ -67,59 +61,63 @@ export default function UpdateModalContent() {
   };
   return (
     <div className="">
-      <div className="p-4 bg-neutral-800 text-white border-b border-neutral-600">
+      <div className="flex w-full justify-between p-4 bg-neutral-800 text-white border-b border-neutral-600">
         <p className="items-center">
           Press <Kbd>Esc</Kbd> to leave{" "}
         </p>
+        <p>{updateData?.description}</p>
       </div>
       <div className="flex text-white flex-row justify-between  w-full min-h-screen bg-neutral-800 ">
         <div className="p-4 flex-1/2 shrink-0 overflow-y-scroll max-h-screen [scrollbar-width:none] border-r border-neutral-600 ">
           {parsedFile.length > 0 ? (
             parsedFile.map((diff, idx) => {
-                parsedLines = diff.split("\n");
-                return (
-                <div
-                  className="mockup-code overflow-x-auto w-full my-4 "
-                  key={idx}
-                >
-                  {parsedLines.length > 0 &&
-                    parsedLines.map((line, idx) => {
-                      return (
-                        <div key={idx} className="break">
-                          {(() => {
-                            if (line.startsWith("-")) {
-                              return (
-                                <pre
-                                  data-prefix={`${idx + 1}`}
-                                  className="text-[11px] text-error break-all"
-                                >
-                                  {line}
-                                </pre>
-                              );
-                            } else if (line.startsWith("+")) {
-                              return (
-                                <pre
-                                  data-prefix={`${idx + 1}`}
-                                  className="text-[11px]  text-success break-all "
-                                >
-                                  {line}
-                                </pre>
-                              );
-                            } else {
-                              return (
-                                <pre
-                                  data-prefix={`${idx + 1}`}
-                                  className="text-[11px] break-all "
-                                >
-                                  {line}
-                                </pre>
-                              );
-                            }
-                          })()}
-                        </div>
-                      );
-                    })}
-                </div>
+              parsedLines = diff.split("\n");
+              return (
+                <>
+
+                  <div
+                    className="mockup-code overflow-x-auto cursor-[url(/star.svg),_auto] w-full my-4 "
+                    key={idx}
+                  >
+                    {parsedLines.length > 0 &&
+                      parsedLines.map((line, idx) => {
+                        return (
+                          <div key={idx} className="break">
+                            {(() => {
+                              if (line.startsWith("-")) {
+                                return (
+                                  <pre
+                                    data-prefix={`${idx + 1}`}
+                                    className="text-[11px] text-error break-all"
+                                  >
+                                    {line}
+                                  </pre>
+                                );
+                              } else if (line.startsWith("+")) {
+                                return (
+                                  <pre
+                                    data-prefix={`${idx + 1}`}
+                                    className="text-[11px]  text-success break-all "
+                                  >
+                                    {line}
+                                  </pre>
+                                );
+                              } else {
+                                return (
+                                  <pre
+                                    data-prefix={`${idx + 1}`}
+                                    className="text-[11px] break-all "
+                                  >
+                                    {line}
+                                  </pre>
+                                );
+                              }
+                            })()}
+                          </div>
+                        );
+                      })}
+                  </div>
+                </>
               );
             })
           ) : (
@@ -127,7 +125,7 @@ export default function UpdateModalContent() {
           )}
         </div>
         <div className="flex flex-1/2 shrink-0 flex-col p-4 max-h-screen  overflow-x-scroll ">
-          <div className="">
+          <div className="border-b border-neutral-600">
             <div className="flex flex-row gap-10 items-center">
               <h1>Code review</h1>
               <Button onClick={summarizeAI} loading={isCommitReviewLoading}>
@@ -138,7 +136,7 @@ export default function UpdateModalContent() {
               <SummarizeAI />
             </div>
           </div>
-          <QuestionSection/>
+          <QuestionSection />
         </div>
       </div>
     </div>
