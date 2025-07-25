@@ -319,5 +319,5 @@ export const {
   useGetHasAccessQuery,
   useGetReviewingProjectsQuery,
   useGetLocalUserByIdQuery,
-  useGetAiReviewJobQuery
+  useGetAiReviewJobQuery,
 } = apiSlice;
