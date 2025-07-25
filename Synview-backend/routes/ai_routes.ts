@@ -10,6 +10,8 @@ type AppState = {
   session: Session;
 };
 
+const kv = await Deno.openKv();
+
 const logger = createLogger("AI [API]", LogLevel.INFO);
 
 const aiRouter = new Router<AppState>();
@@ -26,6 +28,8 @@ aiRouter.use(AuthMiddleware);
 aiRouter
   .post("/projectAiReview/:id", async (context) => {
     const id = context.params.id;
+    const aiJobId = crypto.randomUUID();
+    logger.info("Starting review with KV jobs");
     try {
       const project = await prisma.projects.findUnique({
         where: { project_id: parseInt(id) },
@@ -56,36 +60,45 @@ aiRouter
         return;
       }
 
-      const commitString = await Promise.all(
-        commits.map(async (commit) => {
-          if (!commit?.sha) return "";
-          const diff = await diffExtracter(
-            project?.project_git_name!,
-            project?.repo_url!,
-            commit.sha
-          );
-          return `Commit SHA : ${commit.sha} \n Commit diff start - ${diff} - Commit diff end`;
-        })
-      );
-      logger.info("Started code analisis");
-      const response = await recentCodeAnalysis(
-        project.project_git_name!,
-        project.repo_url!,
-        commitString.join(" ")
-      );
-      logger.info("finished code analisis");
-
-      await prisma.projects.update({
-        where: {
-          project_id: project.project_id,
-        },
-        data: {
-          doc_url: response,
-        },
+      await kv.set(["jobs", aiJobId], {
+        status: "started",
+        response: "",
+        project_id: project.project_id,
       });
 
-      context.response.status = 201;
-      context.response.body = response;
+      const result = await kv.enqueue({
+        type: "projectAnalysis",
+        aiJobId,
+        project_id: project.project_id,
+        commits: commits,
+        project_repo_url: project.repo_url,
+        project_git_name: project.project_git_name,
+      });
+      if (result.ok) {
+        logger.info(`enqueue for job ${aiJobId} sent`);
+      } else {
+        logger.error(`Enqueue failed for ${aiJobId}`);
+        await kv.set(
+          ["jobs", aiJobId],
+          {
+            status: "failed",
+            response: "failed",
+            project_id: project.project_id,
+          },
+          { expireIn: 1000 * 60 * 60 * 24 }
+        );
+        context.response.status = 500;
+        context.response.body = {
+          aiJobId,
+          status: "failed",
+        };
+        return;
+      }
+      context.response.status = 202;
+      context.response.body = {
+        aiJobId,
+        status: "Started",
+      };
     } catch (error) {
       context.response.status = 500;
       context.response.body = {
@@ -131,6 +144,54 @@ aiRouter
       context.response.status = 500;
       context.response.body = {
         error: "Error reviewing commit: " + error,
+      };
+    }
+  })
+  .get("/projectAiReview/job/:aiJobId", async (context) => {
+    const aiJobId = context.params.aiJobId;
+
+    try {
+      const aiJob = await kv.get(["jobs", aiJobId]);
+      if (!aiJob.value) {
+        context.response.status = 404;
+        context.response.body = {
+          message: "Job doesn't exist",
+        };
+        return;
+      } else {
+        const jobResult = aiJob.value as {
+          status: string;
+          project_id: number;
+          response: string;
+        };
+        if (jobResult.status === "failed") {
+          const errorMessage = typeof jobResult.response === "string"
+            ? jobResult.response
+            : `Job failed with an unexpected response: ${JSON.stringify(jobResult.response)}`;
+          throw new Error(errorMessage);
+        } else if (jobResult.status === "started") {
+          context.response.status = 202;
+          context.response.body = {
+            message: "job not yet done",
+          };
+          return;
+        } else if (jobResult.status === "complete") {
+          await prisma.projects.update({
+            where: { project_id: jobResult.project_id },
+            data: { ai_summary: jobResult.response },
+          });
+          context.response.status = 200;
+          context.response.body = {
+            status: "complete",
+            response: jobResult.response,
+            project_id: jobResult.project_id,
+          };
+        }
+      }
+    } catch (error) {
+      context.response.status = 500;
+      context.response.body = {
+        error: `Error getting aijob response, with error: ${error}`,
       };
     }
   });

@@ -56,7 +56,7 @@ export default function ProjectViewInfo() {
       rootLogger.error("No project id");
       return;
     }
-    await projectReview(id);
+    await projectReview(Number(id));
   };
 
   return (

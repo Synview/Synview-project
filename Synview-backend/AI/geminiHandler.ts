@@ -7,7 +7,6 @@ import diffExtracter, {
 } from "../utils/GITHelpers.ts";
 import { AiToolMessageSchema } from "../../common/schemas.ts";
 import { rootLogger } from "../../common/Logger.ts";
-import { parse } from "node:path";
 const googleKey = Deno.env.get("GEMINI_API_KEY");
 if (!googleKey) {
   rootLogger.error(

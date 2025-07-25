@@ -1,4 +1,3 @@
- 
 import { Group, Avatar, Text, Button } from "@mantine/core";
 import type { Invitation } from "../../../common/types.ts";
 import {
@@ -24,21 +23,23 @@ export default function Invitations({
   const {
     data: invitingUser,
     isLoading: isInvitingUserLoading,
+    error: invitingUserError,
   } = useGetUserByIdQuery(inviting_user_id ?? skipToken);
   const {
     data: project,
     isLoading: isProjectLoading,
+    error: projectError,
   } = useGetProjectByIdQuery(invited_project_id ?? skipToken);
   if (isInvitingUserLoading || isProjectLoading) {
     return <Loading />;
   }
 
-  if(!project?.project_id) {
-    return <NotFound/>;
+  if (!project?.project_id) {
+    return <NotFound />;
   }
 
-  if(projectError || invitingUserError) {
-    return <div>Error getting the data</div>
+  if (projectError || invitingUserError) {
+    return <div>Error getting the data</div>;
   }
 
   const acceptInvitation = async () => {
