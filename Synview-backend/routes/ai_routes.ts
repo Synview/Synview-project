@@ -60,18 +60,6 @@ aiRouter
         return;
       }
 
-      const commitString = await Promise.all(
-        commits.map(async (commit) => {
-          if (!commit?.sha) return "";
-          const diff = await diffExtracter(
-            project?.project_git_name!,
-            project?.repo_url!,
-            commit.sha
-          );
-          return `Commit SHA : ${commit.sha} \n Commit diff start - ${diff} - Commit diff end`;
-        })
-      );
-
       await kv.set(["jobs", aiJobId], {
         status: "started",
         response: "",
@@ -82,7 +70,7 @@ aiRouter
         type: "projectAnalysis",
         aiJobId,
         project_id: project.project_id,
-        commits: commitString,
+        commits: commits,
         project_repo_url: project.repo_url,
         project_git_name: project.project_git_name,
       });
