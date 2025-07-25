@@ -2,9 +2,9 @@ import { Menu, Button } from "@mantine/core";
 import { useLogoutMutation } from "../services/apiSlice.ts";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks.ts";
-import { apiSlice } from "../services/apiSlice.ts";
+import apiSlice from "../services/apiSlice.ts";
 export default function NavbarDropdown() {
-  const [logoutUser, { isLoading: isLogoutLodaing }] = useLogoutMutation();
+  const [logoutUser, {isLoading : isLogoutLoading}] = useLogoutMutation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const logout = async () => {
@@ -14,8 +14,8 @@ export default function NavbarDropdown() {
       localStorage.removeItem("token");
       dispatch(apiSlice.util.resetApiState());
       navigate("/");
-    } catch (error) {
-      alert(`error : ${error}`);
+    } catch (error : any){
+      alert(`error : ${error?.message || "unknown error"}`);
     }
   };
 
@@ -42,7 +42,11 @@ export default function NavbarDropdown() {
         <Menu.Divider />
 
         <Menu.Label>Danger zone</Menu.Label>
-        <Menu.Item onClick={logout} color="red" disabled={isLogoutLodaing}>
+        <Menu.Item
+          onClick={logout}
+          color="red"
+          disabled={isLogoutLoading}
+        >
           Log out
         </Menu.Item>
       </Menu.Dropdown>

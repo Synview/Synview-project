@@ -60,18 +60,6 @@ aiRouter
         return;
       }
 
-      const commitString = await Promise.all(
-        commits.map(async (commit) => {
-          if (!commit?.sha) return "";
-          const diff = await diffExtracter(
-            project?.project_git_name!,
-            project?.repo_url!,
-            commit.sha
-          );
-          return `Commit SHA : ${commit.sha} \n Commit diff start - ${diff} - Commit diff end`;
-        })
-      );
-
       await kv.set(["jobs", aiJobId], {
         status: "started",
         response: "",
@@ -82,7 +70,7 @@ aiRouter
         type: "projectAnalysis",
         aiJobId,
         project_id: project.project_id,
-        commits: commitString,
+        commits: commits,
         project_repo_url: project.repo_url,
         project_git_name: project.project_git_name,
       });
@@ -163,12 +151,11 @@ aiRouter
     const aiJobId = context.params.aiJobId;
     logger.info(`Currently pooling for : ${aiJobId}`);
     try {
-      const kv = await Deno.openKv();
       const aiJob = await kv.get(["jobs", aiJobId]);
       if (!aiJob.value) {
         context.response.status = 404;
         context.response.body = {
-          message: "Job doesnt exist",
+          message: "Job doesn't exist",
         };
         return;
       } else {
@@ -178,7 +165,10 @@ aiRouter
           response: string;
         };
         if (jobResult.status === "failed") {
-          throw new Error(jobResult.response);
+          const errorMessage = typeof jobResult.response === "string"
+            ? jobResult.response
+            : `Job failed with an unexpected response: ${JSON.stringify(jobResult.response)}`;
+          throw new Error(errorMessage);
         } else if (jobResult.status === "started") {
           context.response.status = 202;
           context.response.body = {

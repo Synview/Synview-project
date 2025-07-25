@@ -13,7 +13,7 @@ export default function ProjectSummarizeAI() {
   );
 
   if (!projectData?.ai_summary) {
-    return;
+    return null;
   }
 
   return (
