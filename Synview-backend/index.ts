@@ -1,4 +1,4 @@
-import { Application, Router } from "@oak/oak";
+import { Application, Router } from "jsr:@oak/oak";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
 import { userRouter } from "./routes/user_routes.ts";
 import { updateRouter } from "./routes/update_routes.ts";
