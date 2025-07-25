@@ -38,7 +38,7 @@ export default function AIButton() {
   if (aiReviewQueryData?.status === "started") {
     return (
       <>
-        <button  type="button" className="Button loadingButton">
+        <button  type="button" className="Button loadingButton" aria-label="Loading, please wait">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="spin-animation"
