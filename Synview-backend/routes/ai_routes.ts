@@ -149,7 +149,7 @@ aiRouter
   })
   .get("/projectAiReview/job/:aiJobId", async (context) => {
     const aiJobId = context.params.aiJobId;
-
+    logger.info(`Currently pooling for : ${aiJobId}`);
     try {
       const aiJob = await kv.get(["jobs", aiJobId]);
       if (!aiJob.value) {
@@ -172,7 +172,9 @@ aiRouter
         } else if (jobResult.status === "started") {
           context.response.status = 202;
           context.response.body = {
-            message: "job not yet done",
+            status: "started",
+            response: jobResult.response,
+            project_id: jobResult.project_id,
           };
           return;
         } else if (jobResult.status === "complete") {
@@ -191,7 +193,7 @@ aiRouter
     } catch (error) {
       context.response.status = 500;
       context.response.body = {
-        error: `Error getting aijob response, with error: ${error}`,
+        error: `Error getting aiJob response, with error: ${error}`,
       };
     }
   });

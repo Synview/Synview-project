@@ -10,6 +10,8 @@ export default function ProjectSummarizeAI() {
   const { id } = useParams();
 
   const { data: projectData } = useGetProjectByIdQuery(parseInt(id!) ?? skipToken)
+
+
   return (
     <Paper className="p-2 text-start !text-black">
       <ReactMarkdown>{projectData?.ai_summary}</ReactMarkdown>
