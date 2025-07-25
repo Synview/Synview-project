@@ -163,12 +163,11 @@ aiRouter
     const aiJobId = context.params.aiJobId;
 
     try {
-      const kv = await Deno.openKv();
       const aiJob = await kv.get(["jobs", aiJobId]);
       if (!aiJob.value) {
         context.response.status = 404;
         context.response.body = {
-          message: "Job doesnt exist",
+          message: "Job doesn't exist",
         };
         return;
       } else {
