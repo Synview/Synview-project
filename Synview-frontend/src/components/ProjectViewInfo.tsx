@@ -58,7 +58,7 @@ export default function ProjectViewInfo() {
  
   return (
     <div className="flex flex-col p-10 bg-neutral-900 text-white">
-      <div className="flex flex-row justify-between w-full gap-10">
+      <div className="flex flex-row justify-between w-full gap-8">
         <h1>
           {projectData?.title} - From: {projectOwner?.username}
         </h1>

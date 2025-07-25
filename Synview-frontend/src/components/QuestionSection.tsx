@@ -47,9 +47,9 @@ export default function QuestionSection() {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
   return (
-    <div className="flex flex-col mt-8 h-[50%]">
-      <div className="flex items-center gap-10">
-        <h1>Questions</h1>
+    <div className="flex flex-col mt-8 h-[50%] ">
+      <div className="flex items-center gap-10 ">
+        <p className="text-4xl">Questions</p>
         <form onSubmit={handleNewUpdate}>
           <details className="dropdown">
             <summary className="btn m-1">Be curious!</summary>
