@@ -3,6 +3,7 @@ import { useLogoutMutation } from "../services/apiSlice.ts";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks.ts";
 import { apiSlice } from "../services/apiSlice.ts";
+import { userSlice } from "../slices/userSlice.ts";
 export default function NavbarDropdown() {
   const [logoutUser, { isLoading: isLogoutLodaing }] = useLogoutMutation();
   const navigate = useNavigate();
@@ -13,6 +14,9 @@ export default function NavbarDropdown() {
       // Clear the auth token from localStorage
       localStorage.removeItem("token");
       dispatch(apiSlice.util.resetApiState());
+      dispatch(userSlice.actions.cleanUser());
+
+
       navigate("/");
     } catch (error) {
       alert(`error : ${error}`);
