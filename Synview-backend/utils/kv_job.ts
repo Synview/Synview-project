@@ -73,7 +73,7 @@ kv.listenQueue(async (msg: jobMessage) => {
       ["jobs", aiJobId],
       {
         status: "failed",
-        response: error,
+        response: error.message,
         project_id: 0,
       },
       { expireIn: 1000 * 60 * 60 * 24 }

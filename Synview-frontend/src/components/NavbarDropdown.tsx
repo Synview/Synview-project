@@ -12,8 +12,8 @@ export default function NavbarDropdown() {
     // Clear the auth token from localStorage
     localStorage.removeItem("token");
       navigate("/");
-    } catch (error){
-      alert(`error : ${error}`);
+    } catch (error : any){
+      alert(`error : ${error?.message || "unknown error"}`);
     }
   };
 

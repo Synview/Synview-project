@@ -165,7 +165,10 @@ aiRouter
           response: string;
         };
         if (jobResult.status === "failed") {
-          throw new Error(jobResult.response);
+          const errorMessage = typeof jobResult.response === "string"
+            ? jobResult.response
+            : `Job failed with an unexpected response: ${JSON.stringify(jobResult.response)}`;
+          throw new Error(errorMessage);
         } else if (jobResult.status === "started") {
           context.response.status = 202;
           context.response.body = {
