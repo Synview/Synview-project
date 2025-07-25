@@ -326,3 +326,5 @@ export const {
   useGetLocalUserByIdQuery,
   useGetAiReviewJobQuery,
 } = apiSlice;
+
+export default apiSlice;
