@@ -6,7 +6,7 @@ export default function Info() {
       </div>
       <div className="flex self-start">
         <p className="text-start text-5xl">
-          This app was created with the porpouse of speeding the process of
+          This app was created with the purpose of speeding the process of
           keeping track of projects, through intuitive UI and AI features,
           Synview excels at productivity and feedback for all its users.
         </p>
