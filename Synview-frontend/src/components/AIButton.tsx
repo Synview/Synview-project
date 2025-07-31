@@ -39,7 +39,7 @@ export default function AIButton() {
     return (
       <>
         <button  type="button" className="Button loadingButton" aria-label="Loading, please wait">
-          <img src="/star.svg" className="spin-animation"></img>
+          <img src="/star.svg" className="spin-animation" alt="Loading animation"></img>
         </button>
       </>
     );

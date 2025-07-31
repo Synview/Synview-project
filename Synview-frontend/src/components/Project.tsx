@@ -39,7 +39,7 @@ export default function Project({ title, description, project_id }: Project) {
                   Project description
                 </Text>
                 <br></br>{" "}
-                <Spoiler maxHeight={120} showLabel="..." hideLabel="Hide">
+                <Spoiler maxHeight={80} showLabel="..." hideLabel="Hide">
                   {description}{" "}
                 </Spoiler>
               </p>
@@ -60,8 +60,10 @@ export default function Project({ title, description, project_id }: Project) {
               <Badge size="sm" color="gray">
                 {reviewingUsers?.length}
                 {reviewingUsers && reviewingUsers?.length === 0
-                  ? " Reviewers"
-                  : " Reviewer"}
+                  ? " Reviewers "
+                  : reviewingUsers?.length === 1
+                  ? "Reviewer"
+                  : "Reviewers"}
               </Badge>
               <div className="card-actions justify-end"></div>
             </div>

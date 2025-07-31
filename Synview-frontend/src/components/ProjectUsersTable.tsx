@@ -83,8 +83,8 @@ export default function ProjectUsersTable() {
         <Table verticalSpacing="sm">
           <Table.Thead>
             <Table.Tr>
-              <Table.Th></Table.Th>
-              <Table.Th></Table.Th>
+              <Table.Th>User</Table.Th>
+              <Table.Th>Status</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>

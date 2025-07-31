@@ -14,9 +14,9 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <MantineProvider>
           <App />
-        <div
-          className="flex h-full justify-center text-black  lg:hidden"
-        >Please use desktop</div>
+        <p
+          className="flex h-full justify-center text-black  lg:hidden" role="alert"
+        >Please use desktop</p>
       </MantineProvider>
     </Provider>
   </StrictMode>
