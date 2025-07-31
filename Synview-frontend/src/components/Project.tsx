@@ -5,7 +5,7 @@ import {
   useGetMyUpdatesQuery,
 } from "../services/apiSlice.ts";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { Badge } from "@mantine/core";
+import { Badge, Text } from "@mantine/core";
 import { Spoiler } from "@mantine/core";
 
 export default function Project({ title, description, project_id }: Project) {
@@ -35,8 +35,11 @@ export default function Project({ title, description, project_id }: Project) {
             </div>
             <div className="pt-4">
               <p className=" whitespace-normal  break-all">
-                Project description <br></br>{" "}
-                <Spoiler maxHeight={100} showLabel="..." hideLabel="Hide">
+                <Text fz="md" c="dimmed">
+                  Project description
+                </Text>
+                <br></br>{" "}
+                <Spoiler maxHeight={80} showLabel="..." hideLabel="Hide">
                   {description}{" "}
                 </Spoiler>
               </p>
@@ -44,19 +47,23 @@ export default function Project({ title, description, project_id }: Project) {
           </div>
           <div>
             <div>
-              Last update :
-              {sortedUpdates.length > 0
-                ? new Date(
-                    sortedUpdates.at(0)?.created_at!
-                  ).toLocaleDateString()
-                : " No updates yet"}
+              <Text fz="md" c="dimmed">
+                Last update :
+                {sortedUpdates.length > 0
+                  ? new Date(
+                      sortedUpdates.at(0)?.created_at!
+                    ).toLocaleDateString()
+                  : " No updates yet"}
+              </Text>
             </div>
             <div>
               <Badge size="sm" color="gray">
                 {reviewingUsers?.length}
                 {reviewingUsers && reviewingUsers?.length === 0
-                  ? " Reviewers"
-                  : " Reviewer"}
+                  ? " Reviewers "
+                  : reviewingUsers?.length === 1
+                  ? "Reviewer"
+                  : "Reviewers"}
               </Badge>
               <div className="card-actions justify-end"></div>
             </div>
