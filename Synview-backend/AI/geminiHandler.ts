@@ -59,7 +59,7 @@ Example of FINAL:
 
 {
 "tool": "FINAL",
-"value": "Summary: ..." **MARKDOWN HERE**
+"value": "Summary: ..." **MARKDOWN ONLY ON VALUE**
 }
 
 Rules you must follow:
