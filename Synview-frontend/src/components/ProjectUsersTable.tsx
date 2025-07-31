@@ -80,17 +80,15 @@ export default function ProjectUsersTable() {
   ));
   return (
     <>
-      <Table.ScrollContainer minWidth={800}>
         <Table verticalSpacing="sm">
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>User</Table.Th>
-              <Table.Th>Active</Table.Th>
+              <Table.Th></Table.Th>
+              <Table.Th></Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-      </Table.ScrollContainer>
     </>
   );
 }

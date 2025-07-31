@@ -53,29 +53,31 @@ export default function Invitations({
 
   return (
     <div className="animation-fade-up">
-      <Group gap="md">
-        <Avatar size={40} src={null} radius={40} />
-        <div>
-          <Text fz="sm" fw={500}>
+      <Group justify="space-between" gap="md">
+        <div className="flex items-center gap-2">
+          <Avatar size={40} src={null} radius={40} />
+          <Text fz="lg" fw={500} >
             {invitingUser?.username}
           </Text>
-          <Text fz="xs" c="dimmed">
+          <Text fz="lg" c="dimmed" className="">
             {project?.title}
           </Text>
         </div>
-        <div>
-          <Text fz="sm" fw={500}>
-            {status}
-          </Text>
-          <Text fz="sm" fw={500}>
-            {invited_at && new Date(invited_at).toLocaleDateString()}
-          </Text>
-        </div>
-        <div>
-          {status === "PENDING" && (
+
+        <div className="">
+          {status === "PENDING" ? (
             <Button variant="default" onClick={acceptInvitation}>
               Accept
             </Button>
+          ) : (
+            <div>
+              <Text fz="sm" fw={500}>
+                {status}
+              </Text>
+              <Text fz="sm" fw={500}>
+                {invited_at && new Date(invited_at).toLocaleDateString()}
+              </Text>
+            </div>
           )}
         </div>
       </Group>

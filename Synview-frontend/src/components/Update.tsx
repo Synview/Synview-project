@@ -12,7 +12,7 @@ export default function Update({
 }: UpdateInfo) {
   const dispatch = useAppDispatch();
   return (
-    <>
+    < >
       <hr />
       <div className="timeline-start ">
         <Text>
@@ -33,16 +33,9 @@ export default function Update({
           />
         </svg>
       </div>
-      <div className="timeline-end timeline-box flex w-[90%] items-center justify-between">
-        <p className=" text-black break-all text-left"> {description}</p>
+      <div onClick={() => dispatch(openQuestionModal(update_id))} className="min-h-15 cursor-[url(/starFocus.svg),_auto] timeline-end timeline-box flex w-[90%] items-center justify-between">
+        <p className="text-md text-black break-all text-left"> {description}</p>
         <div className="flex gap-4">
-          <button
-            type="button"
-            className="btn"
-            onClick={() => dispatch(openQuestionModal(update_id))}
-          >
-            View
-          </button>
         </div>
       </div>
       <hr />
