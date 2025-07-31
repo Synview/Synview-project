@@ -6,7 +6,6 @@ import {
   useAcceptInvitationMutation,
 } from "../services/apiSlice.ts";
 import { skipToken } from "@reduxjs/toolkit/query";
-import Loading from "./HelperComponents/Loading.tsx";
 import NotFound from "./HelperComponents/NotFound.tsx";
 
 export default function Invitations({
