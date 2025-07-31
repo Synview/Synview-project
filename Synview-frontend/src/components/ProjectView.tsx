@@ -36,7 +36,7 @@ export default function ProjectView() {
   return (
     <div className="overflow-y-hidden">
       <div className="flex h-full flex-row card bg-neutral-900 shadow-sm overflow-y-scroll">
-        <div className="flex-1 h-full overflow-y-scroll border-r border-t border-neutral-600">
+        <div className="flex-1  h-full overflow-y-scroll border-r border-t border-neutral-600">
           <ProjectViewUpdates />
         </div>
         <div className="flex-1 h-full overflow-y-scroll border-t border-neutral-600">
@@ -49,7 +49,7 @@ export default function ProjectView() {
         centered
         fullScreen
         withCloseButton={false}
-        transitionProps={{ transition: "fade", duration: 200 }}
+        transitionProps={{ transition: "slide-up", duration: 300 }}
         styles={{
           body: {
             padding: 0,

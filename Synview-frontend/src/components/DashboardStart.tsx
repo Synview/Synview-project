@@ -60,7 +60,7 @@ export default function DashboardStart() {
             {data &&
               data.map((project) => {
                 return (
-                  <div key={project.project_id}>
+                  <div  className="animation-fade-up" key={project.project_id}>
                     <Project {...project} />
                   </div>
                 );
@@ -73,7 +73,7 @@ export default function DashboardStart() {
             {reviewingProjects &&
               reviewingProjects.map((project) => {
                 return (
-                  <div key={project.project_id}>
+                  <div className="animation-fade-up"key={project.project_id}>
                     <Project {...project} />
                   </div>
                 );
