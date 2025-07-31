@@ -12,33 +12,35 @@ import WithLogin from "./components/WithLogin.tsx";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />}></Route>
-        <Route path="/login" element={<Login />}></Route>
-        <Route
-          path="/dashboard"
-          element={
-            <WithLogin>
-              <Dashboard />
-            </WithLogin>
-          }
-        >
-          <Route path="/dashboard/" element={<DashboardStart />} />
+    <div className="hidden lg:block h-full">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />}></Route>
+          <Route path="/login" element={<Login />}></Route>
           <Route
-            path="/dashboard/project/:id"
+            path="/dashboard"
             element={
-              <WithRole>
-                <ProjectView />
-              </WithRole>
+              <WithLogin>
+                <Dashboard />
+              </WithLogin>
             }
-          />
-        </Route>
-        <Route path="*" element={<NotFound />}>
-          {" "}
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          >
+            <Route path="/dashboard/" element={<DashboardStart />} />
+            <Route
+              path="/dashboard/project/:id"
+            element={
+                <WithRole>
+                  <ProjectView />
+                </WithRole>
+              }
+            />
+          </Route>
+          <Route path="*" element={<NotFound />}>
+            {" "}
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 

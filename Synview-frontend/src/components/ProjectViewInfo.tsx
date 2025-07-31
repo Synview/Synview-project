@@ -86,10 +86,10 @@ export default function ProjectViewInfo() {
         </div>
       </div>
       <div className="flex flex-col justify-between items-center gap-10">
-        <div className="flex flex-row w-full justify-between items-center gap-10">
+        <div className="flex flex-row w-full justify-between items-start gap-10">
           <button
             type="button"
-            className="btn"
+            className="btn mt-6"
             onClick={() => {
               if (!userPayload?.id) return;
               dispatch(
