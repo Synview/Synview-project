@@ -23,7 +23,7 @@ import {
   sendIsPresent,
   subscribe,
 } from "../services/webSocket.ts";
-import { LogLevel, createLogger, rootLogger } from "../../../common/Logger.ts";
+import { LogLevel, createLogger } from "../../../common/Logger.ts";
 import type { RootState } from "../store.ts";
 import { setUser } from "../slices/userSlice.ts";
 import sleep from "../utils/sleep.ts";
@@ -102,7 +102,6 @@ export const apiSlice = createApi({
           if (currUser.user_id !== 0) break;
           await sleep(100);
         }
-        rootLogger.info(currUser.email);
 
         sendIsPresent(`Presence:${id}`, currUser);
         const unsubscribe = subscribe(
