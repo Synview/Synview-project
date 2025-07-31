@@ -48,7 +48,7 @@ export default function DashboardStart() {
   }
 
   return (
-    <div className=" justify-center items-center w-full p-10">
+    <div className=" justify-center flex-1 bg-neutral-900 items-center w-full p-10">
       <Tabs variant="outline" defaultValue="personalProjects">
         <Tabs.List>
           <Tabs.Tab value="personalProjects">My projects</Tabs.Tab>
@@ -60,7 +60,7 @@ export default function DashboardStart() {
             {data &&
               data.map((project) => {
                 return (
-                  <div key={project.project_id}>
+                  <div  className="animation-fade-up" key={project.project_id}>
                     <Project {...project} />
                   </div>
                 );
@@ -73,7 +73,7 @@ export default function DashboardStart() {
             {reviewingProjects &&
               reviewingProjects.map((project) => {
                 return (
-                  <div key={project.project_id}>
+                  <div className="animation-fade-up"key={project.project_id}>
                     <Project {...project} />
                   </div>
                 );

@@ -11,7 +11,27 @@
   animation: fadeIn 2s ease-out forwards;
 }
 
+.animation-fade-up {
+  opacity: 0;
+  animation: fadeUp .5s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translate(0px, 20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
+}
+
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

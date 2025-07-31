@@ -12,7 +12,7 @@ export default function SummarizeAI() {
     return <p>No summary detected</p>;
   }
   return (
-    <Paper className="p-2 text-start text-[11px] !text-black whitespace-normal  break-all overflow-x-scroll prose prose-sm">
+    <Paper className="p-2 text-start text-[11px] !text-black whitespace-normal animation-fade-up  break-all overflow-x-scroll prose prose-sm">
       <ReactMarkdown>{updateData?.summary}</ReactMarkdown>
     </Paper>
   );

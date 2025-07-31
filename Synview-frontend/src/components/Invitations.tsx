@@ -31,7 +31,7 @@ export default function Invitations({
     error: projectError,
   } = useGetProjectByIdQuery(invited_project_id ?? skipToken);
   if (isInvitingUserLoading || isProjectLoading) {
-    return <Loading />;
+    return;
   }
 
   if (!project?.project_id) {
@@ -53,7 +53,7 @@ export default function Invitations({
   };
 
   return (
-    <div>
+    <div className="animation-fade-up">
       <Group gap="md">
         <Avatar size={40} src={null} radius={40} />
         <div>
